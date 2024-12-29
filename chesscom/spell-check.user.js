@@ -2,7 +2,7 @@
 // @name         Disable Spellcheck on Chess.com
 // @namespace    http://tampermonkey.net/
 // @description  Disable spellcheck on chess.com analysis page
-// @version      27
+// @version      28
 // @author       You
 // @match        https://www.chess.com/analysis?tab=analysis
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chess.com
