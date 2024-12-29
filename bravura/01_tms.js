@@ -2,7 +2,7 @@
 // @name         bc
 // @namespace    bc
 // @description  bc
-// @version      17
+// @version      18
 // @author       anon
 // @match        http://bravura-crm.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com

@@ -31,7 +31,7 @@ find "$dir" -type f -name "*.js" \
   fi
 
   # Update @require
-  if grep -q "// @require\s\+https://github\.com/$repo/" "$filename"; then
+  if grep -q "// @require\s\+https://raw\.githubusercontent\.com/$repo/" "$filename"; then
     echo "@require($repo): v$version_old -> v$version_new"
     sed -i "s|\(@require .*\.js\)\(\?v=[0-9]*\)*|\1?v=$version_new|g" "$filename"
   else
