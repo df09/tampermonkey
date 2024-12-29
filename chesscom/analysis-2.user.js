@@ -2,7 +2,7 @@
 // @name         Analysis - Custom Style
 // @namespace    Custom styles for analysis
 // @description  Custom styles for analysis
-// @version      12
+// @version      13
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=lichess.org
 // @match        https://lichess.org/analysis
 // ==/UserScript==
