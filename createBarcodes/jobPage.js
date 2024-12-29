@@ -1,12 +1,6 @@
 (function() {
   'use strict';
 
-  // ==== load ============================================
-  console.log('bc/11_job: loaded.');
-  tmMenuAdd();
-  getEl(tmMenuStartSelector).addEventListener('click', () => start());
-
-  // ==== start ============================================
   // TODO: перейти на yaml
   // input:
   //   panl-12cl_door-38cl_panl-38cl: test_A1 test_B2 test_C3
@@ -78,7 +72,7 @@
   function start() {
     // storage
     tmsDeleteAll();
-    tmsState('bc:start');
+    tmsState('createBarcodes:start');
     // get data
     const barcodesData = getBarcodesData(getEl(tmMenuTextareaSelector));
     const jobId = getJobId();
@@ -86,11 +80,10 @@
     sessionStorage.setItem('tm_barcodesData', barcodesData);
     sessionStorage.setItem('tm_jobId', jobId);
     sessionStorage.setItem('tm_fosId', fosId);
-    abort();
     // proceed
-    if (barcodesData) {
-      redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/new_product`);
-    }
-    alert('Done!');
+    redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/new_product`);
   }
+
+  tmMenuAdd();
+  getEl(tmMenuStartSelector).addEventListener('click', () => start());
 })();

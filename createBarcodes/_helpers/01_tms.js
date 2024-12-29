@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  // tms.prefix/serialize/deserialize
+  // prefix/serialize/deserialize
   const PREFIX = 'tm_';
   function ensurePrefix(key) {
       if (!key.startsWith(PREFIX)) {
@@ -23,7 +23,7 @@
       if (type === 'undefined') return undefined;
       throw new Error(`Unsupported data type: ${type}`);
   }
-  // tms.set
+  // set
   window.tmsSet = function(key, value) {
       key = ensurePrefix(key);
       sessionStorage.setItem(key, serialize(value));
@@ -33,7 +33,7 @@
       Object.entries(data).forEach(([key, value]) => { tmsSet(key, value); });
       console.log(`tmsSetMulti: Keys were set`, data);
   }
-  // tms.get
+  // get
   window.tmsGet = function(key, defaultValue) {
       key = ensurePrefix(key);
       const storedValue = sessionStorage.getItem(key);
@@ -61,7 +61,7 @@
       console.log(`tmsGetAll: Listed keys`, keys);
       return keys;
   }
-  // tms.delete
+  // delete
   window.tmsDelete = function(key) {
       key = ensurePrefix(key);
       sessionStorage.removeItem(key);
@@ -76,13 +76,9 @@
       keys.forEach(key => sessionStorage.removeItem(key));
       console.log(`tmsDeleteAll: All keys with prefix '${PREFIX}' were deleted`);
   }
-  // tms.state
+  // state
   window.tmsState = function(state) {
       tmsSet('tm_state', state);
-      console.log('tmsState: "'+state+'"');
+      console.log('tmsState: "tm_state: '+state+'".');
   }
-
-  // ==== exec ============================================
-  console.log('bc/01_tms: loaded.');
 })();
-// @version 1

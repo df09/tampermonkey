@@ -1,7 +1,6 @@
 (function() {
   'use strict';
 
-  // ==== helpers ============================================
   // abort
   window.AbortExecution = class AbortExecution extends Error {
     constructor(message) {
@@ -28,22 +27,16 @@
     console.log('abort: done.')
     throw new AbortExecution(joinedArgs);
   }
-  // helpers.sleep
+  // sleep
   window.sleep = function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  // helpers.redirect
+  // redirect
   window.redirect = function(newUrl) {
     console.log('redirect("'+newUrl+'")');
     window.location.href = newUrl; // Выполняем редирект
   }
-  // helpers.storage
-  window.tmCleanStorage = function() {
-    Object.keys(sessionStorage).forEach((key) => {
-      if (key.startsWith("tm_")) { sessionStorage.removeItem(key); }
-    });
-  }
-  // helpers.DOM-manipulations
+  // DOM-manipulations
   window.getEl = function(selector) {
     const el = document.querySelector(selector);
     if (!el) { abort('getEl("'+selector+'"): not found'); }
@@ -66,7 +59,7 @@
     console.log('updValEl: "'+oldVal+'" ->" '+newVal+'"', el);
     await sleep(delay);
   }
-  // helpers.styles
+  // styles
   window.addStyles = function(styles) {
     const styleSheet = document.createElement('style');
     styleSheet.type = 'text/css';
@@ -81,7 +74,4 @@
     el.parentElement.style.position = 'relative';
     el.parentElement.appendChild(hintContainer);
   }
-  // ==== load ============================================
-  console.log('bc/02_helpers: loaded.');
 })();
-// @version 1
