@@ -3,7 +3,7 @@
 dir="."
 repo="df09/tempermonkey"
 
-find "$dir" -type f -name "*.user.js" \
+find "$dir" -type f -name "*.js" \
   ! -path "*/.*/*" \
   ! -path "*/__pycache__/*" \
   | while read -r filename; do
