@@ -2,7 +2,7 @@
   'use strict';
 
   // ==== load ============================================
-  console.log('bc/11_jobPage: loaded.');
+  console.log('bc/11_job: loaded.');
   tmMenuAdd();
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
 

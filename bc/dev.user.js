@@ -15,7 +15,7 @@
     '/bc/01_tms.js',
     '/bc/02_helpers.js',
     '/bc/03_menu.js',
-    '/bc/11_jobPage.js'
+    '/bc/11_job.js'
   ];
   async function loadScripts() { for (const file of files) { await new Promise((resolve, reject) => {
     const script = document.createElement('script'); script.src = host + file;
