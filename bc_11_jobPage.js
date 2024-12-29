@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         bc_10_jobPage
-// @description  bc_10_jobPage
+// @description  bc_10_jobPage upd
 // @namespace    bc
 // @version      2024-12-18
 // @author       anon
