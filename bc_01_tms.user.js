@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         bc_01_tms
-// @description  bc_01_tms v222
+// @description  bc_01_tms
 // @namespace    bc
 // @version      2024-12-18
 // @author       anon
@@ -14,7 +14,6 @@
   'use strict';
 
   // tms.prefix/serialize/deserialize
-  console.log('v2222');
   const PREFIX = 'tm_';
   function ensurePrefix(key) {
       if (!key.startsWith(PREFIX)) {
