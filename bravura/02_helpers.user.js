@@ -2,7 +2,7 @@
 // @name         bc
 // @description  bc
 // @namespace    bc
-// @version      10
+// @version      11
 // @author       anon
 // @match        http://bravura-crm.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
@@ -94,6 +94,6 @@
     el.parentElement.appendChild(hintContainer);
   }
   // ==== load ============================================
-  // window.bc_02_helpers = true;
+  window.bc_02_helpers = true;
   console.log('bc_02_helpers: loaded.');
 })();

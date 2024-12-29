@@ -2,7 +2,7 @@
 // @name         ShowerApp_twins
 // @namespace    http://tampermonkey.net/
 // @description  Сгенерировать идентичные душевые
-// @version      19
+// @version      20
 // @author       anon
 // @match        https://solimp.crlaurence.com/SOL_API/ShowerApp/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=crlaurence.com

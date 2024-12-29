@@ -2,15 +2,20 @@
 // @name         bc
 // @description  bc
 // @namespace    bc
-// @version      5
+// @version      6
 // @author       anon
 // @match        http://bravura-crm.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
 // @grant        none
 // @run-at       document-end
-// @require      https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/01_tms.user.js?v=1
-// @require      https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/02_helpers.user.js?v=1
-// @require      https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/03_menu.user.js?v=1
+// @require  file:///home/df09/init/work/_tempermonkey/bravura/01_tms.user.js
+// @require  file:///home/df09/init/work/_tempermonkey/bravura/02_helpers.user.js
+// @require  file:///home/df09/init/work/_tempermonkey/bravura/03_menu.user.js
+// @require  file:///home/df09/init/work/_tempermonkey/bravura/11_jobPage.user.js
+// @requireProd  https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/01_tms.user.js
+// @requireProd  https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/02_helpers.user.js
+// @requireProd  https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/03_menu.user.js
+// @requireProd  https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/bravura/11_jobPage.user.js
 // ==/UserScript==
 
 (function() {
