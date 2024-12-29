@@ -110,6 +110,7 @@
     }
   }
   function start() {
+    console.log('upd?');
     // storage
     tmsDeleteAll();
     tmsState('bravuraCreateBarcodes:start');
