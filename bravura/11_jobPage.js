@@ -22,7 +22,8 @@
     // await waitForLoading('bc_02_helpers', 10, 500);
     // await waitForLoading('bc_03_menu', 10, 500);
     // window.bc_10_jobPage = true;
-    console.log('22 bc/11_jobPage: loaded.');
+    console.log('bc/11_jobPage: loaded.');
+    console.error('1');
     // init menu
     tmMenuAdd();
     getEl(tmMenuStartSelector).addEventListener('click', () => start());
