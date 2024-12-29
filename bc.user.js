@@ -36,7 +36,8 @@
   }
   // Загрузка скрипта после загрузки страницы
   window.addEventListener('load', async () => {
-    const repo = 'https://github.com/df09/tempermonkey/raw/refs/heads/main/'
+    // const repo = 'https://raw.githubusercontent.com/df09/tempermonkey/refs/heads/main/';
+    const repo = 'https://raw.githack.com/df09/tempermonkey/refs/heads/main/';
     const files = [
      'bc_01_tms.js',
      'bc_02_helpers.js',
