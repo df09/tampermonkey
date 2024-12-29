@@ -8,9 +8,9 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
 // @grant        none
 // @run-at       document-end
-// @require
-// @require
-// @require
+// @require      https://github.com/df09/tempermonkey/raw/refs/heads/main/bravura/01_tms.js?v=1
+// @require      https://github.com/df09/tempermonkey/raw/refs/heads/main/bravura/02_helpers.js?v=1
+// @require      https://github.com/df09/tempermonkey/raw/refs/heads/main/bravura/03_menu.js?v=1
 // ==/UserScript==
 
 (function() {
