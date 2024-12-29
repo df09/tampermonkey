@@ -2,7 +2,7 @@
 // @name         bc
 // @namespace    bc
 // @description  bc
-// @version      9
+// @version      10
 // @author       anon
 // @match        http://bravura-crm.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
@@ -14,6 +14,7 @@
   'use strict';
 
   // tms.prefix/serialize/deserialize
+  console.log(10);
   const PREFIX = 'tm_';
   function ensurePrefix(key) {
       if (!key.startsWith(PREFIX)) {
