@@ -18,5 +18,10 @@
   'use strict';
 
   // ==== load ============================================
-  window.addEventListener('load', async () => { console.log('bc: loaded.'); });
+  window.addEventListener('load', async () => {
+    console.log('bc: loaded.');
+    console.log(`
+// @version      14
+    `);
+  });
 })();
