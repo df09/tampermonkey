@@ -1,33 +1,12 @@
 (function() {
   'use strict';
 
-  // ==== load ============================================
-  function waitForLoading(variableName, maxAttempts=50, interval=100) {
-      return new Promise((resolve, reject, maxAttempts, interval) => {
-          let attempts = 0;
-          const checkInterval = setInterval(() => {
-              if (window[variableName] === true) {
-                  clearInterval(checkInterval);
-                  resolve(); // разрешаем промис
-              } else if (attempts >= maxAttempts) {
-                  clearInterval(checkInterval);
-                  reject(new Error(`Timeout waiting for ${variableName} to load.`));
-              }
-              attempts++;
-          }, interval);
-      });
-  }
-  window.addEventListener('load', async () => {
-    // await waitForLoading('bc_01_tms', 10, 500);
-    // await waitForLoading('bc_02_helpers', 10, 500);
-    // await waitForLoading('bc_03_menu', 10, 500);
-    // window.bc_10_jobPage = true;
-    console.log('bc/11_jobPage: loaded.');
-    console.error('2');
-    // init menu
-    tmMenuAdd();
-    getEl(tmMenuStartSelector).addEventListener('click', () => start());
-  });
+  // ==== execute ============================================
+  console.log('bc/11_jobPage: loaded.');
+  console.log(8);
+  // init menu
+  tmMenuAdd();
+  getEl(tmMenuStartSelector).addEventListener('click', () => start());
 
   // ==== start ============================================
   // TODO: перейти на yaml
@@ -190,4 +169,3 @@
   //   await clickEl(getEl(createFoSelector), 1000);
   // }
 })();
-// @version 1
