@@ -2,7 +2,7 @@
 // @name         bc
 // @description  bc
 // @namespace    bc
-// @version      2
+// @version      3
 // @author       anon
 // @match        http://bravura-crm.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
@@ -15,7 +15,7 @@
 
 (function() {
   'use strict';
-  console.log('hi v2');
+  console.log('hi v3');
 
   // ==== load ============================================
   function waitForLoading(variableName, maxAttempts=50, interval=100) {
