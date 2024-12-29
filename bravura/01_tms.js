@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bc
-// @description  bc
 // @namespace    bc
+// @description  bc
 // @version      1
 // @author       anon
 // @match        http://bravura-crm.com/*

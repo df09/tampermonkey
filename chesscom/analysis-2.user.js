@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Analysis - Custom Style
+// @namespace    Custom styles for analysis
 // @description  Custom styles for analysis
+// @version      4
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=lichess.org
 // @match        https://lichess.org/analysis
-// @version      2024-06-10
 // ==/UserScript==
 
 (function() {

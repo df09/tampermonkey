@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Disable Spellcheck on Chess.com
 // @namespace    http://tampermonkey.net/
-// @version      2024-05-20
 // @description  Disable spellcheck on chess.com analysis page
+// @version      1
 // @author       You
 // @match        https://www.chess.com/analysis?tab=analysis
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chess.com

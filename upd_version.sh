@@ -1,37 +1,41 @@
 #!/bin/bash
 
-# Папка для поиска
-SEARCH_DIR="."
+dir="."
+repo="df09/tempermonkey"
 
-# Поиск всех *.user.js файлов, исключая скрытые и специальные директории
-find "$SEARCH_DIR" -type f -name "*.user.js" \
+find "$dir" -type f -name "*.user.js" \
   ! -path "*/.*/*" \
   ! -path "*/__pycache__/*" \
-  | while read -r SCRIPT_FILE; do
-    echo "Processing $SCRIPT_FILE"
+  | while read -r filename; do
+  echo '>>> $filename:' $filename
 
-    # Извлечение текущей версии
-    CURRENT_VERSION=$(grep -Po '(?<=@version\s+)[0-9]+' "$SCRIPT_FILE")
-
-    # Обновление версии
-    if [[ -z "$CURRENT_VERSION" ]]; then
-      echo "No @version found in $SCRIPT_FILE. Adding @version 1."
-      sed -i '/@version/d' "$SCRIPT_FILE" # Удаляем старую строку @version, если есть
-      sed -i '/@name/a // @version      1' "$SCRIPT_FILE" # Добавляем новую версию после @name
+  # Get version
+  version_old=$(grep -Po '^//\s*@version\s+\K[0-9]+' "$filename")
+  if [[ -z "$version_old" ]]; then
+    # Create version
+    echo "@version: NONE -> v$version_new"
+    sed -i '/^\/\/\s*@version/d' "$filename" # delete old line
+    line=$(grep "^// @description" "$filename")
+    if [[ -n "$line" ]]; then
+      prefix_length=$(echo "$line" | grep -oP "^// @description\s*" | wc -c)
+      version_line=$(printf "// @version%s1" "$(printf '%*s' $((prefix_length - 12)) '')")
+      sed -i "/^\/\/ @description/a $version_line" "$filename"
     else
-      # Увеличиваем версию на 1
-      NEW_VERSION=$((CURRENT_VERSION + 1))
-      echo "Updating version in $SCRIPT_FILE: $CURRENT_VERSION -> $NEW_VERSION"
-      sed -i "s/@version\s\+$CURRENT_VERSION/@version      $NEW_VERSION/" "$SCRIPT_FILE"
+      echo "// @version 1" >> "$filename"
     fi
+  else
+    # Update version
+    version_new=$((version_old + 1))
+    echo "@version: v$version_old -> v$version_new"
+    sed -i "s|^\(//\s*@version\s\+\)$version_old|\1$version_new|" "$filename"
+  fi
 
-    # Обновление параметра 'v' в @require
-    if grep -q '@require ' "$SCRIPT_FILE"; then
-      echo "Updating @require parameters in $SCRIPT_FILE with 'v' parameter: $NEW_VERSION"
-      sed -i "s|\(@require .*\.js\)\(\?v=[0-9]*\)*|\1?v=$NEW_VERSION|" "$SCRIPT_FILE"
-    else
-      echo "No @require found in $SCRIPT_FILE. Skipping @require update."
-    fi
+  # Update @require
+  if grep -q "// @require\s\+https://github\.com/$repo/" "$filename"; then
+    echo "@require($repo): v$version_old -> v$version_new"
+    sed -i "s|\(@require .*\.js\)\(\?v=[0-9]*\)*|\1?v=$version_new|g" "$filename"
+  else
+    echo "@require($repo): not found"
+  fi
+  echo
 done
-
-echo "@version and @require update completed for all scripts."

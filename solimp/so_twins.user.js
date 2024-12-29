@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         ShowerApp_twins
-// @description  Сгенерировать идентичные душевые
 // @namespace    http://tampermonkey.net/
-// @version      2024-12-18
+// @description  Сгенерировать идентичные душевые
+// @version      9
 // @author       anon
 // @match        https://solimp.crlaurence.com/SOL_API/ShowerApp/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=crlaurence.com
 // @grant        none
 // @run-at       document-end
-// @require      https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js
+// @require      https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js?v=3
 // ==/UserScript==
 
 (function() {
