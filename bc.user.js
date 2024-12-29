@@ -38,10 +38,10 @@
   window.addEventListener('load', async () => {
     const repo = 'https://github.com/df09/tempermonkey/raw/refs/heads/main/'
     const files = [
-     'bc_01_tms.user.js',
-     'bc_02_helpers.user.js',
-     'bc_03_menu.user.js',
-     'bc_10_jobPage.user.js',
+     'bc_01_tms.js',
+     'bc_02_helpers.js',
+     'bc_03_menu.js',
+     'bc_10_jobPage.js',
     ]
     for (const file of files) { await loadExternalScript(repo+file); }
   });
