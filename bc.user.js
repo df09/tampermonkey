@@ -43,8 +43,6 @@
      'bc_03_menu.user.js',
      'bc_10_jobPage.user.js',
     ]
-    for (const file of files) {
-      await loadExternalScript(baseUrl+file);
-    }
+    for (const file of files) { await loadExternalScript(repo+file); }
   });
 })();
