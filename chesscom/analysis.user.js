@@ -2,7 +2,7 @@
 // @name         Analysis - Custom Style
 // @namespace    Analysis - Custom Style
 // @description  Custom styles for analysis
-// @version      29
+// @version      30
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chess.com
 // @match        https://www.chess.com/analysis*
 // @match        https://www.chess.com/a/*
