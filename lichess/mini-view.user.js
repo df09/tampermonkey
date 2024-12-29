@@ -2,7 +2,7 @@
 // @name         mini-view
 // @namespace    http://tampermonkey.net/
 // @description  try to take over the world!
-// @version      14
+// @version      15
 // @author       You
 // @match        https://lichess.org/opening/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=lichess.org

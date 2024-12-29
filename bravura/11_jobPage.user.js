@@ -2,7 +2,7 @@
 // @name         bc
 // @description  bc
 // @namespace    bc
-// @version      7
+// @version      8
 // @author       anon
 // @match        http://bravura-crm.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
@@ -20,7 +20,6 @@
 
 (function() {
   'use strict';
-  console.log('hi v3');
 
   // ==== load ============================================
   function waitForLoading(variableName, maxAttempts=50, interval=100) {
@@ -44,6 +43,7 @@
     // await waitForLoading('bc_03_menu', 10, 500);
     // window.bc_10_jobPage = true;
     console.log('bc_10_jobPage: loaded.');
+    console.log('hi v8');
     // init menu
     tmMenuAdd();
     getEl(tmMenuStartSelector).addEventListener('click', () => start());
