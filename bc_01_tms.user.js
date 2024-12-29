@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         bc_01_tms 001
+// @name         bc_01_tms
 // @description  bc_01_tms
 // @namespace    bc
 // @version      2024-12-18
