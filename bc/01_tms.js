@@ -82,8 +82,7 @@
       console.log('tmsState: "'+state+'"');
   }
 
-  // ==== load ============================================
-  window.bc_01_tms = true;
+  // ==== exec ============================================
   console.log('bc/01_tms: loaded.');
 })();
 // @version 1

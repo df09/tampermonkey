@@ -8,7 +8,6 @@
   window.tmMenuStartSelector = '#tmmenu-start';
   window.tmMenuContinueSelector = '#tmmenu-continue';
   window.tmMenuAbortSelector = '#tmmenu-abort';
-
   // TODO: сделать мои классические стили
   window.tmMenuAddStyles = function() {
     addStyles(`
@@ -78,7 +77,6 @@
   }
 
   // ==== load ============================================
-  window.bc_03_menu = true;
   console.log('bc/03_menu: loaded.');
 })();
 // @version 1

@@ -82,7 +82,6 @@
     el.parentElement.appendChild(hintContainer);
   }
   // ==== load ============================================
-  window.bc_02_helpers = true;
   console.log('bc/02_helpers: loaded.');
 })();
 // @version 1
