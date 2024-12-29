@@ -1,3 +1,18 @@
+// ==UserScript==
+// @name         bc
+// @description  bc
+// @namespace    bc
+// @version      1
+// @author       anon
+// @match        http://bravura-crm.com/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
+// @grant        none
+// @run-at       document-end
+// @require
+// @require
+// @require
+// ==/UserScript==
+
 (function() {
   'use strict';
 
@@ -18,10 +33,10 @@
       });
   }
   window.addEventListener('load', async () => {
-    await waitForLoading('bc_01_tms', 10, 500);
-    await waitForLoading('bc_02_helpers', 10, 500);
-    await waitForLoading('bc_03_menu', 10, 500);
-    window.bc_10_jobPage = true;
+    // await waitForLoading('bc_01_tms', 10, 500);
+    // await waitForLoading('bc_02_helpers', 10, 500);
+    // await waitForLoading('bc_03_menu', 10, 500);
+    // window.bc_10_jobPage = true;
     console.log('bc_10_jobPage: loaded.');
     // init menu
     tmMenuAdd();
@@ -100,7 +115,7 @@
   function start() {
     // storage
     tmsDeleteAll();
-    tmsState('bravuraCreateBarcodes:start');
+    tmsState('bc:start');
     // get data
     const barcodesData = getBarcodesData(getEl(tmMenuTextareaSelector));
     const jobId = getJobId();
