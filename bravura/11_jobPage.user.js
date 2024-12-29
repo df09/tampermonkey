@@ -15,6 +15,7 @@
 
 (function() {
   'use strict';
+  console.log('hi v1');
 
   // ==== load ============================================
   function waitForLoading(variableName, maxAttempts=50, interval=100) {
