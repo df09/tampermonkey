@@ -1,15 +1,3 @@
-// ==UserScript==
-// @name         bc
-// @namespace    bc
-// @description  bc
-// @version      22
-// @author       anon
-// @match        http://bravura-crm.com/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
-// @grant        none
-// @run-at       document-end
-// ==/UserScript==
-
 (function() {
   'use strict';
 
@@ -98,3 +86,4 @@
   window.bc_01_tms = true;
   console.log('bc/01_tms: loaded.');
 })();
+// @version 1
