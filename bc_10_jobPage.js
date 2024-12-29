@@ -17,7 +17,7 @@
           }, interval);
       });
   }
-  window.onload = async function() {
+  window.addEventListener('load', async () => {
     await waitForLoading('bc_01_tms', 10, 500);
     await waitForLoading('bc_02_helpers', 10, 500);
     await waitForLoading('bc_03_menu', 10, 500);
@@ -26,7 +26,7 @@
     // init menu
     tmMenuAdd();
     getEl(tmMenuStartSelector).addEventListener('click', () => start());
-  }
+  });
 
   // ==== start ============================================
   // TODO: перейти на yaml
