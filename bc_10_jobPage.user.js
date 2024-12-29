@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         bc_10_jobPage
-// @description  bc_10_jobPage upd
+// @description  bc_10_jobPage
 // @namespace    bc
 // @version      2024-12-18
 // @author       anon
@@ -110,7 +110,6 @@
     }
   }
   function start() {
-    console.log('upd?');
     // storage
     tmsDeleteAll();
     tmsState('bravuraCreateBarcodes:start');
