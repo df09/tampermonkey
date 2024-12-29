@@ -14,6 +14,7 @@
   'use strict';
 
   // tms.prefix/serialize/deserialize
+  console.log('v2222');
   const PREFIX = 'tm_';
   function ensurePrefix(key) {
       if (!key.startsWith(PREFIX)) {
