@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         bc
-// @description  bc
-// @namespace    bc
+// @name         bravura_creteBarcodes
+// @description  bravura_creteBarcodes
+// @namespace    bravura_creteBarcodes
 // @version      2024-12-18
 // @author       anon
 // @match        http://bravura-crm.com/*
