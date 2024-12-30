@@ -4,17 +4,17 @@
   // // ==== reports =============================================
   // async function waitForGeneratingReport(timeout = 20000) {
   //   return new Promise((resolve, reject) => {
-  //     const selector = '.modal-dialog h3';
-  //     const targetText = 'Generating Report';
-  //     const checkModal = () => {
-  //       const modal = getEl(selector);
+  //     let selector = '.modal-dialog h3';
+  //     let targetText = 'Generating Report';
+  //     let checkModal = () => {
+  //       let modal = getEl(selector);
   //       // Проверяем, есть ли модальное окно с нужным текстом
   //       if (!modal || modal.textContent.trim() !== targetText) {
   //         resolve(); // Модальное окно отсутствует или текст изменился
   //         return;
   //       }
   //     };
-  //     const observer = new MutationObserver(() => {
+  //     let observer = new MutationObserver(() => {
   //       checkModal();
   //     });
   //     // Проверяем изменения в DOM
@@ -22,7 +22,7 @@
   //     // Тайм-аут для предотвращения бесконечного ожидания
   //     setTimeout(() => {
   //       observer.disconnect();
-  //       reject(stop('waitForGeneratingReport: timeout.'));
+  //       reject(abort('waitForGeneratingReport: timeout.'));
   //     }, timeout);
   //     // Начальная проверка
   //     checkModal();
@@ -31,7 +31,7 @@
 
   // ==== upd measurements ==========================================
   function getOutageDirection(edge) {
-    const outageDirection = '';
+    let outageDirection = '';
     if (edge[0] == "0" && edge[2] == "0") {
       outageDirection = "none";
     } else {
@@ -45,7 +45,7 @@
     return outageDirection;
   }
   function getClickCount(number, outageDirection) {
-    const clickCount = 0;
+    let clickCount = 0;
     if (outageDirection != 'none') {
       if (number == 1) {
         clickCount = outageDirection == 'right' ? 1 : 2; // 1 click - right, 2 click - left
@@ -60,8 +60,8 @@
   }
   function addClickCounterHint(number, clickCount, outageDirectionEl) {
     // Добавляем подсказки
-    const clickCounterId = `click-counter-${number}`;
-    const counterContainer = document.createElement('div');
+    let clickCounterId = `click-counter-${number}`;
+    let counterContainer = document.createElement('div');
     counterContainer.id = clickCounterId;
     counterContainer.style.position = 'absolute';
     counterContainer.style.top = '-10px';
@@ -81,7 +81,7 @@
     outageDirectionEl.parentElement.appendChild(counterContainer);
     // Обработчик кликов
     outageDirectionEl.addEventListener('click', () => {
-      const counter = parseInt(counterContainer.innerText, 10);
+      let counter = parseInt(counterContainer.innerText, 10);
       counter--;
       counterContainer.innerText = counter;
       if (counter == 0) { counterContainer.style.background = 'green'; }
@@ -91,24 +91,24 @@
   async function updMeasurementFields(number, edge, delay) {
     console.log(`updMeasurementFields: number=${number}, edge=${edge}, delay=${delay}`);
     if (edge[0] !== "0" && edge[2] !== "0") {
-      stop('Outage не может быть одновременно с двух сторон.');
+      abort('Outage не может быть одновременно с двух сторон.');
     }
-    const length = edge[1];
-    const outageSize = edge[0] != "0" ? edge[0] : edge[2];
-    const outageDirection = getOutageDirection(edge);
-    const clickCount = getClickCount(number, outageDirection);
+    let length = edge[1];
+    let outageSize = edge[0] != "0" ? edge[0] : edge[2];
+    let outageDirection = getOutageDirection(edge);
+    let clickCount = getClickCount(number, outageDirection);
     // Селекторы для полей
-    const lengthSelector = `div[data-sb-field="content/measurements/${number}/length"] input`;
-    const outageSizeSelector = `div[data-sb-field="content/measurements/${number}/outagePastElbow"] input`;
-    const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+    let lengthSelector = `div[data-sb-field="content/measurements/${number}/length"] input`;
+    let outageSizeSelector = `div[data-sb-field="content/measurements/${number}/outagePastElbow"] input`;
+    let outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
     // Элементы
-    const lengthEl = getEl(lengthSelector);
-    const outageSizeEl = getEl(outageSizeSelector);
-    const outageDirectionEl = getEl(outageDirectionSelector);
+    let lengthEl = getEl(lengthSelector);
+    let outageSizeEl = getEl(outageSizeSelector);
+    let outageDirectionEl = getEl(outageDirectionSelector);
     // Обновляем значения
-    await updElVal(lengthEl, length, delay);
-    await updElVal(outageSizeEl, 0, delay);
-    await updElVal(outageSizeEl, outageSize, delay);
+    await updValEl(lengthEl, length, delay);
+    await updValEl(outageSizeEl, 0, delay);
+    await updValEl(outageSizeEl, outageSize, delay);
     // TODO: await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
     addClickCounterHint(number, clickCount, outageDirectionEl);
     await sleep(delay);
@@ -116,7 +116,7 @@
 
   // ==== save ==========================================
   async function checkModalWarnings() {
-    const modal = document.querySelector('.modal-content .warnings-dialog');
+    let modal = document.querySelector('.modal-content .warnings-dialog');
     // модального окна нет - все хорошо
     if (!modal) { return true; }
     // serious - pause
@@ -124,17 +124,17 @@
       await pause('serious warnings - save manually and continue.');
       return 'manually';
     }
-    // если невозможно сохранить - stop
+    // если невозможно сохранить - abort
     if (modal.classList.contains('fatal')) {
-      stop('save - fatal errors.');
+      abort('save - fatal errors.');
     }
-    // если индетифицировать не удалось - stop
-    stop('save - unknown modal type.');
+    // если индетифицировать не удалось - abort
+    abort('save - unknown modal type.');
   }
   function findReactComponent(dom) {
-    const key = Object.keys(dom).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
+    let key = Object.keys(dom).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
     if (!key) return null;
-    const node = dom[key];
+    let node = dom[key];
     while (node) {
       if (node.memoizedProps && node.memoizedProps.doAction) { return node; }
       node = node.return; // Поднимаемся вверх по дереву
@@ -143,15 +143,15 @@
   }
   async function save(delay) {
     console.log('save..');
-    const selector = '#save-resource';
-    const button = getEl(selector);
-    const reactComponent = findReactComponent(button);
+    let selector = '#save-resource';
+    let button = getEl(selector);
+    let reactComponent = findReactComponent(button);
     if (!reactComponent) {
-      stop('React компонент с doAction не найден!');
+      abort('React компонент с doAction не найден!');
     }
-    const props = reactComponent.memoizedProps;
+    let props = reactComponent.memoizedProps;
     if (!props || !props.doAction) {
-      stop('doAction не найден в memoizedProps!');
+      abort('doAction не найден в memoizedProps!');
     }
     props.doAction(
       () => { console.log('reactComponent: doAction...'); },
@@ -159,7 +159,7 @@
     );
     await sleep(1000);
     // Добавляем проверку на модальное окно
-    const result = await checkModalWarnings();
+    let result = await checkModalWarnings();
     if (result == 'manually') { // если сохранение вручную, сохранять не нужно
       console.log('save: done.');
       return;
@@ -171,28 +171,28 @@
   // ==== upd header ==========================================
   async function updProjectName(projectLocation, delay) {
     console.log('updProjectName..');
-    const projectNameDiv = getEl('div[data-sb-field="content/projectName"]');
-    if (!projectNameDiv) { stop('DIV для "Project Name" не найден.') }
-    const inputEl = projectNameDiv.querySelector('input');
-    if (!inputEl) { stop('Поле ввода в "Project Name" не найдено.'); }
+    let projectNameDiv = getEl('div[data-sb-field="content/projectName"]');
+    if (!projectNameDiv) { abort('DIV для "Project Name" не найден.') }
+    let inputEl = projectNameDiv.querySelector('input');
+    if (!inputEl) { abort('Поле ввода в "Project Name" не найдено.'); }
     // upd value
-    const currentValue = inputEl.value;
+    let currentValue = inputEl.value;
     if (currentValue.startsWith('Clone: ')) { currentValue = currentValue.replace('Clone: ', ''); }
-    const parts = currentValue.split(' - ');
+    let parts = currentValue.split(' - ');
     if (parts.length > 1) { currentValue = parts[0]+' - '+projectLocation; }
-    await updElVal(inputEl, currentValue, delay);
+    await updValEl(inputEl, currentValue, delay);
     console.log('updProjectName: updated to"'+currentValue+'".');
   }
   async function updLocation(projectLocation, delay) {
     console.log('updLocation..');
-    const locationEl = getEl('input[placeholder="Select or enter custom location..."]');
-    if (!locationEl) { stop('Поле для "Location" не найдено.') }
-    await updElVal(locationEl, projectLocation, delay);
+    let locationEl = getEl('input[placeholder="Select or enter custom location..."]');
+    if (!locationEl) { abort('Поле для "Location" не найдено.') }
+    await updValEl(locationEl, projectLocation, delay);
     console.log('updLocation: updated to "'+projectLocation+'".');
   }
   async function updOwner(delay) {
     console.log('updOwner..');
-    await clickEl(getEl('input[placeholder="Select a value..."]'), 1000);
+    await clickEl(getEl('input[placeholder="Select a value..."]'), 3000);
     await clickEl(getEl('[data-sb-option-title="0100200854 User"]'), 1000);
     await sleep(delay);
   }
@@ -200,17 +200,17 @@
   // === data/fetch ===========================================================
   function interceptFetch(urlSubstring, timeout = 20000) {
     return new Promise((resolve, reject) => {
-      const originalFetch = window.fetch;
+      let originalFetch = window.fetch;
       // Переопределяем fetch
       window.fetch = async function (...args) {
         if (args[0].includes(urlSubstring)) {
           console.log('interceptFetch: url - '+args[0]);
           try {
             // Выполняем оригинальный запрос
-            const response = await originalFetch.apply(this, args);
+            let response = await originalFetch.apply(this, args);
             // Клонируем ответ, чтобы прочитать его тело
-            const clonedResponse = response.clone();
-            const data = await clonedResponse.json();
+            let clonedResponse = response.clone();
+            let data = await clonedResponse.json();
             resolve(data);
             return response;
           } catch (error) {
@@ -230,15 +230,15 @@
   }
   function getInputData(textarea) {
     try {
-      const data = {}; // Инициализация объекта
-      const lines = textarea.value.split('\n');
+      let data = {}; // Инициализация объекта
+      let lines = textarea.value.split('\n');
       lines.forEach(line => {
         line = line.trim();
         // Удаляем лишние пробелы
         line = line.replace(/\s+/g, ' ');
         if (!line) return; // Пропускаем пустую строку
         // Разделяем ключ и значение
-        const [key, value] = line.split(':').map(part => part.trim());
+        let [key, value] = line.split(':').map(part => part.trim());
         if (!key || !value) {
           throw new Error('Некорректная строка: "' + line + '".');
         }
@@ -250,65 +250,69 @@
           throw new Error('Некорректный формат данных для "' + key + '": "' + value + '".');
         }
         // Разбираем данные
-        const groups = value.split(/[.;]/).map(group => group.trim());
+        let groups = value.split(/[.;]/).map(group => group.trim());
         data[key] = {};
         groups.forEach((group, index) => {
-          const parts = group.split(/[+ ]/).map(part => part.trim()); // Разделение на части по "+" или пробелу
+          let parts = group.split(/[+ ]/).map(part => part.trim()); // Разделение на части по "+" или пробелу
           data[key][index + 1] = parts;
         });
       });
       return data;
     } catch (error) {
-      stop('Ошибка в данных: ' + error.message);
+      abort('Ошибка в данных: ' + error.message);
     }
   }
   async function start() {
-    // storage
-    tmsDeleteAll();
-    tmsSetState('createBarcodes:start');
     // check start conditions
     if (document.querySelector('#save-resource')) {
-      stop('cancel - please save project before starting.');
+      abort('cancel - please save project before starting.');
     }
     // action
     console.log('run..');
-    getEl(startButtonSelector).style.display = 'none';
-    getEl(continueButtonSelector).style.display = 'none';
-    getEl(stopButtonSelector).style.display = 'block';
+    getEl(tmMenuStartSelector).style.display = 'none';
+    getEl(tmMenuContinueSelector).style.display = 'none';
+    getEl(tmMenuAbortSelector).style.display = 'block';
     // main logic
-    const data = getInputData(textarea);
-    for (const projectLocation in data) {
+    let data = getInputData(getEl(tmMenuTextareaSelector));
+    for (let projectLocation in data) {
       // clone project
       console.log('clone project..');
       await clickEl(getEl('div[aria-label="Clone"]'), 300);
       await clickEl(getEl('div#dropdown-item-clone-all-details'), 0);
-      const fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
-      const projectId = fetchData.result.projectId;
-      const chargeableId = fetchData.result.chargeable.chargeableId;
+      let fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
+      let projectId = fetchData.result.projectId;
+      let chargeableId = fetchData.result.chargeable.chargeableId;
       await sleep(3000);
       // upd header
       await updProjectName(projectLocation, 3000);
       await updLocation(projectLocation, 2000);
-      await updOwner(2000);
+      await updOwner(4000);
       // save
       await save(5000);
       // redirect to measurement-page
-      await redirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid', 8000);
+      await redirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
+      console.log('start sleep after redirect...');
+      await sleep(5000);
+      console.log('finish sleep after redirect...');
       // Update measurements
-      const projectData = data[projectLocation];
-      for (const [number, edge] of Object.entries(projectData)) {
+      //
+      let projectData = data[projectLocation];
+      for (let [number, edge] of Object.entries(projectData)) {
         await updMeasurementFields(number, edge, 2000);
       }
 
-      // TODO TODO TODO
-      // const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
-      // const outageDirectionEl = getEl(outageDirectionSelector);
+      // TODO
+      // let outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+      // let outageDirectionEl = getEl(outageDirectionSelector);
       // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
       await pause('please set outageDirections manually.');
 
       await save(5000);
       // redirect to project-page
-      await redirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId, 8000);
+      await redirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
+      console.log('start sleep after redirect...');
+      await sleep(5000);
+      console.log('finish sleep after redirect...');
 
       // TODO: view multiple reports
       // await clickEl(getEl(viewSelectedSelector), 0);
@@ -316,29 +320,29 @@
       //   .then(() => console.log('waitForGeneratingReport: ok.'))
       //   .catch(error => console.error(error));
       // await sleep(100);
-      // const viewReportSelector = '#view-report [role="button"]';
-      // const multipleReportsSelector = '#dropdown-item-multipleReports';
-      // const viewSelectedSelector = '#sb-slider .multi-report-slider .multi-report-slider-actions button';
-      // const dissmissSelector = '#sb-slider .slider-controls button';
+      // let viewReportSelector = '#view-report [role="button"]';
+      // let multipleReportsSelector = '#dropdown-item-multipleReports';
+      // let viewSelectedSelector = '#sb-slider .multi-report-slider .multi-report-slider-actions button';
+      // let dissmissSelector = '#sb-slider .slider-controls button';
       // await clickEl(getEl(viewReportSelector), 500);
       // await clickEl(getEl(multipleReportsSelector), 500);
       // await clickEl(getEl(dissmissSelector), 500);
       // await pause('please download reports manually.');
     }
-    getEl(startButtonSelector).style.display = 'none';
-    getEl(continueButtonSelector).style.display = 'none';
-    getEl(stopButtonSelector).style.display = 'none';
+    getEl(tmMenuStartSelector).style.display = 'none';
+    getEl(tmMenuContainerSelector).style.display = 'none';
+    getEl(tmMenuAbortSelector).style.display = 'none';
     alert('Done!')
   }
 
   // async function updInputValue(el, newValue, delay) {
-  //   const lastValue = el.value;
+  //   let lastValue = el.value;
   //   el.focus();
   //   el.value = newValue;
   //   // Обновляем значение с учётом React, если _valueTracker существует
-  //   const event = new Event('input', { bubbles: true });
-  //   const changeEvent = new Event('change', { bubbles: true });
-  //   const tracker = el._valueTracker;
+  //   let event = new Event('input', { bubbles: true });
+  //   let changeEvent = new Event('change', { bubbles: true });
+  //   let tracker = el._valueTracker;
   //   if (tracker) {
   //     tracker.setValue(lastValue);
   //   }
@@ -351,18 +355,6 @@
   // }
 
   // === action ============================================
-  // TODO: click - не позволяет работать в других окнах?
-  // TODO: alerts - repalce to modals so its gonna be easear distinct errors and notifications
-  // TODO: если есть 3 точки подряд скипать строку
-  // TODO: stop не работает
-  // TODO:   избавиться от асинхрона?
-  // TODO: multipleReports click
-  // TODO: outageDirection click
-  // TODO: проверять чтобы небыло дубликатов
-  // TODO: сделать чтобы от скорости интернета не зависило а смотрело по факту
-  const startButtonSelector = '#generate-twins-start';
-  const continueButtonSelector = '#generate-twins-continue';
-  const stopButtonSelector = '#generate-twins-stop';
   tmMenuAdd();
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
 })();

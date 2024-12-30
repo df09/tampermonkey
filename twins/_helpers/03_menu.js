@@ -69,13 +69,14 @@
     document.body.appendChild(container);
   }
   // pause
-  window.tmMenuPause = function(msg) {
-    const continueButton = getEl(tmMenuContinueSelector);
+  window.pause = async function(msg) {
+    let continueButton = getEl(tmMenuContinueSelector);
     getEl(tmMenuStartSelector).style.display = 'none';
     getEl(tmMenuAbortSelector).style.display = 'none';
     continueButton.style.display = 'block';
-    alert('tmMenuPause: '+msg);
-    return new Promise(resolve => {
+    await(100);
+    alert('pause: '+msg);
+    await new Promise(resolve => {
       continueButton.onclick = resolve;
     });
   }

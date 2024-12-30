@@ -1,7 +1,47 @@
+%% TODO twins:
+%% TODO   click - не позволяет работать в других окнах?
+%% TODO   alerts - repalce to modals so its gonna be easear distinct errors and notifications
+%% TODO   если есть 3 точки подряд скипать строку
+%% TODO   abort не работает
+%% TODO     избавиться от асинхрона?
+%% TODO   multipleReports click
+%% TODO   outageDirection click
+%% TODO   проверять чтобы небыло дубликатов
+%% TODO   сделать чтобы от скорости интернета не зависило а смотрело по факту
+%% TODO barcodes:
+%% TODO   перейти на yaml
+%% TODO   УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+%% TODO   УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+%% TODO   УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+%% TODO   УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+%% TODO   гарантировать что каждый когда поток заканчиватся ошибкой данные будут очищаться
+%% TODO     даже если не мой exception а стандартный
+%% TODO     предустмотреть другие случаи внезапного завершения потока, если существуют
+%% TODO   Shift+j - go to jobId
+%% TODO   Shift+a - search active jobs
+%% TODO   Shift+i - search inactive jobs
+%% TODO   вместо alert использовать custom modals - ok,note,error - info,y/n
+%% TODO   next:
+%% TODO     добавить меню на все страницы
+%% TODO     добавить кпопку очистить storage
+%% TODO     отображение кнопок должно зависеть от того что в хранилице
+%% TODO     добавить меню с breadcrumbs
+%% TODO       у input должны быть примеры данных
+%% TODO     добавить кнопку пауза
+
 testA1:0+80+0.0+57-9/16+1/8.1/16+80-1/8+0
 testB2:0+80+1/16.0+57-1/2+0.1/16+80+0
 testC3:1/8+80-1/16+0.1/16+57-5/16+0.0+80+0
 
+panl-38cl_door-38cl_panl-12cl:
+  20B6:0+80+1/16.0+57-7/16+0.1/16+80+0
+  20A8:0+80+0.0+57-5/16+1/8.0+80-1/8+0
+  20A9:0+80+0.0+57-9/16+0.1/8+80+0
+panl-12cl_door-38cl_panl-38cl:
+  20A2:0+80+0.0+57-5/8+0.0+80+0
+
+panl-38cl_door-38cl_panl-12cl: 20B6 20A8 20A9
+panl-12cl_door-38cl_panl-38cl: 20A2
 
 
 
