@@ -1,16 +1,6 @@
 (function() {
   'use strict';
 
-  // TODO: перейти на yaml
-  // input:
-  //   panl-12cl_door-38cl_panl-38cl: test_A1 test_B2 test_C3
-  //   panl-38cl_door-38cl_panl-12cl: test_D4 test_E5 test_F6
-  // output: [
-  //   [test_A1, 12cl, panl],
-  //   [test_A1, 38cl, door],
-  //   [test_B2: 12cl, panl],
-  //   ...
-  // ]
   function getBarcodesData(textarea) {
     const result = [];
     const lines = textarea.value.trim().split('\n');
@@ -66,6 +56,16 @@
       abort('getFosId - Error extracting fosId:', error.message);
     }
   }
+  // TODO: перейти на yaml
+  // input:
+  //   panl-12cl_door-38cl_panl-38cl: test_A1 test_B2 test_C3
+  //   panl-38cl_door-38cl_panl-12cl: test_D4 test_E5 test_F6
+  // output: [
+  //   [test_A1, 12cl, panl],
+  //   [test_A1, 38cl, door],
+  //   [test_B2: 12cl, panl],
+  //   ...
+  // ]
   // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
   // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
   // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
@@ -103,7 +103,6 @@
   }
 
   // === action ============================================
-  tmsDeleteAll();
   tmMenuAdd();
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
 })();
