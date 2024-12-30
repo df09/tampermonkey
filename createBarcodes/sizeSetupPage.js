@@ -1,4 +1,4 @@
-(async function() {
+(function() {
   'use strict';
 
   // === action =====================================
@@ -14,8 +14,8 @@
       // redirect sections_detail
       redirect(`http://bravura-crm.com/dashboard/sections_detail?job_id=${jobId}&status=N%2FA`);
     }
+  } else {
+    // === clean ======================================
+    tmsDeleteAll();
   }
-
-  // === save exit ==================================
-  tmsDeleteAll();
 })();

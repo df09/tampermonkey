@@ -66,7 +66,20 @@
       abort('getFosId - Error extracting fosId:', error.message);
     }
   }
-  // TODO: добавить проверку что barcode уже существует
+  // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+  // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+  // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+  // TODO: УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+  // TODO: гарантировать что каждый когда поток заканчиватся ошибкой данные будут очищаться
+  // TODO:   даже если не мой exception а стандартный
+  // TODO:   предустмотреть другие случаи внезапного завершения потока, если существуют
+  // TODO:
+  // TODO: Shift+j - go to jobId
+  // TODO: Shift+a - search active jobs
+  // TODO: Shift+i - search inactive jobs
+  // TODO:
+  // TODO: вместо alert использовать custom modals - ok,note,error - info,y/n
+  // TODO:
   // TODO: next:
   // TODO:   добавить меню на все страницы
   // TODO:   добавить кпопку очистить storage
@@ -89,10 +102,8 @@
     redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/new_product`);
   }
 
-  // === action =====================================
+  // === action ============================================
+  tmsDeleteAll();
   tmMenuAdd();
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
-
-  // === save exit ==================================
-  tmsDeleteAll();
 })();

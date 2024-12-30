@@ -60,8 +60,8 @@
     await updValEl(getEl(numberOfSectionsSelector), 1);
     // redirect to sizeSetupPage
     clickEl(getEl(createFoSelector));
+  } else {
+    // === clean ======================================
+    tmsDeleteAll();
   }
-
-  // === save exit ==================================
-  tmsDeleteAll();
 })();

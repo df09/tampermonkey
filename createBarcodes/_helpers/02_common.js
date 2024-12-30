@@ -56,8 +56,12 @@
     await sleep(delay);
   }
   window.updValEl = async function(el, newVal, delay=100) {
-    const oldVal = el.value; el.value = newVal;
-    console.log('updValEl: "'+oldVal+'" ->" '+newVal+'"', el);
+    const oldVal = el.value;
+    el.value = newVal;
+    console.log('updValEl: "' + oldVal + '" -> "' + newVal + '"', el);
+    // Создаем и вызываем событие change
+    const event = new Event('change', { bubbles: true });
+    el.dispatchEvent(event);
     await sleep(delay);
   }
   // styles
