@@ -13,14 +13,14 @@
   const changeStatusesSelector = '#change_all_section';
   const materialHeaderSelector = 'th[aria-label="Material: activate to sort column ascending"]';
   const barcodesCheckboxSelector = '#select_all_section';
-  const glassMap = {
-    '38cl': '5',
-    '12cl': '1',
-    '38sf': '16',
-    '12sf': '14',
-    '14mr': '4'
-  };
   async function selectProductType(productType, delay) {
+    const glassMap = {
+      '38cl': '5',
+      '12cl': '1',
+      '38sf': '16',
+      '12sf': '14',
+      '14mr': '4'
+    };
     const glassValue = glassMap[productType];
     if (!glassValue) {
       abort(`selectProductType - Unsupported productType type: ${productType}`);
@@ -42,7 +42,7 @@
     return Array.from(options).some(option => option.textContent.trim().toLowerCase() === loc.toLowerCase());
   }
 
-  // TODO: fix buttons menu depend on state
+  // === action =====================================
   if (tmsGetState() === 'createBarcodes:start') {
     // get and upd storage data
     const barcodesData = tmsGet('tm_barcodesData');
@@ -57,14 +57,11 @@
     // createBarcode.productType/productName/numberOfSections
     await selectProductType(productType);
     await updValEl(getEl(productNameSelector), productName);
-    await updValEl(getEl(numberOfSectionsSelector), '1');
+    await updValEl(getEl(numberOfSectionsSelector), 1);
+    // redirect to sizeSetupPage
     clickEl(getEl(createFoSelector));
-    // sections_detail
-    // await redirect(`${baseUrl}/dashboard/sections_detail?job_id=${jobId}&status=N%2FA`);
-    // await updValEl(getEl(perPageSelector), '100', 1000);
-    // await updValEl(getEl(changeStatusesSelector), 'CUT', 1000);
-    // await clickEl(getEl(materialHeaderSelector), 1000);
-    // await clickEl(getEl(barcodesCheckboxSelector), 1000);
-    // alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
   }
+
+  // === save exit ==================================
+  tmsDeleteAll();
 })();

@@ -89,6 +89,10 @@
     redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/new_product`);
   }
 
+  // === action =====================================
   tmMenuAdd();
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
+
+  // === save exit ==================================
+  tmsDeleteAll();
 })();

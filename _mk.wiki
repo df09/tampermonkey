@@ -37,19 +37,3 @@ output: [
   [test_B2: 12cl, panl],
   ...
 ]
-test_A1:
-  - fo: panl
-    glass: 12cl
-  - fo: door
-    glass: 38cl
-  - fo: panl
-    glass: 38cl
-test_B2:
-  - fo: panl
-    glass: 12cl
-  - fo: door
-    glass: 38cl
-  - fo: panl
-    glass: 38cl
-test_C3:
-  ...

@@ -1,6 +1,7 @@
 (async function() {
   'use strict';
 
+  // === action =====================================
   if (tmsGetState() === 'createBarcodes:start') {
     // sections_detail
     abort('todo..');
@@ -15,4 +16,7 @@
     // await clickEl(getEl(barcodesCheckboxSelector), 1000);
     // alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
   }
+
+  // === save exit ==================================
+  tmsDeleteAll();
 })();
