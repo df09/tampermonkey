@@ -1,3 +1,4 @@
+%% TODO добавить крестик - минимизировать меню
 %% TODO twins:
 %% TODO   click - не позволяет работать в других окнах?
 %% TODO   alerts - repalce to modals so its gonna be easear distinct errors and notifications
