@@ -66,6 +66,14 @@
       abort('getFosId - Error extracting fosId:', error.message);
     }
   }
+  // TODO: добавить проверку что barcode уже существует
+  // TODO: next:
+  // TODO:   добавить меню на все страницы
+  // TODO:   добавить кпопку очистить storage
+  // TODO:   отображение кнопок должно зависеть от того что в хранилице
+  // TODO:   добавить меню с breadcrumbs
+  // TODO:     у input должны быть примеры данных
+  // TODO:   добавить кнопку пауза
   function start() {
     // storage
     tmsDeleteAll();
