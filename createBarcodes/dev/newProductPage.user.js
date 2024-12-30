@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         /createBarcodes/dev/jobPage
-// @description  /createBarcodes/dev/jobPage
-// @namespace    /createBarcodes/dev/jobPage
-// @match        http://bravura-crm.com/jobs/*
+// @name         /createBarcodes/dev/newProductPage
+// @description  /createBarcodes/dev/newProductPage
+// @namespace    /createBarcodes/dev/newProductPage
+// @match        http://bravura-crm.com/fabrication_orders/*/new_product
 // @run-at       document-end
 // @version      1
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=glasscompanyny.com
@@ -15,7 +15,7 @@
     '/createBarcodes/_helpers/01_tms.js',
     '/createBarcodes/_helpers/02_common.js',
     '/createBarcodes/_helpers/03_menu.js',
-    '/createBarcodes/jobPage.js'
+    '/createBarcodes/newProductPage.js'
   ];
   async function loadScripts() { for (const file of files) { await new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -27,6 +27,6 @@
   });}}
   window.addEventListener('load', async () => {
     try { await loadScripts(); } catch (error) { console.error(error); }
-    console.log('/createBarcodes/dev/jobPage: loaded');
+    console.log('/createBarcodes/dev/newProductPage: loaded');
   });
 })();

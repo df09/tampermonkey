@@ -10,15 +10,16 @@
   }
   window.abort = function(...args) {
     console.log('abort: init..')
-    const showAlert = typeof args[0] === 'boolean' ? args.shift() : true;
+    tmsDeleteAll(); // clean storage
     // Formulate message
+    const showAlert = typeof args[0] === 'boolean' ? args.shift() : true;
     const msg = 'AbortExecution';
     const joinedArgs = args.map(arg =>
       typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
     ).join(' ');
-    getEl(tmMenuStartSelector).style.display = 'none';
-    getEl(tmMenuContinueSelector).style.display = 'none';
-    getEl(tmMenuAbortSelector).style.display = 'none';
+    // getEl(tmMenuStartSelector).style.display = 'none';
+    // getEl(tmMenuContinueSelector).style.display = 'none';
+    // getEl(tmMenuAbortSelector).style.display = 'none';
     // Show alert
     if (showAlert) {
       alert(joinedArgs ? `${msg}: ${joinedArgs}` : msg);

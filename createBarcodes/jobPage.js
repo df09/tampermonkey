@@ -12,35 +12,32 @@
   //   ...
   // ]
   function getBarcodesData(textarea) {
-    try {
-      const result = [];
-      const lines = textarea.value.trim().split('\n');
-      lines.forEach((line) => {
-        line = line.trim();
-        line = line.replace(/\s+/g, ' ');
-        if (!line) return;
-        const [locParams, locs] = line.split(':').map((part) => part.trim());
-        if (!locParams || !locs) {
-          throw new Error(`Некорректная строка: "${line}"`);
+    const result = [];
+    const lines = textarea.value.trim().split('\n');
+    lines.forEach((line) => {
+      line = line.trim();
+      line = line.replace(/\s+/g, ' ');
+      if (!line) return;
+      const [locParams, locs] = line.split(':').map((part) => part.trim());
+      if (!locParams || !locs) {
+        throw new Error(`Некорректная строка: "${line}"`);
+      }
+      const foParams = locParams.split('_').map((pair) => {
+        const [fo, glass] = pair.split('-');
+        if (!fo || !glass) {
+          throw new Error(`Некорректная пара: "${pair}"`);
         }
-        const foParams = locParams.split('_').map((pair) => {
-          const [fo, glass] = pair.split('-');
-          if (!fo || !glass) {
-            throw new Error(`Некорректная пара: "${pair}"`);
-          }
-          return { fo, glass };
-        });
-        locs.split(' ').forEach((loc) => {
-          foParams.forEach(({ fo, glass }) => {
-            result.push(`${loc}, ${glass}, ${fo}`);
-          });
+        return { fo, glass };
+      });
+      locs.split(' ').forEach((loc) => {
+        foParams.forEach(({ fo, glass }) => {
+          console.log(loc, glass, fo)
+          result.push([loc, glass, fo]);
         });
       });
-      console.log('Formatted Data:', result);
-      return result;
-    } catch (error) {
-      console.error('Ошибка при обработке данных:', error.message);
-    }
+    });
+    console.log('Formatted Data:', result);
+    return result;
   }
   function getJobId() {
     try {
@@ -72,15 +69,15 @@
   function start() {
     // storage
     tmsDeleteAll();
-    tmsState('createBarcodes:start');
+    tmsSetState('createBarcodes:start');
     // get data
     const barcodesData = getBarcodesData(getEl(tmMenuTextareaSelector));
     const jobId = getJobId();
     const fosId = getFosId();
-    sessionStorage.setItem('tm_barcodesData', barcodesData);
-    sessionStorage.setItem('tm_jobId', jobId);
-    sessionStorage.setItem('tm_fosId', fosId);
-    // proceed
+    tmsSet('tm_barcodesData', barcodesData);
+    tmsSet('tm_jobId', jobId);
+    tmsSet('tm_fosId', fosId);
+    // redirect
     redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/new_product`);
   }
 

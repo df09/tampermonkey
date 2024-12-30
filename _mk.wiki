@@ -29,8 +29,8 @@ test_B2: 1+81+0.1+61+0.1+80+0
 test_A1: 0+80+0.0+60+0.0+80+0
 test_C3: 0+80+1.0+61+1.0+81+1
 input:
-  panl-12cl_door-38cl_panl-38cl: test_A1 test_B2 test_C3
-  panl-38cl_door-38cl_panl-12cl: test_D4 test_E5 test_F6
+  panl-12cl_door-38cl_panl-38cl: test_A1 test_B2
+  panl-38cl_door-38cl_panl-12cl: test_C3 test_D4 test_E5
 output: [
   [test_A1, 12cl, panl],
   [test_A1, 38cl, door],

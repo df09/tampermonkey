@@ -1,8 +1,5 @@
-(function() {
+(async function() {
   'use strict';
-
-  // ==== load ============================================
-  console.log('bc/12_newProduct: loaded.');
 
   // ==== start ============================================
   const existedRoomSelector = '#product_room_id';
@@ -10,7 +7,7 @@
   const newRoomSelector = '#product_room_name';
   const productTypeSelector = '#product_product_type_id';
   const productNameSelector = '#product_name';
-  const numbersOfFoSelector = '#product_sections';
+  const numberOfSectionsSelector = '#product_sections';
   const createFoSelector = '#createEditProductModalSaveButton';
   const perPageSelector = '#dashboard_datatable_length select';
   const changeStatusesSelector = '#change_all_section';
@@ -23,9 +20,13 @@
     '12sf': '14',
     '14mr': '4'
   };
-  function roomExists(loc) {
-    const options = getElAll(existedRoomOptionSelector);
-    return Array.from(options).some(option => option.textContent.trim().toLowerCase() === loc.toLowerCase());
+  async function selectProductType(productType, delay) {
+    const glassValue = glassMap[productType];
+    if (!glassValue) {
+      abort(`selectProductType - Unsupported productType type: ${productType}`);
+    }
+    await updValEl(getEl(productTypeSelector), glassValue, delay);
+    console.log('selectProductType:', productType);
   }
   async function selectExistingRoom(loc, delay) {
     const existedRoomEl = getEl(existedRoomSelector);
@@ -36,44 +37,34 @@
     await updValEl(existedRoomEl, matchingOption.value, delay);
     console.log('selectExistingRoom:', loc);
   }
-  async function selectProductType(glass, delay) {
-    const glassValue = glassMap[glass];
-    if (!glassValue) {
-      abort(`selectProductType - Unsupported glass type: ${glass}`);
-    }
-    await updValEl(getEl(productTypeSelector), glassValue, delay);
-    console.log('selectProductType:', glass);
+  function roomExists(loc) {
+    const options = getElAll(existedRoomOptionSelector);
+    return Array.from(options).some(option => option.textContent.trim().toLowerCase() === loc.toLowerCase());
   }
 
-  async function proceedNewPeoduct() {
-            for (const [loc, glasses] of Object.entries(barcodesData)) {
-              for (const glassParams of glasses) {
-                redirect(`${baseUrl}/fabrication_orders/${fosId}/new_product`);
-              }
-            }
-            // await redirect(`${baseUrl}/dashboard/sections_detail?job_id=${jobId}&status=N%2FA`);
-            // await updValEl(getEl(perPageSelector), '100', 1000);
-            // await updValEl(getEl(changeStatusesSelector), 'CUT', 1000);
-            // await clickEl(getEl(materialHeaderSelector), 1000);
-            // await clickEl(getEl(barcodesCheckboxSelector), 1000);
-            // alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
-    // get gata from storage
-    const storage = JSON.parse(sessionStorage.getItem('tm_new_product'));
-    const loc = storage.loc;
-    const glassParams = storage.glassParams;
-    sessionStorage.removeItem('tm_new_product');
-    // proceed
+  // TODO: fix buttons menu depend on state
+  if (tmsGetState() === 'createBarcodes:start') {
+    // get and upd storage data
+    const barcodesData = tmsGet('tm_barcodesData');
+    const [loc, productType, productName] = barcodesData.shift();
+    tmsSet('tm_barcodesData', barcodesData);
+    // createBarcode.room
     if (roomExists(loc)) {
-      await selectExistingRoom(loc, 1000);
+      await selectExistingRoom(loc);
     } else {
-      await updValEl(getEl(newRoomSelector), loc, 1000);
+      await updValEl(getEl(newRoomSelector), loc);
     }
-    await selectProductType(glassParams.glass, 1000);
-    await updValEl(getEl(productNameSelector), glassParams.fo, 1000);
-    await updValEl(getEl(numbersOfFoSelector), '1', 1000);
-    await sleep(3000);
-    abort('todo..');
-    await sleep(3000);
-    await clickEl(getEl(createFoSelector), 1000);
+    // createBarcode.productType/productName/numberOfSections
+    await selectProductType(productType);
+    await updValEl(getEl(productNameSelector), productName);
+    await updValEl(getEl(numberOfSectionsSelector), '1');
+    clickEl(getEl(createFoSelector));
+    // sections_detail
+    // await redirect(`${baseUrl}/dashboard/sections_detail?job_id=${jobId}&status=N%2FA`);
+    // await updValEl(getEl(perPageSelector), '100', 1000);
+    // await updValEl(getEl(changeStatusesSelector), 'CUT', 1000);
+    // await clickEl(getEl(materialHeaderSelector), 1000);
+    // await clickEl(getEl(barcodesCheckboxSelector), 1000);
+    // alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
   }
 })();

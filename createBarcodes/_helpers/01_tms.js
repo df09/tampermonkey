@@ -77,8 +77,11 @@
       console.log(`tmsDeleteAll: All keys with prefix '${PREFIX}' were deleted`);
   }
   // state
-  window.tmsState = function(state) {
+  window.tmsSetState = function(state) {
       tmsSet('tm_state', state);
       console.log('tmsState: "tm_state: '+state+'".');
+  }
+  window.tmsGetState = function() {
+      return tmsGet('tm_state');
   }
 })();

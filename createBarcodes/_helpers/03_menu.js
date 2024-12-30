@@ -11,12 +11,16 @@
   // TODO: сделать мои классические стили
   window.tmMenuAddStyles = function() {
     addStyles(`
-      ${tmMenuContainerSelector} { z-index: 99999; font-family: monospace; position: fixed; bottom: 10px; right: 10px; background-color: white; border: 1px solid #ccc; padding: 10px; z-index: 1000; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); }
-      ${tmMenuTextareaSelector}  { width: 300px; height: 150px; margin-bottom: 10px; }
+      ${tmMenuContainerSelector} {
+        z-index: 99999; font-family: monospace;
+        position: fixed; bottom: 10px; right: 10px; padding: 10px;
+        background-color: white; border: 1px solid #ccc; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      ${tmMenuTextareaSelector}  { width: 500px; height: 150px; margin-bottom: 10px; }
       ${tmMenuContainerSelector} button { display: block; width: 100%; padding: 5px; }
       ${tmMenuStartSelector}     { background-color: green; color: white; }
       ${tmMenuContinueSelector}  { background-color: yellow; color: black; display: none; }
-      ${tmMenuAbortSelector}      { background-color: red; color: white; display: none; }
+      ${tmMenuAbortSelector}     { background-color: red; color: white; display: none; }
     `);
   }
   window.tmMenuAdd = function() {
@@ -75,8 +79,4 @@
       continueButton.onclick = resolve;
     });
   }
-
-  // ==== load ============================================
-  console.log('bc/03_menu: loaded.');
 })();
-// @version 1
