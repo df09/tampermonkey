@@ -2,7 +2,6 @@
   'use strict';
 
   // ==== menu ============================================
-  window.tmMenuTitle = 'Create barcodes';
   window.tmMenuContainerSelector = '#tmmenu-container';
   window.tmMenuTextareaSelector = '#tmmenu-textarea';
   window.tmMenuStartSelector = '#tmmenu-start';
@@ -23,7 +22,7 @@
       ${tmMenuAbortSelector}     { background-color: red; color: white; display: none; }
     `);
   }
-  window.tmMenuAdd = function() {
+  window.tmMenuAdd = function(startButtonTitle) {
     // vars
     const container = document.createElement('div');
     const textarea = document.createElement('textarea');
@@ -35,7 +34,7 @@
     textarea.id = tmMenuTextareaSelector.replace('#', ''); // textarea
     // start
     startButton.id = tmMenuStartSelector.replace('#', '');
-    startButton.textContent = tmMenuTitle;
+    startButton.textContent = startButtonTitle;
     startButton.style.display = 'block';
     startButton.addEventListener('click', () => {
       startButton.style.display = 'none';
@@ -69,13 +68,14 @@
     document.body.appendChild(container);
   }
   // pause
-  window.tmMenuPause = function(msg) {
+  window.tmMenuPause = async function(msg) {
     const continueButton = getEl(tmMenuContinueSelector);
     getEl(tmMenuStartSelector).style.display = 'none';
     getEl(tmMenuAbortSelector).style.display = 'none';
     continueButton.style.display = 'block';
+    await sleep(100);
     alert('tmMenuPause: '+msg);
-    return new Promise(resolve => {
+    await new Promise(resolve => {
       continueButton.onclick = resolve;
     });
   }

@@ -111,7 +111,6 @@
     await updValEl(outageSizeEl, outageSize, delay);
     // TODO: await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
     addClickCounterHint(number, clickCount, outageDirectionEl);
-    await sleep(delay);
   }
 
   // ==== save ==========================================
@@ -119,15 +118,13 @@
     let modal = document.querySelector('.modal-content .warnings-dialog');
     // модального окна нет - все хорошо
     if (!modal) { return true; }
-    // serious - pause
+    // serious - tmMenuPause
     if (modal.classList.contains('serious')) {
-      await pause('serious warnings - save manually and continue.');
+      await tmMenuPause('serious warnings - save manually and continue.');
       return 'manually';
     }
     // если невозможно сохранить - abort
-    if (modal.classList.contains('fatal')) {
-      abort('save - fatal errors.');
-    }
+    if (modal.classList.contains('fatal')) { abort('save - fatal errors.'); }
     // если индетифицировать не удалось - abort
     abort('save - unknown modal type.');
   }
@@ -285,34 +282,25 @@
       await sleep(3000);
       // upd header
       await updProjectName(projectLocation, 3000);
-      await updLocation(projectLocation, 2000);
+      await updLocation(projectLocation, 300);
       await updOwner(4000);
-      // save
       await save(5000);
-      // redirect to measurement-page
-      await redirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
-      console.log('start sleep after redirect...');
-      await sleep(5000);
-      console.log('finish sleep after redirect...');
-      // Update measurements
-      //
+
+      // measurement grid page
+      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
       let projectData = data[projectLocation];
       for (let [number, edge] of Object.entries(projectData)) {
-        await updMeasurementFields(number, edge, 2000);
+        await updMeasurementFields(number, edge, 1000);
       }
-
       // TODO
       // let outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
       // let outageDirectionEl = getEl(outageDirectionSelector);
       // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
-      await pause('please set outageDirections manually.');
-
+      await tmMenuPause('please set outageDirections manually.');
       await save(5000);
-      // redirect to project-page
-      await redirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
-      console.log('start sleep after redirect...');
-      await sleep(5000);
-      console.log('finish sleep after redirect...');
+
+      // project page
+      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
 
       // TODO: view multiple reports
       // await clickEl(getEl(viewSelectedSelector), 0);
@@ -327,7 +315,7 @@
       // await clickEl(getEl(viewReportSelector), 500);
       // await clickEl(getEl(multipleReportsSelector), 500);
       // await clickEl(getEl(dissmissSelector), 500);
-      // await pause('please download reports manually.');
+      // await tmMenuPause('please download reports manually.');
     }
     getEl(tmMenuStartSelector).style.display = 'none';
     getEl(tmMenuContainerSelector).style.display = 'none';
@@ -355,6 +343,6 @@
   // }
 
   // === action ============================================
-  tmMenuAdd();
+  tmMenuAdd('Generate twins');
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
 })();

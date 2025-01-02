@@ -81,6 +81,6 @@
   }
 
   // === action ============================================
-  tmMenuAdd();
+  tmMenuAdd('Create barcodes');
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
 })();

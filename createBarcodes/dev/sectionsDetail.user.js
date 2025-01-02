@@ -12,9 +12,9 @@
 (function(){'use strict';
   const host = 'http://localhost:9876';
   const files = [
-    '/createBarcodes/_helpers/01_tms.js',
-    '/createBarcodes/_helpers/02_common.js',
-    '/createBarcodes/_helpers/03_menu.js',
+    '/_helpers/01_tms.js',
+    '/_helpers/02_common.js',
+    '/_helpers/03_menu.js',
     '/createBarcodes/sectionsDetail.js'
   ];
   async function loadScripts() { for (const file of files) { await new Promise((resolve, reject) => {

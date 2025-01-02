@@ -3,9 +3,9 @@
 // @description  /createBarcodes/prod/newProductPage
 // @namespace    /createBarcodes/prod/newProductPage
 // @match        http://bravura-crm.com/fabrication_orders/*/new_product
-// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/createBarcodes/_helpers/01_tms.js
-// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/createBarcodes/_helpers/02_common.js
-// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/createBarcodes/_helpers/03_menu.js
+// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/01_tms.js
+// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/02_common.js
+// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/03_menu.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/createBarcodes/newProductPage.js
 // @run-at       document-end
 // @version      1

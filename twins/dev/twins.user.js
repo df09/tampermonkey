@@ -12,9 +12,9 @@
 (function(){'use strict';
   const host = 'http://localhost:9876';
   const files = [
-    '/twins/_helpers/01_tms.js',
-    '/twins/_helpers/02_common.js',
-    '/twins/_helpers/03_menu.js',
+    '/_helpers/01_tms.js',
+    '/_helpers/02_common.js',
+    '/_helpers/03_menu.js',
     '/twins/twins.js'
   ];
   async function loadScripts() { for (const file of files) { await new Promise((resolve, reject) => {

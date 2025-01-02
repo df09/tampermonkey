@@ -33,16 +33,14 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
   // redirect
-  // window.redirect = function(newUrl) {
-  //   console.log('redirect("'+newUrl+'")');
-  //   window.location.href = newUrl; // Выполняем редирект
-  // }
-  window.redirect = async function(newUrl, delay = 0) {
-    console.log('redirect("' + newUrl + '")');
-    if (delay > 0) {
-      await new Promise(resolve => setTimeout(resolve, delay)); // Ждём указанную задержку
-    }
+  window.redirect = function(newUrl) {
+    console.log('redirect: "'+newUrl+'"');
     window.location.href = newUrl; // Выполняем редирект
+  }
+  window.fakeRedirect = async function(newUrl, delay=3000) {
+    console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');
+    window.location.href = newUrl; // Выполняем редирект
+    await sleep(delay);
   };
   // DOM-manipulations
   window.getEl = function(selector) {
