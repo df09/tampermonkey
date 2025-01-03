@@ -3,7 +3,7 @@
 // @description  /createBarcodes/prod/sizeSetupPage
 // @namespace    /createBarcodes/prod/sizeSetupPage
 // @match        http://bravura-crm.com/fabrication_orders/*/rooms/*/products/*/product_sections/size_index
-// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/01_tms.js
+// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/01_storage.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/02_common.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/03_menu.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/createBarcodes/sizeSetupPage.js

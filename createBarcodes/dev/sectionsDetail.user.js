@@ -12,7 +12,7 @@
 (function(){'use strict';
   const host = 'http://localhost:9876';
   const files = [
-    '/_helpers/01_tms.js',
+    '/_helpers/01_storage.js',
     '/_helpers/02_common.js',
     '/_helpers/03_menu.js',
     '/createBarcodes/sectionsDetail.js'

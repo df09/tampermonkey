@@ -1,5 +1,10 @@
+%% TODO crl - закупка hw
+%% TODO crl - забрать hw
 %% TODO добавить крестик - минимизировать меню
 %% TODO twins:
+%% TODO   запоминать textarea
+%% TODO   abort не работает.
+%% TODO   проверка чтобы project name был в правильном формате, с дефисом
 %% TODO   click - не позволяет работать в других окнах?
 %% TODO   alerts - repalce to modals so its gonna be easear distinct errors and notifications
 %% TODO   если есть 3 точки подряд скипать строку
