@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         /twins/prod/twins
-// @description  /twins/prod/twins
-// @namespace    /twins/prod/twins
+// @name         /crl/prod/orderHw
+// @description  /crl/prod/orderHw
+// @namespace    /crl/prod/orderHw
 // @match        http://bravura-crm.com/jobs?filter=all
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/01_storage.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/02_common.js

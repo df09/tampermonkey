@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         /twins/dev/twins
-// @description  /twins/dev/twins
-// @namespace    /twins/dev/twins
+// @name         /crl/dev/orderHw
+// @description  /crl/dev/orderHw
+// @namespace    /crl/dev/orderHw
 // @match        http://bravura-crm.com/jobs?filter=all
 // @run-at       document-end
 // @version      1
