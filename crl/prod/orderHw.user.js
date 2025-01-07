@@ -13,4 +13,4 @@
 // @grant        none
 // @author       anon
 // ==/UserScript==
-(function(){'use strict';window.addEventListener('load',async()=>{console.log('/twins/prod/twins: loaded');});})();
+(function(){'use strict';window.addEventListener('load',async()=>{console.log('/crl/prod/orderHw: loaded');});})();
