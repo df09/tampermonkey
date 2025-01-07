@@ -26,7 +26,7 @@
   // set
   window.tmsSet = function(key, value) {
     key = ensurePrefix(key);
-    sessionStorage.setItem(key, serialize(value));
+    localStorage.setItem(key, serialize(value));
     console.log(`tmsSet: Key '${key}' was set to`, value);
   }
   window.tmsSetMulti = function(data) {
@@ -36,7 +36,7 @@
   // get
   window.tmsGet = function(key, defaultValue) {
     key = ensurePrefix(key);
-    const storedValue = sessionStorage.getItem(key);
+    const storedValue = localStorage.getItem(key);
     if (storedValue === null) {
       return defaultValue;
     }
@@ -57,14 +57,14 @@
     return result;
   }
   window.tmsGetAll = function() {
-    const keys = Object.keys(sessionStorage).filter(key => key.startsWith(PREFIX));
+    const keys = Object.keys(localStorage).filter(key => key.startsWith(PREFIX));
     console.log(`tmsGetAll: Listed keys`, keys);
     return keys;
   }
   // delete
   window.tmsDelete = function(key) {
     key = ensurePrefix(key);
-    sessionStorage.removeItem(key);
+    localStorage.removeItem(key);
     console.log(`tmsDelete: Key '${key}' was deleted`);
   }
   window.tmsDeleteMulti = function(keys) {
@@ -73,7 +73,7 @@
   }
   window.tmsDeleteAll = function() {
     const keys = tmsGetAll();
-    keys.forEach(key => sessionStorage.removeItem(key));
+    keys.forEach(key => localStorage.removeItem(key));
     console.log(`tmsDeleteAll: All keys with prefix '${PREFIX}' were deleted`);
   }
   window.tmsReset = function() {

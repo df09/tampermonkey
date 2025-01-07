@@ -34,10 +34,8 @@
     // storage
     tmsReset();
     tmsSetState('orderHw:start');
-    const hwData = getHWData(getEl(tmMenuTextareaSelector)); // data
+    const hwData = getHwData(getEl(tmMenuTextareaSelector)); // data
     redirect('https://www.crlaurence.com/login'); // login
-    await updValEl(getEl('#j_username'), tmsRequest('tm_keep_crlLogin'));
-    await updValEl(getEl('#jpassword'), tmsReset('tm_keep_crlPassword'));
     // TODO: if creds incorrect
     
     // for product in products:
@@ -48,10 +46,10 @@
     // continue
     // done. there is NA-list. press place order
     // add comment to CRM
-    tmsReset();
   }
 
   // === action ============================================
+  tmsReset();
   tmMenuAdd('Order hw');
   getEl(tmMenuStartSelector).addEventListener('click', () => start());
 })();
