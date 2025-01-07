@@ -27,6 +27,6 @@
   });}}
   window.addEventListener('load', async () => {
     try { await loadScripts(); } catch (error) { console.error(error); }
-    console.log('/twins/dev/twins: loaded');
+    console.log('/crl/dev/orderHw: loaded');
   });
 })();
