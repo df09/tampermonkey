@@ -44,12 +44,12 @@
     // textarea
     textarea.id = tmMenuTextareaSelector.replace('#', '');
     textarea.spellcheck = false;
-    textarea.value = tmsGet('tm_menuTextareaValue', tmMenuTextareaDefValue);
-    textarea.style.width = tmsGet('tm_menuTextareaWidth', tmMenuTextareaDefWidth);
-    textarea.style.height = tmsGet('tm_menuTextareaHeight', tmMenuTextareaDefHeight);
+    textarea.value = tmsGet('tm_keep_menuTextareaValue', tmMenuTextareaDefValue);
+    textarea.style.width = tmsGet('tm_keep_menuTextareaWidth', tmMenuTextareaDefWidth);
+    textarea.style.height = tmsGet('tm_keep_menuTextareaHeight', tmMenuTextareaDefHeight);
     let isResizing = false;
     let startX, startY, startWidth, startHeight;
-    textarea.addEventListener('input', () => { tmsSet('tm_menuTextareaValue', textarea.value); });
+    textarea.addEventListener('input', () => { tmsSet('tm_keep_menuTextareaValue', textarea.value); });
     textarea.addEventListener("mousedown", (e) => {
       if (e.button !== 0) return; // Только левая кнопка мыши
       isResizing = true; startX = e.clientX; startY = e.clientY;
@@ -68,8 +68,8 @@
         isResizing = false;
         document.body.style.userSelect = "";
         // Сохраняем размеры в локальное хранилище
-        tmsSet('tm_menuTextareaWidth', textarea.style.width);
-        tmsSet('tm_menuTextareaHeight', textarea.style.height);
+        tmsSet('tm_keep_menuTextareaWidth', textarea.style.width);
+        tmsSet('tm_keep_menuTextareaHeight', textarea.style.height);
       }
     });
     // start
