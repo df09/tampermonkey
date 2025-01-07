@@ -67,7 +67,7 @@
   }
   function start() {
     // storage
-    tmsDeleteAll();
+    tmsReset();
     tmsSetState('createBarcodes:start');
     // get data
     const barcodesData = getBarcodesData(getEl(tmMenuTextareaSelector));

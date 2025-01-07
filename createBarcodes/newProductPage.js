@@ -62,6 +62,6 @@
     clickEl(getEl(createFoSelector));
   } else {
     // === clean ======================================
-    tmsDeleteAll();
+    tmsReset();
   }
 })();

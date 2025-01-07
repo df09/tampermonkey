@@ -13,10 +13,10 @@
     await clickEl(getEl(materialHeaderSelector), 300);
     await clickEl(getEl(barcodesCheckboxSelector), 300);
     // === done ======================================
-    tmsDeleteAll();
+    tmsReset();
     alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
   } else {
     // === clean ======================================
-    tmsDeleteAll();
+    tmsReset();
   }
 })();

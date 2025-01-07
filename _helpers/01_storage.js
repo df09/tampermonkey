@@ -76,6 +76,16 @@
       keys.forEach(key => sessionStorage.removeItem(key));
       console.log(`tmsDeleteAll: All keys with prefix '${PREFIX}' were deleted`);
   }
+  window.tmsReset = function() {
+    const keysToKeep = [
+      'tm_menuTextareaValue',
+      'tm_menuTextareaWidth',
+      'tm_menuTextareaHeight'
+    ];
+    const keys = tmsGetAll();
+    keys.forEach(key => { if (!keysToKeep.includes(key)) { tmsDelete(key); } });
+    console.log('tmsReset: done');
+  }
   // state
   window.tmsSetState = function(state) {
       tmsSet('tm_state', state);
