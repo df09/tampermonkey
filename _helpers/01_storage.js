@@ -5,9 +5,8 @@
   const PREFIX = 'tm_';
   function ensurePrefix(key) {
     if (!key.startsWith(PREFIX)) {
-      msg = `Key must start with '${PREFIX}': ${key}`;
-      alert(msg);
-      throw new Error(msg);
+      const msg = `Key must start with '${PREFIX}': ${key}`;
+      alert(msg); throw new Error(msg);
     }
     return key;
   }
@@ -21,7 +20,8 @@
     if (type === 'object') return value;
     if (type === 'string') return String(value);
     if (type === 'undefined') return undefined;
-    throw new Error(`Unsupported data type: ${type}`);
+    const msg = `Unsupported data type: ${type}`);
+    alert(msg); throw new Error(msg);
   }
   // set
   window.tmsSet = function(key, value) {
@@ -81,14 +81,20 @@
     keys.forEach(key=>{if(!key.startsWith('tm_keep_')){tmsDelete(key);}});
     console.log('tmsReset: done');
   };
-  // state
-  window.tmsSetState = function(state) {
-    tmsSet('tm_state', state);
-    console.log('tmsState: "tm_state: '+state+'".');
-  }
-  window.tmsGetState = function() {
-    return tmsGet('tm_state');
-  }
+  // operation:action.step
+  window.tmsSetOperation = function(operation) {
+      const operationFormat = /^[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+$/;
+      if (!operationFormat.test(operation)) {
+          const msg = 'Invalid operation ('+operation+'). must be "<action>.<step>" without spaces.';
+          alert(msg); throw new Error(msg);
+      }
+      const [action, step] = operation.split('.');
+      tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
+      console.log('tmsSetOperation: "'+operation+'".');
+  };
+  window.tmsGetOperation = function() { return tmsGet('tm_operation'); };
+  window.tmsGetAction = function() { return tmsGet('tm_action'); };
+  window.tmsGetStep = function() { return tmsGet('tm_step'); };
   // request
   window.tmsRequest = async function(key) {
       let result = tmsGet(key);
@@ -100,7 +106,7 @@
           let input = document.createElement("input");
           input.type = "text";
           input.placeholder = `Введите значение для ${key}`;
-          
+
           let dialog = document.createElement("div");
           dialog.style.position = "fixed";
           dialog.style.top = "50%";

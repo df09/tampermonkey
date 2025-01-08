@@ -12,6 +12,16 @@
   window.tmMenuAbortSelector = '#tmmenu-abort';
   window.tmMenuMinimizeSelector = '#tmmenu-minimize';
   // TODO: сделать мои классические стили
+  window.tmMenuInit = function() {
+  }
+  window.tmMenuAdd = function(type, selector, label, action) {
+      const button = document.createElement(type);
+      button.textContent = label;
+      button.id = selector.replace('#', '');
+
+      getEl(selector).addEventListener('click', action);
+      document.body.appendChild(button); // Или другой контейнер, где размещается меню.
+  }
   window.tmMenuAdd = function(startButtonTitle) {
     const container = document.createElement('div');
     const textarea = document.createElement('textarea');
