@@ -1,19 +1,23 @@
 // ==UserScript==
-// @name         youtube.com/dev
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=www.youtube.com
-// @match        https://www.youtube.com/*
+// @name         bravura-crm.com/dev
+// @icon         https://www.google.com/s2/favicons?domain=www.glasscompanyny.com&sz=64
+// @match        http://bravura-crm.com/*
 // @run-at       document-end
 // ==/UserScript==
 (function(){'use strict';
   // >>> data >>>>>>>>>>>
   const host = 'http://localhost:9876';
-  const entrypoint = 'youtube.com/dev';
+  const entrypoint = 'bravura-crm.com/dev';
   const files = [
-    '/_helpers/01_storage.js',
-    '/_helpers/02_common.js',
-    '/_helpers/03_menu.js',
-    '/youtube.com/actions/login.js'
-    '/youtube.com/main.js'
+    '/_helpers/01_common.js',
+    '/_helpers/02_storage.js',
+    '/_helpers/03_ui.js',
+    '/bravura-crm.com/createBarcodes/job.js'
+    '/bravura-crm.com/createBarcodes/newProduct.js'
+    '/bravura-crm.com/createBarcodes/sizeSetup.js'
+    '/bravura-crm.com/createBarcodes/sectionsDetail.js'
+    '/bravura-crm.com/go2jobByjobId/start.js'
+    '/bravura-crm.com/main.js'
   ];
   // === loader =========
   async function tmLoader(){for(const file of files){await new Promise((r,j)=>{

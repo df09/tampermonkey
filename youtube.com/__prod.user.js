@@ -9,4 +9,4 @@
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/youtube.com/_main.js
 // @run-at       document-end
 // ==/UserScript==
-(()=>{'use strict';let d='youtube.com';addEventListener('load',()=>console.log(d+'/prod: loaded'));})();
+(()=>{'use strict';const i='youtube.com/prod';window.addEventListener('load',async ()=>console.log(i+': loaded'));})();

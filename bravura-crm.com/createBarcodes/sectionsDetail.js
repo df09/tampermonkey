@@ -1,9 +1,4 @@
-(async function() {
-  'use strict';
-
-  // === action =====================================
-  if (tmsGetState() === 'createBarcodes:start') {
-    // sections_detail
+async function createBarcodesSectionsDetail() {
     const perPageSelector = '#dashboard_datatable_length select';
     const changeStatusesSelector = '#change_all_section';
     const materialHeaderSelector = 'th[aria-label="Material: activate to sort column ascending"]';
@@ -15,8 +10,4 @@
     // === done ======================================
     tmsReset();
     alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
-  } else {
-    // === clean ======================================
-    tmsReset();
-  }
-})();
+}
