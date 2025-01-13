@@ -8,22 +8,24 @@
   // >>> data >>>>>>>>>>>
   const host = 'http://localhost:9876';
   const entrypoint = 'bravura-crm.com/dev';
-  const files = [
-    '/_helpers/01_common.js',
-    '/_helpers/02_storage.js',
-    '/_helpers/03_ui.js',
-    '/bravura-crm.com/createBarcodes/job.js'
-    '/bravura-crm.com/createBarcodes/newProduct.js'
-    '/bravura-crm.com/createBarcodes/sizeSetup.js'
-    '/bravura-crm.com/createBarcodes/sectionsDetail.js'
-    '/bravura-crm.com/go2jobByjobId/start.js'
-    '/bravura-crm.com/main.js'
+  const filesJs = [
+    '/_helpers/common.js',
+    '/_helpers/css/main.js',
+    '/_helpers/html/main.js',
+    '/_helpers/storage.js',
+    '/_helpers/ui.js',
+    '/bravura-crm.com/createBarcodes/job.js',
+    '/bravura-crm.com/createBarcodes/newProduct.js',
+    '/bravura-crm.com/createBarcodes/sizeSetup.js',
+    '/bravura-crm.com/createBarcodes/sectionsDetail.js',
+    '/bravura-crm.com/go2jobByjobId/start.js',
+    '/bravura-crm.com/main.js',
   ];
   // === loader =========
-  async function tmLoader(){for(const file of files){await new Promise((r,j)=>{
-    const s=document.createElement('script');s.async=false; // Гарантирует последовательное выполнение
-    s.src=host+file;s.onload=()=>{console.log('tmLoader: '+s.src);r();};s.onerror=()=>j(new Error('tmLoader: '+s.src));
-    document.body.appendChild(s);
+  async function tmLoad(fs){for(const f of fs){await new Promise((r,j)=>{
+    const e=document.createElement('script');e.async=false; // Гарантирует последовательное выполнение
+    e.src=host+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
+    document.body.appendChild(e);
   });}}
-  window.addEventListener('load',async()=>{try{await tmLoader();}catch(e){console.error(e);}console.log(entrypoint+': loaded');});
+  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(entrypoint+'.js: loaded');}catch(e){console.error(e);}});
 })();
