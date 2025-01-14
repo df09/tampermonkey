@@ -9,9 +9,10 @@ injectHTML(`
   </div>
   <!-- main -->
   <div id="tm-main" class="tm-col">
-    <h3 id="tm-main-readme"><a href="[readme-url]">[readme]</a></h3>
-    <div id="tm-main-thumblers" class="tm-col">[thumblers]</div>
-    <div id="tm-main-buttons" class="tm-col">[buttons]</div>
+    <h3 id="tm-main-readme"><a href="[readme-url]">Readme</a></h3>
+    <div id="tm-main-thumblers" class="tm-col"></div>
+    <div id="tm-main-btns-prep" class="tm-col"></div>
+    <div id="tm-main-btns-exec" class="tm-col"></div>
     <div id="tm-main-storage" class="tm-col">
       <h3 id="tm-storage-title" class="tm-title">Storage</h3>
       <div id="tm-storage-buttons" class="tm-row">
@@ -24,12 +25,12 @@ injectHTML(`
   <!-- prep -->
   <div id="tm-prep" class="tm-col">
     <div id="tm-prep-header" class="tm-row">
-      <h3 id="tm-prep-action" class="tm-title">[action]</h3>
+      <h3 id="tm-prep-title" class="tm-title">[title]</h3>
       <button id="tm-prep-back" class="tm-btn-b">&lt;-</button>
     </div>
     <div id="tm-prep-body" class="tm-col">
       <textarea id="tm-prep-textarea" spellcheck="false"></textarea>
-      <button id="tm-prep-exec" class="tm-btn-r">EXEC</button>
+      <button id="tm-prep-exec" class="tm-btn-r tm-prep-exec">EXEC</button>
     </div>
   </div>
   <!-- execution -->

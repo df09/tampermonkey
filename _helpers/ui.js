@@ -1,29 +1,29 @@
-function tmUiGetDisplay(...els){return els.map(e=>{return e.style.display})}
-function tmUiBlock(...els){els.forEach(e=>{const e.style.display='block'})}
-function tmUiFlex(...els){els.forEach(e=>{const e.style.display='flex'})}
-function tmUiHide(...els){els.forEach(e=>{const e.style.display='none'})}
-function tmUiToggleBlock(...els){els.forEach(e=>{const e.style.display=(e.style.display==='none')?'block':'none'}})}
-function tmUiToggleFlex(...els){els.forEach(e=>{const e.style.display=(e.style.display==='none')?'flex':'none'}})}
+function tmUiGetDisplay(...els){return els.map(el=>{return el.style.display})}
+function tmUiBlock(...els){els.forEach(el=>{const el.style.display='block'})}
+function tmUiFlex(...els){els.forEach(el=>{const el.style.display='flex'})}
+function tmUiHide(...els){els.forEach(el=>{const el.style.display='none'})}
+function tmUiToggleBlock(...els){els.forEach(el=>{const el.style.display=(el.style.display==='none')?'block':'none'}})}
+function tmUiToggleFlex(...els){els.forEach(el=>{const el.style.display=(el.style.display==='none')?'flex':'none'}})}
 function tmUiShowMain(){tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-main'))}
 function tmUiShowPrep(){tmUiHide(getEl('#tm-main'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-prep'))}
 function tmUiShowExecution(){tmUiHide(getEl('#tm-minimize'),getEl('#tm-main'),getEl('#tm-prep'));tmUiFlex(getEl('#tm-execution'))}
 function tmUiInitContainer() {
   // restore last size
-  c.style.width = tmsGet('tm_keep_uiTextareaWidth') || c.style.width;
-  c.style.height = tmsGet('tm_keep_uiTextareaHeight') || c.style.height;
+  c.style.width = tmsGet('tm_keep_uiWidth') || c.style.width;
+  c.style.height = tmsGet('tm_keep_uiHeight') || c.style.height;
   // resize
   let isResizing = false;
   let startX, startY, startWidth, startHeight;
-  c.addEventListener("mousedown", (e) => {
-    if (e.button !== 2) return; // Только правая кнопка мыши
-    isResizing = true; startX = e.clientX; startY = e.clientY;
+  c.addEventListener("mousedown", (el) => {
+    if (el.button !== 2) return; // Только правая кнопка мыши
+    isResizing = true; startX = el.clientX; startY = el.clientY;
     startWidth = c.offsetWidth; startHeight = c.offsetHeight;
     document.body.style.userSelect = "none"; // Убираем выделение текста
   });
-  document.addEventListener("mousemove", (e) => {
+  document.addEventListener("mousemove", (el) => {
     if (!isResizing) return;
-    const newWidth = startWidth - (e.clientX - startX);
-    const newHeight = startHeight - (e.clientY - startY);
+    const newWidth = startWidth - (el.clientX - startX);
+    const newHeight = startHeight - (el.clientY - startY);
     c.style.width = `${Math.max(newWidth, 50)}px`; // Минимальная ширина
     c.style.height = `${Math.max(newHeight, 50)}px`; // Минимальная высота
   });
@@ -31,17 +31,17 @@ function tmUiInitContainer() {
     if (isResizing) {
       isResizing = false;
       document.body.style.userSelect = "";
-      tmsSet('tm_keep_uiTextareaWidth', c.style.width);
-      tmsSet('tm_keep_uiTextareaHeight', c.style.height);
+      tmsSet('tm_keep_uiWidth', c.style.width);
+      tmsSet('tm_keep_uiHeight', c.style.height);
     }
   });
 }
 function tmUiInitOperation(operation) {
   // operation
-  const e = getEl('#tm-operation');
+  const el = getEl('#tm-operation');
   const txt = operation || 'None';
   const cls = txt === 'None'?'tm-green':'tm-red';
-  let span = e.querySelector('span');
+  let span = el.querySelector('span');
   span.textContent = txt;
   span.className = cls;
   // abort
@@ -55,9 +55,9 @@ function tmUiInitOperation(operation) {
   if (operation) {tmUiFlex(getEl(abortSelector))}
 }
 function tmUiInitMinimize() {
-  e = getEl('#tm-minimize');
-  e.addEventListener('click',()=>{
-    if (e.textContent='X') {
+  el = getEl('#tm-minimize');
+  el.addEventListener('click',()=>{
+    if (el.textContent='X') {
       const minimized = tmUiGetDisplay(getEl('#tm-main'))==='flex'?'#tm-main':'#tm-prep');
       tmsSet('tm_keep_minimized', minimized);
       tmUiHide(getEl(minimized));
@@ -66,28 +66,10 @@ function tmUiInitMinimize() {
       tmUiFlex(getEl(minimized));
       tmsDelete('tm_keep_minimized');
     }
-    e.textContent='X'?'^':'X';
+    el.textContent='X'?'^':'X';
   }
 }
-
-function tmUiInitToggler(){
-  // TODO
-}
-function tmUiInitBtnPrep(){
-  // TODO
-  e.addEventListener('click',()=>{tmUiShowPrep()})
-}
-
-function tmUiInitBtnExec(title, id, action, loc) {
-    if (loc!=='main'&&loc!=='prep'){abort('tmUiInitBtnExec: invalid loc ("'+loc+'").')}
-    const c = getEl(loc === 'main' ? '#tm-main-buttons' : '#tm-prep-body');
-    const html = `<button id="${id.replace('#', '')}" class="tm-btn-r">${title}</button>`;
-    // Заменяем существующую кнопку или добавляем новую
-    const btn = c.querySelector(id);
-    if(btn){btn.outerHTML=html}else{c.innerHTML+=html}
-    // Добавляем обработчик событий к новой кнопке
-    getEl(id).addEventListener('click', action);
-}
+function tmUiInitReadme(link){getEl('#tm-main-readme a').href=link}
 function tmUiInitStorage() {
   // view
   getEl('#tm-storage-view').view.addEventListener('click',()=>{
@@ -106,17 +88,13 @@ function tmUiInitStorage() {
       contentEl.appendChild(row);
     });
     // view-modal-copy-row
-    contentEl.querySelectorAll('.tm-storage-copy-row').forEach(button => {
-      button.addEventListener('click', (event) => {
-        const key = event.target.getAttribute('data-key');
-        const value = localStorage.getItem(key);
-        navigator.clipboard.writeText(`${key}: ${value}`).then(() => {
-          console.log(`Copied key-value pair: ${key}: ${value}`);
-        }).catch(err => {
-          console.error(`Failed to copy key-value pair: ${err}`);
-        });
-      });
-    });
+    getEls('.tm-storage-copy-row').forEach(el=>{el.addEventListener('click',(event)=>{
+      const key = event.target.getAttribute('data-key');
+      const value = localStorage.getItem(key);
+      navigator.clipboard.writeText(`${key}: ${value}`).then(() => {
+        console.log(`Copied key-value pair: ${key}: ${value}`);
+      }).catch(e =>{abort(`Failed to copy key-value pair: ${e}`)});
+    })});
     // show
     tmUiBlock(getEl('#modal-storage-view'));
   });
@@ -130,9 +108,7 @@ function tmUiInitStorage() {
     }).join('\n');
     navigator.clipboard.writeText(allData).then(() => {
       console.log('Copied all key-value pairs to clipboard');
-    }).catch(err => {
-      console.error(`Failed to copy all key-value pairs: ${err}`);
-    });
+    }).catch(e =>{abort(`Failed to copy all key-value pairs: ${e}`)});
   });
   // reset
   getEl('#tm-storage-reset').addEventListener('click',()=>{
@@ -143,61 +119,117 @@ function tmUiInitStorage() {
     tmsDeleteAll();alert('Storage.CLEAN: all data was deleted from storage.')
   });
 }
-
-function tmUiInitAction(){
-  // TODO
-}
-
 function tmUiInitBack(){getEl('#tm-prep-back').addEventListener('click',()=>{tmUiShowMain()})}
-function tmUiInitTextarea() {
-  const e = getEl('#tm-prep-textarea');
-  e.value = tmsGet('tm_keep_uiTextareaValue', '');
-  e.addEventListener('input',()=>{tmsSet('tm_keep_uiTextareaValue',e.value)});
-}
-function tmUiInitCancelBtn() {
+function tmUiInitBtnCancel() {
   getEl('#tm-execution-cancel').addEventListener('click',()=>{
-    tmsReset();
-    tmUiShowMain();
-    alert('Execution canceled by user.');
+    tmsReset();tmUiShowMain();alert('Execution canceled by user.');
   });
 }
 
+// >>> data-related
+// thumbler
+function tmUiInitThumbler(data) {
+  const [idpfx, title, hotkey, action] = data;
+  // TODO: replace fake action by real
+  const action = (state) => console.log(`Action executed with state: ${state}`)
+  const id = 'tm-thmb-'+idpfx;
+  getEl('#tm-main-thumblers').innerHTML+=`
+    <div id="${id}" class="tm-row">
+      <h3 class="thumbler-title">${title}<span>(${hotkey})</span></h3>
+      <label class="switch">
+        <input type="checkbox">
+        <span class="slider"></span>
+      </label>
+    <div>
+  `;
+  const checkbox = getEl(`#${id} input`);
+  checkbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+      console.log('Switch is ON');
+      // Активировать действие при включении
+    } else {
+      console.log('Switch is OFF');
+      // Отключить действие при выключении
+    }
+  });
+  // Добавляем глобальный обработчик клавиш
+  document.addEventListener('keydown', (event) => {
+    if (event.shiftKey && event.key.toLowerCase() === 'j') {
+      if (checkbox.checked) {
+        console.log('Action triggered for Shift+J (Switch ON)');
+        action('on'); // Выполнение переданного действия, если оно включено
+      } else {
+        console.log('Action triggered for Shift+J (Switch OFF)');
+        action('off'); // Выполнение переданного действия, если оно выключено
+      }
+    }
+  });
+}
+// btnPrep
+function tmUiInitBtnPrep(data) {
+  const [idpfx, title, action] = data;
+  const cMain = getEl('#tm-main-btns-prep');
+  const cPrep = getEl('#tm-prep-body');
+  const mainGroupClass = 'tm-main-btn-prep';
+  const prepGroupClass = 'tm-prep-btn-exec';
+  const mainId = `#${mainGroupClass}-${idpfx}`;
+  const prepId = `#${prepGroupClass}-${idpfx}`;
+  // btnPrep, btnExec - create
+  cMain.innerHTML+=`<button id="${mainId}" class="tm-btn-g ${mainGroupClass}">${title}</button>`;
+  cPrep.innerHTML+=`<button id="${prepId}" class="tm-btn-r ${prepGroupClass}">EXEC</button>`;
+  // btnPrep - click
+  getEl(`#${mainId}`).addEventListener('click',()=>{
+    // prep - title
+    getEl('#tm-prep-title').textContent = title;
+    // prep - textarea
+    const textarea = getEl('#tm-prep-textarea');
+    textarea.value = tmsGet(`tm_keep_uiTextareaValue_${idpfx}`,'');
+    el.addEventListener('input',()=>{tmsSet(`tm_keep_uiTextareaValue_${idpfx}`,el.value)});
+    // prep - exec
+    getEls(groupClass).forEach(el=>{tmUiHide(el)}); // hide all exec buttons
+    const prepExec = getEl(`#${prepId}`);
+    prepExec.addEventListener('click',()=>{tmUiShowExec();action()});
+    tmUiFlex(prepExec);
+    // show prep menu
+    tmUiShowPrep();
+  }
+}
+// btnExec
+function tmUiInitBtnExec(data) {
+  const [idpfx, title, action] = data;
+  const groupClass = 'tm-main-btn-exec';
+  const id = `#${groupClass}-${idpfx}`;
+  getEl('#tm-main-btns-exec').innerHTML+=`<button id="${id}" class="tm-btn-g ${groupClass}">EXEC:${title}</button>`;
+  getEl(`#${id}`).addEventListener('click',()=>{tmUiShowExec();action()}
+}
+
 // TODO: notifications
-function tmUiInit(inputs) {
+function tmUiInit(map) {
   const operation = tmsGetOperation();
-  // >>> container
   tmUiInitContainer();
-  // >>> header
   tmUiInitOperation();
   tmUiInitMinimize();
-  // >>> main
-  // tmUiInitReadme(readme); TODO
-  // for toggler in togglers: TODO
-  //   tmUiInitToggler(toggler); TODO
-  // for btnPrep in btnsPrep: TODO
-    tmUiInitBtnPrep(title, id, 'main');
-    tmUiInitBtnExec(title, id, action, 'prep');
-  // for btnExec in btnsExec: TODO
-    tmUiInitBtnExec(title, id, action, 'main');
   tmUiInitStorage();
-  // >>> prep
-    // action TODO
   tmUiInitBack();
-  tmUiInitTextarea();
-  // >>> execution
-  tmUiInitCancelBtn();
+  tmUiInitBtnCancel();
+  // >>> data-related
+  tmUiInitReadme(map.readme);
+  for (const data of map.thumblers){tmUiInitThumbler(data)}
+  for (const data of map.btnsPrep){tmUiInitBtnPrep(data)}
+  for (const data of map.btnsExec){tmUiInitBtnExec(data)}
+  // show
   if (operation) {tmUiShowExecution()} else {tmUiShowMain()} // show menu
   console.log('tmUiInit: done.');
 }
 
 // pause
 async function tmPause(msg) {
-  const e = getEl('#tm-execution-continue');
-  tmUiBlock(e);
+  const el = getEl('#tm-execution-continue');
+  tmUiBlock(el);
   await sleep(100);
   alert('tmPause: '+msg);
   await new Promise(resolve => {
-    e.onclick = resolve;
+    el.onclick = resolve;
   });
-  tmUiHide(e);
+  tmUiHide(el);
 }

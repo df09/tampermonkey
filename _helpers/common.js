@@ -46,16 +46,22 @@ async function fakeRedirect(newUrl, delay=3000) {
 }
 // DOM-manipulations
 function getEl(selector) {
-  const elements = document.querySelectorAll(selector);
-  if (elements.length === 0) {abort('getEl "'+selector+'": not found.')}
-  if (elements.length > 1)   {abort('getEl "'+selector+'": multiple elements found.')}}
-  const e = elements[0];
-  console.log('getEl "'+selector+'"):', e);
+  let e;
+  if (/^#[a-zA-Z0-9\-_]+$/.test(selector)) {
+    e = document.getElementById(selector.slice(1));
+    if (!e) {abort(`getEl "${selector}": not found.`)}
+  } else {
+    const els = document.querySelectorAll(selector);
+    if (els.length === 0) {abort(`getEl "${selector}": not found.`)}
+    if (els.length > 1) {abort(`getEl "${selector}": multiple els found.`)}
+    e = els[0];
+  }
+  console.log(`getEl "${selector}":`, e);
   return e;
 }
 function getEls(selector) {
   const els = document.querySelectorAll(selector);
-  if (elements.length === 0) {abort('getEl: "'+selector+'" not found.')}
+  if (els.length === 0) {abort('getEl: "'+selector+'" not found.')}
   console.log('getEls "'+selector+'":', els);
   return els;
 }
