@@ -1,5 +1,5 @@
 (function(){'use strict';
-  // === ui =====================================
+  // === entrypoints =====================================
   function go2jobById(){tmsSetOperation('go2jobById/start');go2jobByIdStart()}
   function searchActiveJob(){tmsSetOperation('searchActiveJob/start');searchActiveJobStart()}
   function createBarcodes(){tmsSetOperation('createBarcodes/job');createBarcodesJob()}
