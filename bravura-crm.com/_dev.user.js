@@ -18,8 +18,12 @@
     '/bravura-crm.com/createBarcodes/newProduct.js',
     '/bravura-crm.com/createBarcodes/sizeSetup.js',
     '/bravura-crm.com/createBarcodes/sectionsDetail.js',
-    '/bravura-crm.com/go2jobByjobId/start.js',
-    '/bravura-crm.com/main.js',
+    '/bravura-crm.com/go2jobById/start.js',
+    '/bravura-crm.com/searchActiveJob/start.js',
+    '/bravura-crm.com/testExec1/start.js',
+    '/bravura-crm.com/testExec2/start.js',
+    '/bravura-crm.com/testPrep1/start.js',
+    '/bravura-crm.com/testPrep2/start.js',
   ];
   // === loader =========
   async function tmLoad(fs){for(const f of fs){await new Promise((r,j)=>{

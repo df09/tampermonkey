@@ -1,3 +1,4 @@
+// helpers
 function tmUiGetDisplay(...els){return els.map(el=>{return el.style.display})}
 function tmUiBlock(...els){els.forEach(el=>{const el.style.display='block'})}
 function tmUiFlex(...els){els.forEach(el=>{const el.style.display='flex'})}
@@ -7,7 +8,9 @@ function tmUiToggleFlex(...els){els.forEach(el=>{const el.style.display=(el.styl
 function tmUiShowMain(){tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-main'))}
 function tmUiShowPrep(){tmUiHide(getEl('#tm-main'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-prep'))}
 function tmUiShowExecution(){tmUiHide(getEl('#tm-minimize'),getEl('#tm-main'),getEl('#tm-prep'));tmUiFlex(getEl('#tm-execution'))}
+// container
 function tmUiInitContainer() {
+  const c = getEl('#tm-container');
   // restore last size
   c.style.width = tmsGet('tm_keep_uiWidth') || c.style.width;
   c.style.height = tmsGet('tm_keep_uiHeight') || c.style.height;
@@ -36,23 +39,21 @@ function tmUiInitContainer() {
     }
   });
 }
+// header
 function tmUiInitOperation(operation) {
-  // operation
   const el = getEl('#tm-operation');
   const txt = operation || 'None';
   const cls = txt === 'None'?'tm-green':'tm-red';
   let span = el.querySelector('span');
   span.textContent = txt;
   span.className = cls;
-  // abort
-  const abortSelector = '#tm-abort';
-  const abortEl = getEl(abortSelector);
-  abortEl.addEventListener('click',()=>{
-    tmsDeleteAll();
-    tmUiShowMain();
+}
+function tmUiInitAbort(operation) {
+  const el = getEl('#tm-abort');
+  el.addEventListener('click',()=>{ tmsDeleteAll(); tmUiShowMain();
     abort('Execution aborted by user. All data was deleted from storage.');
   }
-  if (operation) {tmUiFlex(getEl(abortSelector))}
+  if (operation) {tmUiFlex(el)}
 }
 function tmUiInitMinimize() {
   el = getEl('#tm-minimize');
@@ -62,13 +63,13 @@ function tmUiInitMinimize() {
       tmsSet('tm_keep_minimized', minimized);
       tmUiHide(getEl(minimized));
     } else {
-      const minimized = tmsGet('tm_keep_minimized');
-      tmUiFlex(getEl(minimized));
+      tmUiFlex(getEl(tmsGet('tm_keep_minimized')));
       tmsDelete('tm_keep_minimized');
     }
     el.textContent='X'?'^':'X';
   }
 }
+// main
 function tmUiInitReadme(link){getEl('#tm-main-readme a').href=link}
 function tmUiInitStorage() {
   // view
@@ -81,20 +82,23 @@ function tmUiInitStorage() {
       const value = localStorage.getItem(key);
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td><button class="tm-storage-copy-row tm-btn-g" data-key="${key}">Copy</button></td>
         <td>${key}</td>
-        <td>${value}</td>
+        <td>
+          <button class="tm-storage-copy-row tm-btn-g" data-value="${value}">Copy</button>
+          <span class="tm-storage-value">${value}</span>
+        </td>
       `;
       contentEl.appendChild(row);
     });
     // view-modal-copy-row
-    getEls('.tm-storage-copy-row').forEach(el=>{el.addEventListener('click',(event)=>{
-      const key = event.target.getAttribute('data-key');
-      const value = localStorage.getItem(key);
-      navigator.clipboard.writeText(`${key}: ${value}`).then(() => {
-        console.log(`Copied key-value pair: ${key}: ${value}`);
-      }).catch(e =>{abort(`Failed to copy key-value pair: ${e}`)});
-    })});
+    getEls('.tm-storage-copy-row').forEach(el => {
+      el.addEventListener('click',(event)=>{
+        const value = event.target.getAttribute('data-value');
+        navigator.clipboard.writeText(value)
+          .then(() => { console.log(`Copied: ${value}`); })
+          .catch(e => { console.error(`Failed to copy value: ${e}`); });
+      });
+    });
     // show
     tmUiBlock(getEl('#modal-storage-view'));
   });
@@ -206,17 +210,22 @@ function tmUiInitBtnExec(data) {
 // TODO: notifications
 function tmUiInit(map) {
   const operation = tmsGetOperation();
+  // container
   tmUiInitContainer();
-  tmUiInitOperation();
+  // header
+  tmUiInitOperation(operation);
+  tmUiInitAbort(operation);
   tmUiInitMinimize();
-  tmUiInitStorage();
-  tmUiInitBack();
-  tmUiInitBtnCancel();
-  // >>> data-related
+  // main
   tmUiInitReadme(map.readme);
   for (const data of map.thumblers){tmUiInitThumbler(data)}
   for (const data of map.btnsPrep){tmUiInitBtnPrep(data)}
   for (const data of map.btnsExec){tmUiInitBtnExec(data)}
+  tmUiInitStorage();
+  // prep
+  tmUiInitBack();
+  // exec
+  tmUiInitBtnCancel();
   // show
   if (operation) {tmUiShowExecution()} else {tmUiShowMain()} // show menu
   console.log('tmUiInit: done.');
