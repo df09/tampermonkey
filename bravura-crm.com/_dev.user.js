@@ -24,6 +24,7 @@
     '/bravura-crm.com/testExec2/start.js',
     '/bravura-crm.com/testPrep1/start.js',
     '/bravura-crm.com/testPrep2/start.js',
+    '/bravura-crm.com/main.js',
   ];
   // === loader =========
   async function tmLoad(fs){for(const f of fs){await new Promise((r,j)=>{

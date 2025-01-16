@@ -220,26 +220,41 @@ function tmUiInitBtnCancel() {
 // === init ==============================
 function tmUiInit(map) {
   let operation = tmsGetOperation();
+  console.log(1);
   // container
   tmUiInitContainer();
+  console.log(2);
   // header
   tmUiInitOperation(operation);
+  console.log(3);
   tmUiInitAbort(operation);
+  console.log(4);
   tmUiInitMinimize();
+  console.log(5);
   // main
   tmUiInitReadme(map.readme);
+  console.log(6);
   for (let data of map.thumblers){tmUiInitThumbler(data)}
+  console.log(7);
   for (let data of map.btnsPrep){tmUiInitBtnPrep(data)}
+  console.log(8);
   for (let data of map.btnsExec){tmUiInitBtnExec(data)}
+  console.log(9);
   tmUiInitStorageView();
+  console.log(10);
   tmUiInitStorageClen();
+  console.log(11);
   tmUiInitStorageReset();
+  console.log(12);
   // prep
   tmUiInitBack();
+  console.log(13);
   // exec
   tmUiInitBtnCancel();
+  console.log(14);
   // show
   if (operation) {tmUiShowExecution()} else {tmUiShowMain()} // show menu
+  console.log(15);
   console.log('tmUiInit: done.');
 }
 

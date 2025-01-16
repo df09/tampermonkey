@@ -16,22 +16,24 @@ injectCSS(`
   flex-direction: row;
   gap: 10px;
   align-items: center;
+  justify-content: space-between;
 }
 
 .tm-title {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #444;
+  font-size: 16px;
+  font-family: monospace;
+  font-weight: normal;
 }
 
 .tm-btn-b, .tm-btn-g, .tm-btn-y, .tm-btn-r {
-  padding: 8px 12px;
-  font-size: 0.9rem;
+  padding: 5px 12px;
+  font-size: 12px;
   font-weight: bold;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-family: monospace;
 }
 
 .tm-b { color: #007bff; }
@@ -84,6 +86,22 @@ injectCSS(`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-width: 300px;
   min-height: 150px;
+}
+#tm-header {
+  justify-content: space-between;
+  margin: 0 0 8px 0;
+}
+
+#tm-main-readme {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: monospace;
+  font-weight: normal;
+}
+
+#tm-storage-buttons > * {
+  flex-grow: 1;
 }
 
 #tm-textarea {
