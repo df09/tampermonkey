@@ -4,11 +4,11 @@
   // === ui =====================================
   const map = {
     readme: 'https://example.com',
+    thumblers: [],
     btnsPrep: [
       ['generateTwins', 'Generate Twins', generateTwins],
     ],
-    btnsExec: [
-    ],
+    btnsExec: [],
   }
   tmUiInit(map);
   // === handle active operations ========================

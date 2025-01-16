@@ -140,18 +140,18 @@ injectCSS(`
 }
 
 /* Switch Styles */
-.switch {
+.tm-switch {
   position: relative;
   display: inline-block;
   width: 50px;
   height: 24px;
 }
-.switch input {
+.tm-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-.slider {
+.tm-slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -162,7 +162,7 @@ injectCSS(`
   transition: 0.4s;
   border-radius: 24px;
 }
-.slider:before {
+.tm-slider:before {
   position: absolute;
   content: "";
   height: 18px;
@@ -173,15 +173,15 @@ injectCSS(`
   transition: 0.4s;
   border-radius: 50%;
 }
-input:checked + .slider {
+input:checked + .tm-slider {
   background-color: #4caf50;
 }
-input:checked + .slider:before {
+input:checked + .tm-slider:before {
   transform: translateX(26px);
 }
 
 /* Modal Styles */
-.modal {
+.tm-modal {
   display: none;
   z-index: 10001;
   position: fixed;
@@ -199,12 +199,12 @@ input:checked + .slider:before {
   min-width: 300px;
   min-height: 150px;
 }
-.modal table {
+.tm-modal table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
-.modal th, .modal td {
+.tm-modal th, .modal td {
   padding: 10px;
   border-bottom: 1px solid #444;
   text-align: left;

@@ -48,13 +48,21 @@ async function fakeRedirect(newUrl, delay=3000) {
 function getEl(selector) {
   let e;
   if (/^#[a-zA-Z0-9\-_]+$/.test(selector)) {
+    // Если это ID, используем getElementById
     e = document.getElementById(selector.slice(1));
-    if (!e) {abort(`getEl "${selector}": not found.`)}
+    if (!e) {
+      abort(`getEl "${selector}": not found.`);
+    }
   } else {
+    // Используем querySelectorAll для произвольного селектора
     const els = document.querySelectorAll(selector);
-    if (els.length === 0) {abort(`getEl "${selector}": not found.`)}
-    if (els.length > 1) {abort(`getEl "${selector}": multiple els found.`)}
-    e = els[0];
+    if (els.length === 0) {
+      abort(`getEl "${selector}": not found.`);
+    } else if (els.length === 1) {
+      e = els[0];
+    } else {
+      abort(`getEl "${selector}": multiple els found.`);
+    }
   }
   console.log(`getEl "${selector}":`, e);
   return e;

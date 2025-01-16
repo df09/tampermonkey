@@ -179,15 +179,15 @@ async function updProjectName(projectLocation, delay) {
 }
 async function updLocation(projectLocation, delay) {
   console.log('updLocation..');
-  let locationEl = getEl('input[placeholder="Select or enter custom location..."]');
+  let locationEl = getEl('div.inner-control-container[data-sb-field="content/location"] input.dx-texteditor-input')
   if (!locationEl) { abort('Поле для "Location" не найдено.') }
   await updValEl(locationEl, projectLocation, delay);
   console.log('updLocation: updated to "'+projectLocation+'".');
 }
 async function updOwner(delay) {
   console.log('updOwner..');
-  await clickEl(getEl('input[placeholder="Select a value..."]'), 3000);
-  await clickEl(getEl('[data-sb-option-title="0100200854 User"]'), 1000);
+  await clickEl(getEl('div.inner-control-container[data-sb-field="content/userOwnerId"] input.dx-texteditor-input'), 3000);
+  await clickEl(getEls('[data-sb-option-title="0100200854 User"]')[0], 1000);
   await sleep(delay);
 }
 
@@ -256,7 +256,7 @@ function getInputData(textarea) {
     abort('Ошибка в данных: ' + error.message);
   }
 }
-async function start() {
+async function generateTwinsStart() {
   // check start conditions
   if (document.querySelector('#save-resource')) {
     abort('cancel - please save project before starting.');

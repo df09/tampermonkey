@@ -97,7 +97,9 @@ function tmUiInitMinimize() {
 }
 // main
 function tmUiInitMain() {makeResizebale('#tm-main')}
-function tmUiInitReadme(link){getEl('#tm-main-readme a').href=link}
+function tmUiInitReadme(link) {
+  getEl('#tm-main-readme a').href=link
+}
 function tmUiInitThumbler(data) {
   let [idpfx, title, hotkey, action] = data;
   let id = 'tm-thmb-' + idpfx;
@@ -106,9 +108,9 @@ function tmUiInitThumbler(data) {
   getEl('#tm-main-thumblers').innerHTML += `
     <div id="${id}" class="tm-row">
       <h3 class="tm-title">${title}<span class="tm-hotkey">(${hotkey})</span></h3>
-      <label class="switch">
+      <label class="tm-switch">
         <input type="checkbox">
-        <span class="slider"></span>
+        <span class="tm-slider"></span>
       </label>
     </div>
   `;
@@ -156,7 +158,7 @@ function tmUiInitBtnPrep(data) {
   );
   cPrep.insertAdjacentHTML(
     'beforeend',
-    `<button id="${prepId}" class="tm-btn-r ${prepGroupClass}" style="display:none;">EXEC</button>`
+    `<button id="${prepId}" class="tm-btn-r ${prepGroupClass}">EXEC</button>`
   );
 
   // Привязываем обработчик к кнопке
@@ -215,7 +217,7 @@ function tmUiInitStorageView() {
   getEl('#tm-storage-view').addEventListener('click', () => {
     // Заполняем содержимое модального окна
     const data = tmsGetAll(); // Получаем все ключи
-    const contentEl = getEl('#modal-storage-view-content'); // Контейнер для строк
+    const contentEl = getEl('#tm-modal-storage-view-content'); // Контейнер для строк
     contentEl.innerHTML = ''; // Очищаем существующее содержимое
 
     // Создаем строки для каждого ключа
@@ -243,16 +245,16 @@ function tmUiInitStorageView() {
     });
 
     // Показываем модальное окно
-    tmUiBlock(getEl('#modal-storage-view'));
+    tmUiBlock(getEl('#tm-modal-storage-view'));
   });
 
   // Закрытие модального окна
-  getEl('#storage-close').addEventListener('click', () => {
-    tmUiHide(getEl('#modal-storage-view'));
+  getEl('#tm-storage-close').addEventListener('click', () => {
+    tmUiHide(getEl('#tm-modal-storage-view'));
   });
 
   // Копирование всех ключей и значений
-  getEl('#storage-copy-all').addEventListener('click', () => {
+  getEl('#tm-storage-copy-all').addEventListener('click', () => {
     const allData = tmsGetAll().map(key => {
       const value = localStorage.getItem(key);
       return `${key}: ${value}`;
@@ -283,11 +285,11 @@ function tmUiInitStorageClen() {
 // prep
 function tmUiInitPrep(){makeResizebale('#tm-prep')}
 function tmUiInitBack(){getEl('#tm-prep-back').addEventListener('click',()=>{tmUiShowMain()})}
-async function tmPause(msg) {
+async function tmUiPause(msg) {
   let el = getEl('#tm-execution-continue');
   tmUiBlock(el);
   await sleep(100);
-  alert('tmPause: '+msg);
+  alert('tmUiPause: '+msg);
   await new Promise(resolve => {
     el.onclick = resolve;
   });
@@ -330,4 +332,3 @@ function tmUiInit(map) {
   if (operation) {tmUiShowExecution()} else {tmUiShowMain()} // show menu
   console.log('tmUiInit: done.');
 }
-

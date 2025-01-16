@@ -11,7 +11,7 @@ injectHTML(`
   </div>
   <!-- main -->
   <div id="tm-main" class="tm-col">
-    <div id="tm-main-readme"><a class='tm-link' href="[readme-url]">Readme</a></div>
+    <div id="tm-main-readme"><a class="tm-link" href="[readme-url]">Readme</a></div>
     <div id="tm-main-thumblers" class="tm-col"></div>
     <div id="tm-main-btns-prep" class="tm-col"></div>
     <div id="tm-main-btns-exec" class="tm-col"></div>
@@ -46,14 +46,14 @@ injectHTML(`
 
 <!-- modals -->
 <!-- modals.storage-view -->
-<div id="modal-storage-view" class="modal">
-  <button id="storage-close" class="tm-btn-r">X</button>
+<div id="tm-modal-storage-view" class="tm-modal">
+  <button id="tm-storage-close" class="tm-btn-r">X</button>
   <table>
     <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
-    <tbody id="modal-storage-view-content">
+    <tbody id="tm-modal-storage-view-content">
       <!-- Content will be dynamically inserted here -->
     </tbody>
   </table>
-  <button id="storage-copy-all" class="tm-btn-g">Copy All</button>
+  <button id="tm-storage-copy-all" class="tm-btn-g">Copy All</button>
 </div>
 `)
