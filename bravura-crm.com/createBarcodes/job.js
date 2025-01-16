@@ -64,7 +64,7 @@ function getFosId() {
 }
 function createBarcodesJob() {
   // get data
-  const barcodesData = getBarcodesData(getEl(tmMenuTextareaSelector));
+  const barcodesData = getBarcodesData(getEl('#tm-prep-textarea'));
   const jobId = getJobId();
   const fosId = getFosId();
   tmsSet('tm_barcodesData', barcodesData);

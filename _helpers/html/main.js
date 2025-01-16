@@ -11,7 +11,7 @@ injectHTML(`
   </div>
   <!-- main -->
   <div id="tm-main" class="tm-col">
-    <h3 id="tm-main-readme"><a href="[readme-url]">Readme</a></h3>
+    <div id="tm-main-readme"><a class='tm-link' href="[readme-url]">Readme</a></div>
     <div id="tm-main-thumblers" class="tm-col"></div>
     <div id="tm-main-btns-prep" class="tm-col"></div>
     <div id="tm-main-btns-exec" class="tm-col"></div>

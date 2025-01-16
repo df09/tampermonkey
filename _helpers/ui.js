@@ -28,37 +28,37 @@ function tmUiToggleFlex(...els){els.forEach(el=>{el.style.display=(el.style.disp
 function tmUiShowMain(){tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-main'))}
 function tmUiShowPrep(){tmUiHide(getEl('#tm-main'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-prep'))}
 function tmUiShowExecution(){tmUiHide(getEl('#tm-minimize'),getEl('#tm-main'),getEl('#tm-prep'));tmUiFlex(getEl('#tm-execution'))}
-// container
-function tmUiInitContainer() {
-  // let c = getEl('#tm-container');
-  // // restore last size
-  // c.style.width = tmsGet('tm_keep_uiWidth') || c.style.width;
-  // c.style.height = tmsGet('tm_keep_uiHeight') || c.style.height;
-  // // resize
-  // let isResizing = false;
-  // let startX, startY, startWidth, startHeight;
-  // c.addEventListener("mousedown", (el) => {
-  //   if (el.button !== 0) return; // Только левая кнопка мыши
-  //   isResizing = true; startX = el.clientX; startY = el.clientY;
-  //   startWidth = c.offsetWidth; startHeight = c.offsetHeight;
-  //   document.body.style.userSelect = "none"; // Убираем выделение текста
-  // });
-  // document.addEventListener("mousemove", (el) => {
-  //   if (!isResizing) return;
-  //   let newWidth = startWidth - (el.clientX - startX);
-  //   let newHeight = startHeight - (el.clientY - startY);
-  //   c.style.width = `${Math.max(newWidth, 50)}px`; // Минимальная ширина
-  //   c.style.height = `${Math.max(newHeight, 50)}px`; // Минимальная высота
-  // });
-  // document.addEventListener("mouseup", () => {
-  //   if (isResizing) {
-  //     isResizing = false;
-  //     document.body.style.userSelect = "";
-  //     tmsSet('tm_keep_uiWidth', c.style.width);
-  //     tmsSet('tm_keep_uiHeight', c.style.height);
-  //   }
-  // });
+function makeResizebale(selector) {
+  let c = getEl(selector);
+  // restore last size
+  c.style.width = tmsGet('tm_keep_uiWidth_'+selector) || c.style.width;
+  c.style.height = tmsGet('tm_keep_uiHeight_'+selector) || c.style.height;
+  // resize
+  let isResizing = false;
+  let startX, startY, startWidth, startHeight;
+  c.addEventListener("mousedown", (el) => {
+    if (el.button !== 0) return; // Только левая кнопка мыши
+    isResizing = true; startX = el.clientX; startY = el.clientY;
+    startWidth = c.offsetWidth; startHeight = c.offsetHeight;
+    document.body.style.userSelect = "none"; // Убираем выделение текста
+  });
+  document.addEventListener("mousemove", (el) => {
+    if (!isResizing) return;
+    let newWidth = startWidth - (el.clientX - startX);
+    let newHeight = startHeight - (el.clientY - startY);
+    c.style.width = `${Math.max(newWidth, 50)}px`; // Минимальная ширина
+    c.style.height = `${Math.max(newHeight, 50)}px`; // Минимальная высота
+  });
+  document.addEventListener("mouseup", () => {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.userSelect = "";
+      tmsSet('tm_keep_uiWidth', c.style.width);
+      tmsSet('tm_keep_uiHeight', c.style.height);
+    }
+  });
 }
+// container
 // header
 function tmUiInitOperation() {
   let operation = tmsGetOperation();
@@ -96,6 +96,7 @@ function tmUiInitMinimize() {
   })
 }
 // main
+function tmUiInitMain() {makeResizebale('#tm-main')}
 function tmUiInitReadme(link){getEl('#tm-main-readme a').href=link}
 function tmUiInitThumbler(data) {
   let [idpfx, title, hotkey, action] = data;
@@ -145,55 +146,67 @@ function tmUiInitBtnPrep(data) {
   let cPrep = getEl('#tm-prep-body');
   let mainGroupClass = 'tm-main-btn-prep';
   let prepGroupClass = 'tm-prep-btn-exec';
-  let mainId = mainGroupClass + '-' + idpfx;
-  let prepId = prepGroupClass + '-' + idpfx;
+  let mainId = `${mainGroupClass}-${idpfx}`;
+  let prepId = `${prepGroupClass}-${idpfx}`;
 
-  // btnPrep, btnExec - create
-  cMain.innerHTML += `<button id="${mainId}" class="tm-btn-g ${mainGroupClass}">${title}</button>`;
-  cPrep.innerHTML += `<button id="${prepId}" class="tm-btn-r ${prepGroupClass}" style="display:none;">EXEC</button>`;
+  // Добавляем кнопки в DOM
+  cMain.insertAdjacentHTML(
+    'beforeend',
+    `<button id="${mainId}" class="tm-btn-g ${mainGroupClass}">${title}</button>`
+  );
+  cPrep.insertAdjacentHTML(
+    'beforeend',
+    `<button id="${prepId}" class="tm-btn-r ${prepGroupClass}" style="display:none;">EXEC</button>`
+  );
 
-  // btnPrep - click
+  // Привязываем обработчик к кнопке
   getEl(`#${mainId}`).addEventListener('click', () => {
-    // prep - title
     getEl('#tm-prep-title').textContent = title;
 
-    // prep - textarea
     let textarea = getEl('#tm-prep-textarea');
     textarea.value = tmsGet(`tm_keep_uiTextareaValue_${idpfx}`, '');
 
-    // Обновляем значение в localStorage при вводе
     textarea.addEventListener('input', () => {
       tmsSet(`tm_keep_uiTextareaValue_${idpfx}`, textarea.value);
     });
 
-    // prep - exec
-    getEls('.' + prepGroupClass).forEach(el => {
-      tmUiHide(el); // Скрываем все EXEC кнопки
-    });
+    // Скрываем другие EXEC кнопки
+    getEls(`.${prepGroupClass}`).forEach(el => tmUiHide(el));
 
-    let prepExec = getEl('#' + prepId);
-    prepExec.onclick = () => { // Заменяем addEventListener на onclick, чтобы не дублировать обработчики
+    // Показ текущей EXEC кнопки
+    let prepExec = getEl(`#${prepId}`);
+    tmUiFlex(prepExec);
+
+    prepExec.addEventListener('click', () => {
       tmUiShowExecution();
       action();
-    };
-    tmUiFlex(prepExec); // Показываем EXEC кнопку
+    });
 
-    // Показываем prep меню
     tmUiShowPrep();
   });
 }
 function tmUiInitBtnExec(data) {
   let [idpfx, title, action] = data;
   let groupClass = 'tm-main-btn-exec';
-  let id = groupClass + '-' + idpfx;
-  // Создаем EXEC кнопку
-  getEl('#tm-main-btns-exec').innerHTML += `<button id="${id}" class="tm-btn-y ${groupClass}">EXEC: ${title}</button>`;
-  // Привязываем обработчик события
-  getEl(`#${id}`).onclick = () => {
+  let id = `${groupClass}-${idpfx}`;
+  let container = getEl('#tm-main-btns-exec');
+
+  // Добавляем кнопку в контейнер
+  container.insertAdjacentHTML(
+    'beforeend',
+    `<button id="${id}" class="tm-btn-y ${groupClass}">EXEC: ${title}</button>`
+  );
+
+  // Привязываем обработчик события к только что созданной кнопке
+  let button = getEl(`#${id}`);
+  button.addEventListener('click', () => {
     tmUiShowExecution();
     action();
     tmUiInitOperation();
-  };
+  });
+
+  // Лог для отладки
+  console.log(`EXEC Button added: ${id}`);
 }
 
 // main.storage
@@ -268,6 +281,7 @@ function tmUiInitStorageClen() {
   });
 }
 // prep
+function tmUiInitPrep(){makeResizebale('#tm-prep')}
 function tmUiInitBack(){getEl('#tm-prep-back').addEventListener('click',()=>{tmUiShowMain()})}
 async function tmPause(msg) {
   let el = getEl('#tm-execution-continue');
@@ -291,13 +305,13 @@ function tmUiInitBtnCancel() {
 // === init ==============================
 function tmUiInit(map) {
   // container
-  tmUiInitContainer();
   console.log('tmUiInit.container: done.');
   // header
   tmUiInitOperation();
   tmUiInitMinimize();
   console.log('tmUiInit.header: done.');
   // main
+  tmUiInitMain();
   tmUiInitReadme(map.readme);
   for (let data of map.thumblers){tmUiInitThumbler(data)}
   for (let data of map.btnsPrep){tmUiInitBtnPrep(data)}
@@ -307,6 +321,7 @@ function tmUiInit(map) {
   tmUiInitStorageReset();
   console.log('tmUiInit.main: done.');
   // prep
+  tmUiInitPrep();
   tmUiInitBack();
   // exec
   tmUiInitBtnCancel();

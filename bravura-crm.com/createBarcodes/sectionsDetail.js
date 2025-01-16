@@ -9,5 +9,7 @@ async function createBarcodesSectionsDetail() {
     await clickEl(getEl(barcodesCheckboxSelector), 300);
     // === done ======================================
     tmsReset();
+    tmUiInitOperation();
+    tmUiShowMain();
     alert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
 }

@@ -35,7 +35,7 @@ async function selectExistingRoom(loc, delay) {
   console.log('selectExistingRoom:', loc);
 }
 function roomExists(loc) {
-  const options = getElAll(existedRoomOptionSelector);
+  const options = getEls(existedRoomOptionSelector);
   return Array.from(options).some(option => option.textContent.trim().toLowerCase() === loc.toLowerCase());
 }
 

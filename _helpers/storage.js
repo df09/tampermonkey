@@ -76,7 +76,7 @@ function tmsReset() {
 function tmsSetOperation(operation) {
     const operationFormat = /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/;
     if (!operationFormat.test(operation)) {abort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
-    const [action, step] = operation.split('.');
+    const [action, step] = operation.split('/');
     tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
     console.log('tmsSetOperation: "'+operation+'".');
 };
@@ -101,6 +101,10 @@ function tmsOperationsGetHandlers(config) {
 }
 function tmsOperationsHandle(config) {
   const operation = tmsGetOperation();
+  if (!operation) {
+    console.log('tmsOperationsHandle: no active operations.')
+    return
+  }
   const action = tmsGetAction();
   const step = tmsGetStep();
   const handlers = tmsOperationsGetHandlers(config);

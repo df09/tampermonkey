@@ -5,6 +5,11 @@ injectCSS(`
 .tm-block {display: block !important;}
 .tm-flex {display: flex !important; }
 
+.tm-link { color: blue; text-decoration: underline; }
+.tm-link:visited { color: purple; }
+.tm-link:hover { color: darkblue; text-decoration: none; }
+.tm-link:active { color: red; }
+
 .tm-col {
   display: flex;
   flex-direction: column;
@@ -204,9 +209,4 @@ input:checked + .slider:before {
   border-bottom: 1px solid #444;
   text-align: left;
 }
-
-
-
-
-
 `)
