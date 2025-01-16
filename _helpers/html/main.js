@@ -32,7 +32,9 @@ injectHTML(`
     </div>
     <div id="tm-prep-body" class="tm-col">
       <textarea id="tm-prep-textarea" spellcheck="false"></textarea>
+      <!--
       <button id="tm-prep-exec" class="tm-btn-r tm-prep-exec">EXEC</button>
+      -->
     </div>
   </div>
   <!-- execution -->

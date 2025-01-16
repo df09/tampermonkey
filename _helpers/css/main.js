@@ -1,5 +1,10 @@
 injectCSS(`
 /* General styles */
+
+.tm-hidden {display: none !important;}
+.tm-block {display: block !important;}
+.tm-flex {display: flex !important; }
+
 .tm-col {
   display: flex;
   flex-direction: column;
@@ -85,11 +90,25 @@ injectCSS(`
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-width: 300px;
-  min-height: 150px;
+  min-height: 40px;
 }
 #tm-header {
   justify-content: space-between;
-  margin: 0 0 8px 0;
+}
+#tm-main {
+  display: none;
+  margin: 8px 0 0 0;
+}
+#tm-prep {
+  display: none;
+  margin: 8px 0 0 0;
+}
+#tm-execution {
+  display: none;
+  margin: 8px 0 0 0;
+}
+#tm-execution-continue {
+  display: none;
 }
 
 #tm-main-readme {
@@ -185,4 +204,9 @@ input:checked + .slider:before {
   border-bottom: 1px solid #444;
   text-align: left;
 }
+
+
+
+
+
 `)

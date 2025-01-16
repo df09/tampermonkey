@@ -1,1 +1,1 @@
-(function(){'use strict';function searchActiveJobStart(){alert('searchActiveJobStart')}})();
+function searchActiveJobStart(){alert('searchActiveJobStart')}
