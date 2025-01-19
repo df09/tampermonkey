@@ -15,7 +15,7 @@
     '/_helpers/html/main.js',
     '/_helpers/storage.js',
     '/_helpers/ui.js',
-    '/'+tmDIR+'/createBarcodes/job.js',
+    '/'+tmDIR+'/createBarcodes/start.js',
     '/'+tmDIR+'/createBarcodes/newProduct.js',
     '/'+tmDIR+'/createBarcodes/sizeSetup.js',
     '/'+tmDIR+'/createBarcodes/sectionsDetail.js',
