@@ -1,9 +1,8 @@
-ui:
-  докрутить стили
-  alert - replace to modals
-%% TODO twins - если есть 3 точки подряд скипать строку
-%% TODO twins - скачать pdf, нажать на кнопку ooc
-%% TODO Shift+j - go to jobId
-%% TODO barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
-%% TODO Shift+a - search active jobs
-%% TODO crl - закупка hw
+докрутить стили
+barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+Shift+a - search active jobs
+twins - скачать pdf, нажать на кнопку out of corner
+
+twins - если есть 3 точки подряд скипать строку
+crl - закупка hw
+alert - replace to modals
