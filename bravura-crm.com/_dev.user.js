@@ -19,7 +19,7 @@
     '/'+tmDIR+'/createBarcodes/newProduct.js',
     '/'+tmDIR+'/createBarcodes/sizeSetup.js',
     '/'+tmDIR+'/createBarcodes/sectionsDetail.js',
-    '/'+tmDIR+'/go2jobById/start.js',
+    '/'+tmDIR+'/redirectToJob/start.js',
     '/'+tmDIR+'/searchActiveJob/start.js',
     '/'+tmDIR+'/testExec1/start.js',
     '/'+tmDIR+'/testExec2/start.js',

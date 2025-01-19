@@ -11,7 +11,7 @@
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/createBarcodes/newProduct.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/createBarcodes/sizeSetup.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/createBarcodes/sectionsDetail.js
-// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/go2jobByjobId/start.js
+// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/redirectToJob/start.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/main.js
 // @run-at       document-end
 // ==/UserScript==
