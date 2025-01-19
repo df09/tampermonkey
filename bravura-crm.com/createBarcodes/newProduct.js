@@ -20,7 +20,7 @@ async function selectProductType(productType, delay) {
   };
   const glassValue = glassMap[productType];
   if (!glassValue) {
-    abort(`selectProductType - Unsupported productType type: ${productType}`);
+    tmUiAbort(`selectProductType - Unsupported productType type: ${productType}`);
   }
   await updValEl(getEl(productTypeSelector), glassValue, delay);
   console.log('selectProductType:', productType);
@@ -29,7 +29,7 @@ async function selectExistingRoom(loc, delay) {
   const existedRoomEl = getEl(existedRoomSelector);
   const matchingOption = Array.from(existedRoomEl.options).find(option => option.textContent.trim().toLowerCase() === loc.toLowerCase());
   if (!matchingOption) {
-    abort('selectExistingRoom - Matching room option not found');
+    tmUiAbort('selectExistingRoom - Matching room option not found');
   }
   await updValEl(existedRoomEl, matchingOption.value, delay);
   console.log('selectExistingRoom:', loc);

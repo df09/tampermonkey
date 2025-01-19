@@ -1,7 +1,7 @@
 // prefix/serialize/deserialize
 const PREFIX = 'tm_';
 function ensurePrefix(key) {
-  if (!key.startsWith(PREFIX)) { abort(`Key must start with '${PREFIX}': ${key}`); }
+  if (!key.startsWith(PREFIX)) { tmUiAbort(`Key must start with '${PREFIX}': ${key}`); }
   return key;
 }
 function serialize(value) {
@@ -14,7 +14,7 @@ function deserialize(serialized) {
   if (type === 'object') return value;
   if (type === 'string') return String(value);
   if (type === 'undefined') return undefined;
-  abort(`Unsupported data type: ${type}`);
+  tmUiAbort(`Unsupported data type: ${type}`);
 }
 // set
 function tmsSet(key, value) {
@@ -75,7 +75,7 @@ function tmsReset() {
 // operations
 function tmsSetOperation(operation) {
     const operationFormat = /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/;
-    if (!operationFormat.test(operation)) {abort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
+    if (!operationFormat.test(operation)) {tmUiAbort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
     const [action, step] = operation.split('/');
     tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
     console.log('tmsSetOperation: "'+operation+'".');
@@ -93,7 +93,7 @@ function tmsOperationsGetHandlers(config) {
       if (typeof window[handlerName] === 'function') {
         fullHandlers[action][step] = window[handlerName];
       } else {
-        abort(`Handler function "${handlerName}" not found`);
+        tmUiAbort(`Handler function "${handlerName}" not found`);
       }
     }
   }
@@ -113,10 +113,10 @@ function tmsOperationsHandle(config) {
     if (actionHandlers[step]) {
       actionHandlers[step]();
     } else {
-      abort(operation+': unknown step "'+step+'"');
+      tmUiAbort(operation+': unknown step "'+step+'"');
     }
   } else {
-    abort(operation+': unknown action "'+action+'"');
+    tmUiAbort(operation+': unknown action "'+action+'"');
   }
 }
 // request

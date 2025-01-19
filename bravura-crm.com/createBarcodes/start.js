@@ -1,12 +1,3 @@
-// input:
-//   panl-12cl_door-38cl_panl-38cl: test_A1 test_B2 test_C3
-//   panl-38cl_door-38cl_panl-12cl: test_D4 test_E5 test_F6
-// output: [
-//   [test_A1, 12cl, panl],
-//   [test_A1, 38cl, door],
-//   [test_B2: 12cl, panl],
-//   ...
-// ]
 function getBarcodesData(textarea) {
   const result = [];
   const lines = textarea.value.trim().split('\n');
@@ -43,32 +34,39 @@ function getJobId() {
       console.log('getJobId:', jobId);
       return jobId;
     }
-    abort('getJobId - Job ID not found in the URL');
+    tmUiAbort('getJobId - Job ID not found in the URL');
   } catch (error) {
-    abort('getJobId - Error extracting Job ID:', error.message);
+    tmUiAbort('getJobId - Error extracting Job ID:', error.message);
   }
 }
 function getFosId() {
-  try {
-    const viewFoSelector = "a[href*='/fabrication_orders/'][href$='/edit']";
-    const match = getEl(viewFoSelector).href.match(/\/fabrication_orders\/(\d+)\/edit/);
-    if (match && match[1]) {
-      const fosId = match[1];
-      console.log('getFosId:', fosId);
-      return fosId;
-    }
-    abort('getFosId - fosId not found in "View FO" button href');
-  } catch (error) {
-    abort('getFosId - Error extracting fosId:', error.message);
+  const viewFoSelector = "a[href*='/fabrication_orders/'][href$='/edit']";
+  const match = getEl(viewFoSelector).href.match(/\/fabrication_orders\/(\d+)\/edit/);
+  if (match && match[1]) {
+    const fosId = match[1];
+    console.log('getFosId:', fosId);
+    return fosId;
   }
+  tmUiAbort('getFosId - fosId not found in "View FO" button href');
 }
-function createBarcodesJob() {
+function createBarcodesStart() {
+  // check start url
+  const regex = /^http:\/\/bravura-crm\.com\/jobs\/.*$/;
+  if (!regex.test(window.location.href)) {
+    tmUiAbort('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
+  }
   // get data
-  const barcodesData = getBarcodesData(getEl('#tm-prep-textarea'));
-  const jobId = getJobId();
+  tmsSet('tm_barcodesData', getBarcodesData(getEl('#tm-prep-textarea')));
+  tmsSet('tm_jobId', getJobId());
+  // check/create fo
+  const createFoSelector = "a[data-method='post'][href^='/jobs/'][href$='/fabrication_orders']";
+  const createFoEl = document.querySelector(createFoSelector);
+  if (!createFoEl) {
+    // redirect to create Fo
+    tmsSetOperation('createBarcodes/createFo');
+    clickEl(createFoEl);
+  }
   const fosId = getFosId();
-  tmsSet('tm_barcodesData', barcodesData);
-  tmsSet('tm_jobId', jobId);
   tmsSet('tm_fosId', fosId);
   // redirect
   tmsSetOperation('createBarcodes/newProduct');

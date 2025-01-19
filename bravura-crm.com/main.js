@@ -1,27 +1,24 @@
 (function(){'use strict';
   // === entrypoints =====================================
-  function go2jobById(){tmsSetOperation('go2jobById/start');go2jobByIdStart()}
+  function redirectToJob(hotkey){tmsSetOperation('redirectToJob/start');redirectToJobStart(hotkey)}
   function searchActiveJob(){tmsSetOperation('searchActiveJob/start');searchActiveJobStart()}
-  function createBarcodes(){tmsSetOperation('createBarcodes/job');createBarcodesJob()}
+  function createBarcodes(){tmsSetOperation('createBarcodes/start');createBarcodesStart()}
   // === ui =====================================
   const map = {
-    readme: 'https://example.com',
     thumblers: [
-      ['go-to-job-by-id', 'Go to Job by ID', 'shift+j', go2jobById],
-      ['search-active-job', 'Search Active Job', 'shift+s', searchActiveJob],
+      ['go-to-job-by-id', 'Go to Job by ID', 'Shift+J', redirectToJob],
+      ['search-active-job', 'Search Active Job', 'Shift+S', searchActiveJob],
     ],
     btnsPrep: [
       ['create-barcodes', 'Create Barcodes', createBarcodes],
     ],
-    btnsExec: [
-    ],
+    btnsExec: [],
   }
   tmUiInit(map);
-
   // === handle active operations =====================================
   tmsOperationsHandle({
-    go2jobById: ['start'],
+    redirectToJob: ['start'],
     searchActiveJob: ['start'],
-    createBarcodes: ['job', 'newProduct', 'sizeSetup', 'sectionsDetail'],
+    createBarcodes: ['start', 'createFo', 'newProduct', 'sizeSetup', 'sectionsDetail'],
   });
 })();

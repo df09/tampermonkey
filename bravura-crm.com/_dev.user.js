@@ -6,31 +6,32 @@
 // ==/UserScript==
 (function(){'use strict';
   // >>> data >>>>>>>>>>>
-  const host = 'http://localhost:9876';
-  const entrypoint = 'bravura-crm.com/dev';
+  window.tmENV = 'dev';
+  window.tmDIR = 'bravura-crm.com';
+  window.tmHOST = 'http://localhost:9876';
   const filesJs = [
     '/_helpers/common.js',
     '/_helpers/css/main.js',
     '/_helpers/html/main.js',
     '/_helpers/storage.js',
     '/_helpers/ui.js',
-    '/bravura-crm.com/createBarcodes/job.js',
-    '/bravura-crm.com/createBarcodes/newProduct.js',
-    '/bravura-crm.com/createBarcodes/sizeSetup.js',
-    '/bravura-crm.com/createBarcodes/sectionsDetail.js',
-    '/bravura-crm.com/go2jobById/start.js',
-    '/bravura-crm.com/searchActiveJob/start.js',
-    '/bravura-crm.com/testExec1/start.js',
-    '/bravura-crm.com/testExec2/start.js',
-    '/bravura-crm.com/testPrep1/start.js',
-    '/bravura-crm.com/testPrep2/start.js',
-    '/bravura-crm.com/main.js',
+    '/'+tmDIR+'/createBarcodes/job.js',
+    '/'+tmDIR+'/createBarcodes/newProduct.js',
+    '/'+tmDIR+'/createBarcodes/sizeSetup.js',
+    '/'+tmDIR+'/createBarcodes/sectionsDetail.js',
+    '/'+tmDIR+'/go2jobById/start.js',
+    '/'+tmDIR+'/searchActiveJob/start.js',
+    '/'+tmDIR+'/testExec1/start.js',
+    '/'+tmDIR+'/testExec2/start.js',
+    '/'+tmDIR+'/testPrep1/start.js',
+    '/'+tmDIR+'/testPrep2/start.js',
+    '/'+tmDIR+'/main.js',
   ];
   // === loader =========
   async function tmLoad(fs){for(const f of fs){await new Promise((r,j)=>{
     const e=document.createElement('script');e.async=false; // Гарантирует последовательное выполнение
-    e.src=host+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
+    e.src=tmHOST+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
     document.body.appendChild(e);
-  });}}
-  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(entrypoint+'.js: loaded');}catch(e){console.error(e);}});
+  })}}
+  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(tmDIR+'/'+tmENV+': loaded');}catch(e){console.error(e);}});
 })();

@@ -1,13 +1,10 @@
-// abort
 class AbortExecution extends Error{constructor(message){super(message);this.name="AbortExecution";}}
 function abort(...args) {
   console.log('abort: init..')
   tmsDeleteAll(); // clean storage
   // Formulate message
-  const showAlert = typeof args[0] === 'boolean' ? args.shift() : true;
-  const msg = 'AbortExecution';
   const joinedArgs=args.map(arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)).join(' ');
-  if(showAlert){alert(joinedArgs?`${msg}: ${joinedArgs}`:msg);} // Show alert
+  alert('Abort' + (joinedArgs ? `: ${joinedArgs}` : '.'))
   console.log('abort: done.'); throw new AbortExecution(joinedArgs); // Throw exception
 }
 // inject
@@ -39,6 +36,14 @@ function redirect(newUrl) {
   console.log('redirect: "'+newUrl+'"');
   window.location.href = newUrl; // Выполняем редирект
 }
+function redirect(newUrl, force=false) {
+  console.log('redirect: "' + newUrl + '"');
+  if (force || window.location.href !== newUrl) {
+    window.location.href = newUrl; // Выполняем редирект
+  } else {
+    console.log('redirect: already on the target URL.');
+  }
+}
 async function fakeRedirect(newUrl, delay=3000) {
   console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');
   window.location.href = newUrl; // Выполняем редирект
@@ -51,17 +56,17 @@ function getEl(selector) {
     // Если это ID, используем getElementById
     e = document.getElementById(selector.slice(1));
     if (!e) {
-      abort(`getEl "${selector}": not found.`);
+      tmUiAbort(`getEl "${selector}": not found.`);
     }
   } else {
     // Используем querySelectorAll для произвольного селектора
     const els = document.querySelectorAll(selector);
     if (els.length === 0) {
-      abort(`getEl "${selector}": not found.`);
+      tmUiAbort(`getEl "${selector}": not found.`);
     } else if (els.length === 1) {
       e = els[0];
     } else {
-      abort(`getEl "${selector}": multiple els found.`);
+      tmUiAbort(`getEl "${selector}": multiple els found.`);
     }
   }
   console.log(`getEl "${selector}":`, e);
@@ -69,7 +74,7 @@ function getEl(selector) {
 }
 function getEls(selector) {
   const els = document.querySelectorAll(selector);
-  if (els.length === 0) {abort('getEl: "'+selector+'" not found.')}
+  if (els.length === 0) {tmUiAbort('getEl: "'+selector+'" not found.')}
   console.log('getEls "'+selector+'":', els);
   return els;
 }

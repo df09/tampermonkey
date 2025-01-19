@@ -72,12 +72,7 @@ function tmUiInitOperation() {
 }
 function tmUiInitAbort(operation) {
   let el = getEl('#tm-abort');
-  el.addEventListener('click',()=>{
-    tmsDeleteAll();
-    tmUiInitOperation();
-    tmUiShowMain();
-    abort('Execution aborted by user. All data was deleted from storage.');
-  })
+  el.addEventListener('click',()=>{tmUiAbort('Execution aborted by user. All data was deleted from storage.')})
   if (operation) {tmUiFlex(el)} else {tmUiHide(el)}
 }
 function tmUiInitMinimize() {
@@ -97,47 +92,37 @@ function tmUiInitMinimize() {
 }
 // main
 function tmUiInitMain() {makeResizebale('#tm-main')}
-function tmUiInitReadme(link) {
-  getEl('#tm-main-readme a').href=link
+function tmUiInitReadme(){getEl('#tm-main-readme a').href=tmHOST+'/'+tmDIR+'/'+'readme.md'}
+function getKey(hotkey,n) {
+  const key = hotkey.split('+')[n];
+  if (key === 'Shift') return event.shiftKey;
+  if (key === 'Ctrl') return event.ctrlKey;
+  if (key === 'Alt') return event.altKey;
+  if (key === 'Meta') return event.metaKey;
+  return event.key === key;
 }
 function tmUiInitThumbler(data) {
   let [idpfx, title, hotkey, action] = data;
   let id = 'tm-thmb-' + idpfx;
-
   // Добавляем Thumbler в HTML
   getEl('#tm-main-thumblers').innerHTML += `
     <div id="${id}" class="tm-row">
-      <h3 class="tm-title">${title}<span class="tm-hotkey">(${hotkey})</span></h3>
+      <h3 class="tm-title">${title} <span class="tm-hotkey">(${hotkey})</span></h3>
       <label class="tm-switch">
         <input type="checkbox">
         <span class="tm-slider"></span>
       </label>
     </div>
   `;
-
   let checkbox = getEl(`#${id} input`);
-
   // Обработчик изменения состояния переключателя
   checkbox.addEventListener('change', (event) => {
     if (event.target.checked) {
       console.log(`Switch for ${title} is ON`);
-      // Активировать действие при включении
+      document.addEventListener('keydown', action(hotkey));
     } else {
       console.log(`Switch for ${title} is OFF`);
-      // Отключить действие при выключении
-    }
-  });
-
-  // Привязываем обработчик для горячей клавиши к конкретному переключателю
-  document.addEventListener('keydown', (event) => {
-    if (event.shiftKey && event.key.toLowerCase() === hotkey.split('+')[1].toLowerCase()) {
-      if (checkbox.checked) {
-        console.log(`Action triggered for ${hotkey} (Switch ON)`);
-        action('on'); // Выполнение переданного действия, если включено
-      } else {
-        console.log(`Action triggered for ${hotkey} (Switch OFF)`);
-        action('off'); // Выполнение переданного действия, если выключено
-      }
+      document.removeEventListener('keydown', action(hotkey));
     }
   });
 }
@@ -297,11 +282,7 @@ async function tmUiPause(msg) {
 }
 // execution
 function tmUiInitBtnCancel() {
-  getEl('#tm-execution-cancel').addEventListener('click',()=>{
-    tmsReset();
-    tmUiInitOperation();
-    tmUiShowMain();alert('Execution canceled by user.');
-  });
+  getEl('#tm-execution-cancel').addEventListener('click',()=>{reset('Execution canceled by user.')});
 }
 
 // === init ==============================
@@ -314,7 +295,7 @@ function tmUiInit(map) {
   console.log('tmUiInit.header: done.');
   // main
   tmUiInitMain();
-  tmUiInitReadme(map.readme);
+  tmUiInitReadme();
   for (let data of map.thumblers){tmUiInitThumbler(data)}
   for (let data of map.btnsPrep){tmUiInitBtnPrep(data)}
   for (let data of map.btnsExec){tmUiInitBtnExec(data)}
@@ -331,4 +312,22 @@ function tmUiInit(map) {
   let operation = tmsGetOperation();
   if (operation) {tmUiShowExecution()} else {tmUiShowMain()} // show menu
   console.log('tmUiInit: done.');
+}
+// abort/reset
+function tmUiAbort(...args) {
+  console.log('tmUiAbort: init..')
+  tmsDeleteAll(); // clean storage
+  tmUiInitOperation();
+  tmUiShowMain();
+  abort(...args);
+}
+function tmUiReset(...args) {
+  console.log('tmUiReset: init..')
+  tmsReset(); // clean storage
+  tmUiInitOperation();
+  tmUiShowMain();
+  // Formulate message
+  const joinedArgs=args.map(arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)).join(' ');
+  alert('tmUiReset' + (joinedArgs ? `: ${joinedArgs}` : '.'))
+  console.log('tmUiReset: done.');
 }

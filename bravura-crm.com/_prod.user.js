@@ -15,4 +15,9 @@
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/main.js
 // @run-at       document-end
 // ==/UserScript==
-(()=>{'use strict';const i='bravura-crm.com/prod';window.addEventListener('load',async ()=>console.log(i+': loaded'));})();
+(()=>{'use strict';
+  window.tmENV = 'prod';
+  window.tmDIR = 'bravura-crm.com';
+  window.tmHOST = 'https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main';
+  window.addEventListener('load',async ()=>console.log(tmDIR+'/'+tmENV+': loaded'))
+})();
