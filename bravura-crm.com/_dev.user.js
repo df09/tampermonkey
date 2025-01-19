@@ -21,10 +21,6 @@
     '/'+tmDIR+'/createBarcodes/sectionsDetail.js',
     '/'+tmDIR+'/redirectToJob/start.js',
     '/'+tmDIR+'/searchActiveJob/start.js',
-    '/'+tmDIR+'/testExec1/start.js',
-    '/'+tmDIR+'/testExec2/start.js',
-    '/'+tmDIR+'/testPrep1/start.js',
-    '/'+tmDIR+'/testPrep2/start.js',
     '/'+tmDIR+'/main.js',
   ];
   // === loader =========
