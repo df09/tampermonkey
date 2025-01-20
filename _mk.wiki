@@ -1,23 +1,8 @@
-.tm-modal-<type>-<accent>:
-  .tm-modal-header
-    .tm-modal-header-title
-    .tm-modal-herder-cancel (dialog/content)
-  .tm-modal-body
-    .tm-modal-body-alert
-    .tm-modal-body-dialog
-    .tm-modal-body-content
-
-modals:
-  alert=success/warning/error/info:
-  dialog=info:
-    body:
-      msg
-      input
-      submit
-
+migrate to modals
 back: fix prep
 minimized: fix prep
 minimized: save/restore
+resize: check user presets
 barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
 Shift+a - search active jobs
 
