@@ -44,7 +44,7 @@ function redirect(newUrl, force=false) {
     console.log('redirect: already on the target URL.');
   }
 }
-async function fakeRedirect(newUrl, delay=3000) {
+async function fakeRedirect(newUrl, delay=2000) {
   console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');
   window.location.href = newUrl; // Выполняем редирект
   await sleep(delay);
@@ -78,12 +78,12 @@ function getEls(selector) {
   console.log('getEls "'+selector+'":', els);
   return els;
 }
-async function clickEl(e, delay=100) {
+async function clickEl(e, delay=300) {
   e.click();
   console.log('clickEl:', e);
   await sleep(delay);
 }
-async function updValEl(e, newVal, delay=100) {
+async function updValEl(e, newVal, delay=300) {
   const oldVal = e.value;
   e.value = newVal;
   console.log('updValEl: "' + oldVal + '" -> "' + newVal + '"', e);

@@ -13,9 +13,32 @@ function tmRemoveClass(element, ...classes) {
     }
   });
 }
-function tmUiBlock(...els){els.forEach(e =>{e.classList.remove('tm-hidden','tm-flex');e.classList.add('tm-block')})}
-function tmUiFlex(...els){els.forEach(e=>{e.classList.remove('tm-hidden','tm-block');e.classList.add('tm-flex')})}
-function tmUiHide(...els){els.forEach(e =>{e.classList.remove('tm-block','tm-flex');e.classList.add('tm-hidden')})}
+function tmUiBlock(...els) {
+    setTimeout(() => {
+        els.forEach(e => {
+            e.classList.remove('tm-hidden', 'tm-flex');
+            e.classList.add('tm-block');
+        });
+    }, 300);
+}
+
+function tmUiFlex(...els) {
+    setTimeout(() => {
+        els.forEach(e => {
+            e.classList.remove('tm-hidden', 'tm-block');
+            e.classList.add('tm-flex');
+        });
+    }, 300);
+}
+
+function tmUiHide(...els) {
+    setTimeout(() => {
+        els.forEach(e => {
+            e.classList.remove('tm-block', 'tm-flex');
+            e.classList.add('tm-hidden');
+        });
+    }, 300);
+}
 function tmUiShowMain(){tmUiInitOperation();tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize',getEl('#tm-main')))}
 function tmUiShowPrep(){tmUiInitOperation();tmUiHide(getEl('#tm-main'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-prep'))}
 function tmUiShowExecution(){tmUiInitOperation();tmUiHide(getEl('#tm-minimize'),getEl('#tm-main'),getEl('#tm-prep'));tmUiFlex(getEl('#tm-execution'))}
@@ -246,11 +269,6 @@ function tmUiInitStorageView() {
     tmUiBlock(getEl('#tm-modal-storage-view'));
   });
 
-  // Закрытие модального окна
-  getEl('#tm-storage-close').addEventListener('click', () => {
-    tmUiHide(getEl('#tm-modal-storage-view'));
-  });
-
   // Копирование всех ключей и значений
   getEl('#tm-storage-copy-all').addEventListener('click', () => {
     const allData = tmsGetAll().map(key => {
@@ -279,7 +297,7 @@ function tmUiInitStorageReset() {
     });
   });
 }
-function tmUiInitStorageClen() {
+function tmUiInitStorageClean() {
   getEl('#tm-storage-clean').addEventListener('click',()=>{
     tmsDeleteAll();
     tmUiInitOperation();
@@ -298,7 +316,6 @@ function tmUiInitBack(){getEl('#tm-prep-back').addEventListener('click',()=>{tmU
 async function tmUiPause(msg) {
   let e = getEl('#tm-execution-continue');
   tmUiBlock(e);
-  await sleep(100);
   // allert('tmUiPause: '+msg);
   ModalManager.buildAlert({
     accent: 'warning',
@@ -330,7 +347,7 @@ function tmUiInit(map) {
   for (let data of map.btnsPrep){tmUiInitBtnPrep(data)}
   for (let data of map.btnsExec){tmUiInitBtnExec(data)}
   tmUiInitStorageView();
-  tmUiInitStorageClen();
+  tmUiInitStorageClean();
   tmUiInitStorageReset();
   console.log('tmUiInit.main: done.');
   // prep

@@ -1,43 +1,48 @@
-// // Примеры использования
-// ModalManager.buildAlert({
-//   accent: 'error',
-//   title: 'Alert Title',
-//   msg: 'This is an alert msg.',
-// });
 const ModalManager = {
-  e = getEl('.tm-modal'),
-  backup = this.e.innerHTML,
+  e: getEl('.tm-modal'),
+  backup: null,
   setModalType(type) {
-    const allowed = ['alert','dialog-input','dialog-textarea','content'];
-    if (!allowed.includes(type)){abort('ModalManager.setModalType: invalid type ('+type+'), allowed only '+allowed)}
-    tmAddClass(e,'tm-'+type);
+    const allowed = ['alert', 'dialog-input', 'dialog-textarea', 'content'];
+    if (!allowed.includes(type)) {
+      abort('ModalManager.setModalType: invalid type (' + type + '), allowed only ' + allowed);
+    }
+    tmAddClass(this.e, 'tm-model-' + type);
   },
   setModalAccent(accent) {
-    const allowed = ['info','success','warning','error'];
-    if (!allowed.includes(accent)){abort('ModalManager.setModalType: invalid type ('+accent+'), allowed only '+allowed)}
-    tmAddClass(e,'tm-'+accent);
+    const allowed = ['info', 'success', 'warning', 'error'];
+    if (!allowed.includes(accent)) {
+      abort('ModalManager.setModalAccent: invalid type (' + accent + '), allowed only ' + allowed);
+    }
+    tmAddClass(this.e, 'tm-modal-' + accent);
   },
-  setTitle(title){getEl('.tm-modal-header-title').textContent=title},
-  setClose(actionClose){
+  setTitle(title) {
+    getEl('.tm-modal-header-title').textContent = title;
+  },
+  setClose(actionClose) {
     let eClose = getEl('.tm-modal-header-close');
-    eClose.onclick=()=>(
+    eClose.onclick = () => {
       tmUiHide(this.e);
-      this.e.innerHTML=backup;
+      this.e.innerHTML = this.backup;
       actionClose();
-    );
+    };
     tmUiFlex(eClose);
-  }.
-  setMsg(msg){getEl('.tm-modal-body-alert-msg').textContent=msg},
+  },
+  setMsg(msg) {
+    getEl('.tm-modal-body-alert-msg').textContent = msg;
+  },
 
   // alert
-  buildAlert({accent='info',title='',msg='',actionClose}){
-    this.backup();
+  buildAlert({ accent = 'info', title = '', msg = '', actionClose }) {
+    this.backup = this.e.innerHTML;
     // validate
-    if (!title){abort('ModalManager.buildAlert: please set title.')}
-    if (!msg){abort('ModalManager.buildAlert: please set msg.')}
+    if (!title) {
+      abort('ModalManager.buildAlert: please set title.');
+    }
+    if (!msg) {
+      abort('ModalManager.buildAlert: please set msg.');
+    }
     // preset
-    this.type = 'alert';
-    // wrap
+    const type = 'alert';
     this.setModalType(type);
     this.setModalAccent(accent);
     // header
@@ -46,25 +51,32 @@ const ModalManager = {
     // body
     this.setMsg(msg);
     this.setClose(actionClose);
-    tmUiFlex(getEl('.tm-modal-body-alert');
+    tmUiFlex(getEl('.tm-modal-body-alert'));
     // show modal
-    tmUiBlock(this.e);
+    tmUiFlex(this.e);
   },
 
   // dialog
-  buildDialog({kind='input', title='',msg='', actionClose, actionSubmit}) {
+  buildDialog({ kind = 'input', title = '', msg = '', actionClose, actionSubmit }) {
     // validate
-    if (!['input','textarea'].includes(kind)){abort('ModalManager.buildDialog: invalid kind ('+kind+'), allowed only '+kind)}
-    if (!title){abort('ModalManager.buildDialog: please set title.')}
-    if (!msg){abort('ModalManager.buildDialog: please set msg.')}
-    if (typeof actionClose !== 'function') { abort('ModalManager.buildDialog: actionClose must be a function.')}
-    if (typeof actionSubmit !== 'function') { abort('ModalManager.buildDialog: actionSubmit must be a function.')}
-    if (!actionClose) {abort('ModalManager.buildDialog: please set actionClose.')}
-    if (!actionSubmit) {abort('ModalManager.buildDialog: please set actionSubmit.')}
+    if (!['input', 'textarea'].includes(kind)) {
+      abort('ModalManager.buildDialog: invalid kind (' + kind + '), allowed only input, textarea');
+    }
+    if (!title) {
+      abort('ModalManager.buildDialog: please set title.');
+    }
+    if (!msg) {
+      abort('ModalManager.buildDialog: please set msg.');
+    }
+    if (typeof actionClose !== 'function') {
+      abort('ModalManager.buildDialog: actionClose must be a function.');
+    }
+    if (typeof actionSubmit !== 'function') {
+      abort('ModalManager.buildDialog: actionSubmit must be a function.');
+    }
     // preset
-    this.type = 'dialog-'+kind;
-    this.accent = 'info';
-    // wrap
+    const type = 'dialog-' + kind;
+    const accent = 'info';
     this.setModalType(type);
     this.setModalAccent(accent);
     // header
@@ -72,42 +84,43 @@ const ModalManager = {
     this.setClose(actionClose);
     // body
     this.setMsg(msg);
-    if (kind ==='input') {
-      tmUiFlex(getEl('.tm-modal-body-dialog-input'))
+    if (kind === 'input') {
+      tmUiFlex(getEl('.tm-modal-body-dialog-input'));
     } else {
-      tmUiFlex(getEl('.tm-modal-body-dialog-textarea'))
+      tmUiFlex(getEl('.tm-modal-body-dialog-textarea'));
     }
-    getEl('.tm-modal-body-dialog-submit').onclick=()=>actionSubmit();
-    tmUiFlex(getEl('.tm-modal-body-dialog');
+    getEl('.tm-modal-body-dialog-submit').onclick = () => actionSubmit();
+    tmUiFlex(getEl('.tm-modal-body-dialog'));
     // Обработка нажатий клавиш
-    modal.addEventListener('keydown', (event) => {
+    this.e.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
-        handleSubmit();
+        actionSubmit();
       } else if (event.key === 'Escape') {
-        cleanup();
+        actionClose();
         tmUiReset();
       }
     });
     // show modal
-    tmUiBlock(this.e);
+    tmUiFlex(this.e);
   },
 
   // content
-  buildContent(title='') {
+  buildContent(title = '', actionClose) {
     // validate
-    if (!title){abort('ModalManager.buildContent: please set title.')}
+    if (!title) {
+      abort('ModalManager.buildContent: please set title.');
+    }
     // preset
-    this.type = 'content';
-    this.accent = 'info';
-    // wrap
+    const type = 'content';
+    const accent = 'info';
     this.setModalType(type);
     this.setModalAccent(accent);
     // header
     this.setTitle(title);
     this.setClose(actionClose);
     // body
-    tmUiFlex(getEl('.tm-modal-body-content');
+    tmUiFlex(getEl('.tm-modal-body-content'));
     // show modal
-    tmUiBlock(this.e);
+    tmUiFlex(this.e);
   },
 };

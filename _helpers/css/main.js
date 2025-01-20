@@ -26,7 +26,6 @@ injectCSS(`
   font-size: 12px;
   font-weight: bold;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   font-family: monospace;
 }
@@ -60,10 +59,10 @@ injectCSS(`
 /* ===== container ============================ */
 #tm-container {
   z-index: 10000; position: fixed; bottom: 10px; right: 10px;
-  min-width: 300px; min-height: 40px;
+  min-width: 300px; min-height: 20px;
   font-family: monospace; font-size: 1rem;
   background-color: #fff;
-  border: 1px solid #ccc; border-radius: 5px;
+  border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 0;
   margin: 0;
@@ -72,14 +71,17 @@ injectCSS(`
 /* ===== header ============================ */
 #tm-header {
   justify-content: space-between;
-  padding: 10px;
+  padding: 0;
   margin: 0;
 }
 #tm-operation {
   width: 100%; height: 100%;
-  border: 1px solid #ccc; border-radius: 5px;
+  border: 1px solid #ccc;
   padding: 5px;
   margin: 0;
+}
+#tm-minimize {
+  font-size: 13px;
 }
 
 /* ===== main ============================ */
@@ -183,7 +185,6 @@ input:checked + .tm-slider:before {
   text-align: center;
 }
 
-
 /* ===== execution ============================ */
 #tm-execution {
   display: none;
@@ -201,9 +202,10 @@ input:checked + .tm-slider:before {
   z-index: 10001; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); overflow-y: auto;
   width: 80%; max-height: 80%;
   min-width: 300px; min-height: 150px;
-  border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px;
   margin: 0;
+  background: #fff;
 }
 .tm-modal-header {}
 .tm-modal-body {}
@@ -211,20 +213,20 @@ input:checked + .tm-slider:before {
 .tm-modal-body-dialog { display: none; }
 .tm-modal-body-dialog-input { display: none; }
 .tm-modal-body-dialog-textarea { display: none; }
+.tm-modal-body-dialog-submit { max-width: 100px; }
 .tm-modal-body-content { display: none; }
 
 /* ===== modal.accent ============================ */
-.tm-modal.info {}
-.tm-modal.success {}
-.tm-modal.warning {}
-.tm-modal.error {}
-.tm-modal.info .tm-modal-header {}
-.tm-modal.success .tm-modal-header {}
-.tm-modal.warning .tm-modal-header {}
-.tm-modal.errn .tm-modal-header {}
+.tm-modal.tm-modal-info {}
+.tm-modal.tm-modal-success {}
+.tm-modal.tm-modal-warning {}
+.tm-modal.tm-modal-error {}
+.tm-modal.tm-modal-info .tm-modal-header {}
+.tm-modal.tm-modal-success .tm-modal-header {}
+.tm-modal.tm-modal-warning .tm-modal-header {}
+.tm-modal.tm-modal-error .tm-modal-header {}
 
-/* === modal.instances ======================================== */
-/* >>> modal.storage */
+/* === modal.storage ======================================== */
 #tm-modal-storage-view { display: none; }
 .tm-modal table {
   border-collapse: collapse;
