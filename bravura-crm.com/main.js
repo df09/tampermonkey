@@ -1,7 +1,7 @@
 // === entrypoints =====================================
-async function redirectToJob(hotkey){await tmStart('redirectToJob');redirectToJobStart(hotkey)}
-async function searchActiveJob(){await tmStart('searchActiveJob');searchActiveJobStart()}
-async function createBarcodes(){await tmStart('createBarcodes');createBarcodesStart()}
+function redirectToJob(hotkey){tmStart('redirectToJob');redirectToJobStart(hotkey)}
+function searchActiveJob(){tmStart('searchActiveJob');searchActiveJobStart()}
+function createBarcodes(){tmStart('createBarcodes');createBarcodesStart()}
 // === ui =====================================
 const tmMap = {
   readme: 'https://github.com/df09/tampermonkey/blob/main/bravura-crm.com/readme.md',

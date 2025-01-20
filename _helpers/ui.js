@@ -1,31 +1,22 @@
 // helpers
-function tmUiGetDisplay(...els) {
-  return els.map(el => {
-    const computedStyle = window.getComputedStyle(el);
-    return computedStyle.display;
+function tmAddClass(element, ...classes) {
+  classes.forEach(cls => {
+    if (!element.classList.contains(cls)) {
+      element.classList.add(cls);
+    }
   });
 }
-function tmUiBlock(...els) {
-  els.forEach(el => {
-    el.classList.remove('tm-hidden', 'tm-flex'); // Удаляем другие классы
-    el.classList.add('tm-block'); // Добавляем класс для отображения как блок
+function tmRemoveClass(element, ...classes) {
+  classes.forEach(cls => {
+    if (element.classList.contains(cls)) {
+      element.classList.remove(cls);
+    }
   });
 }
-function tmUiFlex(...els) {
-  els.forEach(el => {
-    el.classList.remove('tm-hidden', 'tm-block'); // Удаляем другие классы
-    el.classList.add('tm-flex'); // Добавляем класс для отображения как flex
-  });
-}
-function tmUiHide(...els) {
-  els.forEach(el => {
-    el.classList.remove('tm-block', 'tm-flex'); // Удаляем классы отображения
-    el.classList.add('tm-hidden'); // Добавляем класс для скрытия
-  });
-}
-function tmUiToggleBlock(...els){els.forEach(el=>{el.style.display=(el.style.display==='none')?'block':'none'})}
-function tmUiToggleFlex(...els){els.forEach(el=>{el.style.display=(el.style.display==='none')?'flex':'none'})}
-function tmUiShowMain(){tmUiInitOperation();tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-main'))}
+function tmUiBlock(...els){els.forEach(e =>{e.classList.remove('tm-hidden','tm-flex');e.classList.add('tm-block')})}
+function tmUiFlex(...els){els.forEach(e=>{e.classList.remove('tm-hidden','tm-block');e.classList.add('tm-flex')})}
+function tmUiHide(...els){els.forEach(e =>{e.classList.remove('tm-block','tm-flex');e.classList.add('tm-hidden')})}
+function tmUiShowMain(){tmUiInitOperation();tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize',getEl('#tm-main')))}
 function tmUiShowPrep(){tmUiInitOperation();tmUiHide(getEl('#tm-main'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-prep'))}
 function tmUiShowExecution(){tmUiInitOperation();tmUiHide(getEl('#tm-minimize'),getEl('#tm-main'),getEl('#tm-prep'));tmUiFlex(getEl('#tm-execution'))}
 function makeResizebale(selector) {
@@ -36,20 +27,20 @@ function makeResizebale(selector) {
   // Resize
   let isResizing = false;
   let startX, startY, startWidth, startHeight;
-  c.addEventListener("mousedown", (el) => {
-    if (el.target.matches("button, input, .tm-slider")) return; // Skip excluded elements
-    if (el.button !== 0) return; // Only left mouse button
+  c.addEventListener("mousedown", (e) => {
+    if (e.target.matches("button, input, .tm-slider")) return; // Skip excluded elements
+    if (e.button !== 0) return; // Only left mouse button
     isResizing = true;
-    startX = el.clientX;
-    startY = el.clientY;
+    startX = e.clientX;
+    startY = e.clientY;
     startWidth = c.offsetWidth;
     startHeight = c.offsetHeight;
     document.body.style.userSelect = "none"; // Disable text selection
   });
-  document.addEventListener("mousemove", (el) => {
+  document.addEventListener("mousemove", (e) => {
     if (!isResizing) return;
-    let newWidth = startWidth - (el.clientX - startX);
-    let newHeight = startHeight - (el.clientY - startY);
+    let newWidth = startWidth - (e.clientX - startX);
+    let newHeight = startHeight - (e.clientY - startY);
     c.style.width = `${Math.max(newWidth, 50)}px`; // Minimum width
     c.style.height = `${Math.max(newHeight, 50)}px`; // Minimum height
   });
@@ -68,33 +59,39 @@ function tmUiInitOperation() {
   let operation = tmsGetOperation();
   let txt = operation || 'None';
   // elements
-  let el = getEl('#tm-operation');
-  let span = el.querySelector('span');
+  let e = getEl('#tm-operation');
+  let span = e.querySelector('span');
   // upd txt
   span.textContent = txt;
   // classes
-  el.className = txt === 'None'?'tm-title tm-border-g':'tm-title tm-border-r';
-  span.className = txt === 'None'?'tm-g':'tm-r';
+  if (txt === 'None') {
+    tmRemoveClass(e,'tm-border-r');tmAddClass(e,'tm-border-g');
+    tmRemoveClass(span,'tm-r');tmAddClass(span,'tm-g');
+  } else {
+    tmRemoveClass(e,'tm-border-g');tmAddClass(e,'tm-border-r');
+    tmRemoveClass(span,'tm-g');tmAddClass(span,'tm-r');
+  }
   // abort button
   tmUiInitAbortBtn(operation);
 }
 function tmUiInitAbortBtn(operation) {
-  let el = getEl('#tm-abort');
-  el.addEventListener('click',()=>{tmUiAbort('Execution aborted by user. All data was deleted from storage.')})
-  if (operation) {tmUiFlex(el)} else {tmUiHide(el)}
+  let e = getEl('#tm-abort');
+  e.addEventListener('click',()=>{tmUiAbort('Execution aborted by user. All data was deleted from storage.')})
+  if (operation) {tmUiFlex(e)} else {tmUiHide(e)}
 }
 function tmUiInitMinimize() {
-  el = getEl('#tm-minimize');
-  el.addEventListener('click',()=>{
-    if (el.textContent === 'X') {
-      let minimized = tmUiGetDisplay(getEl('#tm-main'))==='none'?'#tm-prep':'#tm-main';
-      tmsSet('tm_keep_minimized', minimized);
-      tmUiHide(getEl(minimized));
-      el.textContent='^';
+  e = getEl('#tm-minimize');
+  e.addEventListener('click',()=>{
+    if (e.textContent === 'X') {
+      let target = getEl('#tm-main').classList.contains('tm-hidden')?'#tm-prep':'#tm-main';
+      tmsSet('tm_keep_minimized', target);
+      e.textContent='^';
+      tmUiHide(getEl(target));
     } else {
-      tmUiFlex(getEl(tmsGet('tm_keep_minimized')));
+      let restore_target = tmsGet('tm_keep_minimized');
       tmsDelete('tm_keep_minimized');
-      el.textContent='X';
+      e.textContent='X';
+      tmUiFlex(getEl(restore_target));
     }
   })
 }
@@ -116,7 +113,7 @@ function tmUiInitHotkeyPair(data) {
   // Добавляем hotkeyPair в HTML
   c.insertAdjacentHTML('beforeend', `
     <div id="${id}" class="tm-row">
-      <h3 class="tm-title">${title} <span class="tm-hotkey">(${hotkeyPair})</span></h3>
+      <h3 class="tm-title tm-row tm-hotkey-title"><span>${title}</span><span class="tm-hotkey">(${hotkeyPair})</span></h3>
       <label class="tm-switch">
         <input type="checkbox">
         <span class="tm-slider"></span>
@@ -128,13 +125,13 @@ function tmUiInitHotkeyPair(data) {
   checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
       console.log(id+': ON');
-      tmsSet('tm_keep_'+idpfx, '1')
+      tmsSet('tm_keep_hotkeyPair-'+idpfx, '1')
       function hotkeyHandler(event){if(getKey(hotkeyPair,0)&&getKey(hotkeyPair,1)){action()}}
       checkbox.hotkeyHandler = hotkeyHandler;
       document.addEventListener('keydown', hotkeyHandler);
     } else {
       console.log(id+': OFF');
-      tmsDelete('tm_keep_'+idpfx)
+      tmsDelete('tm_keep_hotkeyPair-'+idpfx)
       if (checkbox.hotkeyHandler) {
         document.removeEventListener('keydown', checkbox.hotkeyHandler);
         checkbox.hotkeyHandler = null;
@@ -142,7 +139,7 @@ function tmUiInitHotkeyPair(data) {
     }
   });
   // воостановить пользовательские значения
-  if (tmsGet('tm_keep_' + idpfx) === '1') {
+  if (tmsGet('tm_keep_hotkeyPair-' + idpfx) === '1') {
     checkbox.checked = true; // Установить состояние чекбокса как включенное
     checkbox.dispatchEvent(new Event('change')); // Триггерим обработчик для применения действия
   }
@@ -177,10 +174,10 @@ function tmUiInitBtnPrep(data) {
       tmsSet('tm_keep_uiTextareaValue_'+idpfx, textarea.value);
     });
     // Скрываем другие EXEC кнопки
-    getEls('.'+prepGroupClass).forEach(el => tmUiHide(el));
+    getEls('.'+prepGroupClass).forEach(e => tmUiHide(e));
     // Показ текущей EXEC кнопки
     let prepExec = getEl('#'+prepId);
-    tmUiFlex(prepExec);
+    tmUiBlock(prepExec);
     prepExec.addEventListener('click', () => {
       tmUiShowExecution();
       action();
@@ -236,8 +233,8 @@ function tmUiInitStorageView() {
     });
 
     // Добавляем обработчики событий для кнопок Copy после их создания
-    getEls('.tm-storage-copy-row').forEach(el => {
-      el.addEventListener('click', (event) => {
+    getEls('.tm-storage-copy-row').forEach(e => {
+      e.addEventListener('click', (event) => {
         const value = event.target.getAttribute('data-value');
         navigator.clipboard.writeText(value)
           .then(() => { console.log(`Copied: ${value}`); })
@@ -273,32 +270,50 @@ function tmUiInitStorageReset() {
   getEl('#tm-storage-reset').addEventListener('click',()=>{
     tmsReset();
     tmUiInitOperation();
-    alert('Storage.Reset: all non-premanent data was removed from storage.')
+    // allert('Storage.Reset: all non-premanent data was removed from storage.')
+    ModalManager.buildAlert({
+      accent: 'warning',
+      title: 'Storage.Reset',
+      msg: 'all non-premanent data was removed from storage.',
+      actionClose: ()=>{},
+    });
   });
 }
 function tmUiInitStorageClen() {
   getEl('#tm-storage-clean').addEventListener('click',()=>{
     tmsDeleteAll();
     tmUiInitOperation();
-    alert('Storage.CLEAN: all data was deleted from storage.')
+    // allert('Storage.CLEAN: all data was deleted from storage.')
+    ModalManager.buildAlert({
+      accent: 'error',
+      title: 'Storage.CLEAN',
+      msg: 'all data was deleted from storage.',
+      actionClose: ()=>{},
+    });
   });
 }
 // prep
 function tmUiInitPrep(){makeResizebale('#tm-prep')}
 function tmUiInitBack(){getEl('#tm-prep-back').addEventListener('click',()=>{tmUiShowMain()})}
 async function tmUiPause(msg) {
-  let el = getEl('#tm-execution-continue');
-  tmUiBlock(el);
+  let e = getEl('#tm-execution-continue');
+  tmUiBlock(e);
   await sleep(100);
-  alert('tmUiPause: '+msg);
-  await new Promise(resolve => {
-    el.onclick = resolve;
+  // allert('tmUiPause: '+msg);
+  ModalManager.buildAlert({
+    accent: 'warning',
+    title: 'tmUiPause',
+    msg: msg,
+    actionClose: ()=>{},
   });
-  tmUiHide(el);
+  await new Promise(resolve => {
+    e.onclick = resolve;
+  });
+  tmUiHide(e);
 }
 // execution
 function tmUiInitBtnCancel() {
-  getEl('#tm-execution-cancel').addEventListener('click',()=>{reset('Execution canceled by user.')});
+  getEl('#tm-execution-cancel').addEventListener('click',()=>{tmUiReset('Execution canceled by user.')});
 }
 
 // === init ==============================
@@ -325,7 +340,20 @@ function tmUiInit(map) {
   tmUiInitBtnCancel();
   // show
   let operation = tmsGetOperation();
-  if (operation) {tmUiShowExecution()} else {tmUiShowMain()} // show menu
+  if (operation) {
+    tmUiShowExecution()
+  } else {
+    // show menu
+    tmUiShowMain()
+    // restore user minimize state
+    let e=getEl('#tm-main');
+    if (tmsGet('tm_keep_minimized')==='#tm-main') {
+      tmUiHide(e);
+      getEl('#tm-minimize').textContent='^';
+    } else {
+      tmUiFlex(e)
+    }
+  }
   console.log('tmUiInit: done.');
 }
 // abort/reset
@@ -344,12 +372,17 @@ function tmUiReset(...args) {
     const joinedArgs = args.map(arg =>
       typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
     ).join(' ');
-    alert('tmUiReset: ' + joinedArgs);
+    // allert('tmUiReset: ' + joinedArgs);
+    ModalManager.buildAlert({
+      accent: 'warning',
+      title: 'tmUiReset',
+      msg: joinedArgs,
+      actionClose: ()=>{},
+    });
   }
   console.log('tmUiReset: done.');
 }
-async function tmStart(actionName) {
+function tmStart(actionName) {
   tmsSetOperation(actionName+'/start');
   tmUiShowExecution();
-  await sleep(100);
 }

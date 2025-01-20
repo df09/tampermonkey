@@ -7,6 +7,7 @@
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/html/main.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/storage.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/ui.js
+// @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/_helpers/modals.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/createBarcodes/start.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/createBarcodes/newProduct.js
 // @require      https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/createBarcodes/sizeSetup.js

@@ -6,7 +6,7 @@ injectHTML(`
     <h3 id="tm-operation" class="tm-title">Execution: <span class="tm-g">None</span></h3>
     <div id="tm-header-btn-wrap" class="tm-row">
       <button id="tm-abort" class="tm-btn-r">ABORT</button>
-      <button id="tm-minimize" class="tm-btn-b">X</button>
+      <button id="tm-minimize" class="tm-btn-gray">X</button>
     </div>
   </div>
   <!-- main -->
@@ -28,13 +28,10 @@ injectHTML(`
   <div id="tm-prep" class="tm-col">
     <div id="tm-prep-header" class="tm-row">
       <h3 id="tm-prep-title" class="tm-title">[title]</h3>
-      <button id="tm-prep-back" class="tm-btn-b">&lt;</button>
+      <button id="tm-prep-back" class="tm-btn-gray">&lt;</button>
     </div>
     <div id="tm-prep-body" class="tm-col">
       <textarea id="tm-prep-textarea" spellcheck="false"></textarea>
-      <!--
-      <button id="tm-prep-exec" class="tm-btn-r tm-prep-exec">EXEC</button>
-      -->
     </div>
   </div>
   <!-- execution -->
@@ -44,16 +41,40 @@ injectHTML(`
   </div>
 </div>
 
-<!-- modals -->
-<!-- modals.storage-view -->
-<div id="tm-modal-storage-view" class="tm-modal">
-  <button id="tm-storage-close" class="tm-btn-r">X</button>
-  <table>
-    <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
-    <tbody id="tm-modal-storage-view-content">
-      <!-- Content will be dynamically inserted here -->
-    </tbody>
-  </table>
-  <button id="tm-storage-copy-all" class="tm-btn-g">Copy All</button>
+<!-- modal -->
+<div class="tm-modal tm-col">
+  <div class="tm-modal-header tm-row">
+    <div class="tm-modal-header-title">[title]</div>
+    <button class="tm-modal-header-close tm-btn-gray">X</button>
+  </div>
+  <div class="tm-modal-body tm-col">
+    <!-- modal.alert -->
+    <div class="tm-modal-body-alert tm-col">
+      <div class="tm-modal-body-alert-msg tm-col">[msg]</div>
+      <button class="tm-modal-body-alert-ok tm-btn-gray">OK</button>
+    </div>
+    <!-- modal.dialog -->
+    <div class="tm-modal-body-dialog tm-col">
+      <div class="tm-modal-body-dialog-msg tm-col">[msg]</div>
+      <!-- modal.dialog.textarea/input -->
+      <input class="tm-modal-body-dialog-input" spellcheck="false"></input>
+      <textarea class="tm-modal-body-dialog-textarea" spellcheck="false"></textarea>
+      <!-- modal.dialog.submit -->
+      <button class="tm-modal-body-dialog-submit tm-btn-g">Submit</button>
+    </div>
+    <!-- modal.content -->
+    <div class="tm-modal-body-content"></div>
+      <!-- modal.content.storage-view -->
+      <div id="tm-modal-storage-view">
+        <table>
+          <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
+          <tbody id="tm-modal-storage-view-content">
+            <!-- Content will be dynamically inserted here -->
+          </tbody>
+        </table>
+        <button id="tm-storage-copy-all" class="tm-btn-g">Copy All</button>
+      </div>
+    </div>
+  </div>
 </div>
 `)

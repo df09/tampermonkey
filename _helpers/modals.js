@@ -1,0 +1,113 @@
+// // Примеры использования
+// ModalManager.buildAlert({
+//   accent: 'error',
+//   title: 'Alert Title',
+//   msg: 'This is an alert msg.',
+// });
+const ModalManager = {
+  e = getEl('.tm-modal'),
+  backup = this.e.innerHTML,
+  setModalType(type) {
+    const allowed = ['alert','dialog-input','dialog-textarea','content'];
+    if (!allowed.includes(type)){abort('ModalManager.setModalType: invalid type ('+type+'), allowed only '+allowed)}
+    tmAddClass(e,'tm-'+type);
+  },
+  setModalAccent(accent) {
+    const allowed = ['info','success','warning','error'];
+    if (!allowed.includes(accent)){abort('ModalManager.setModalType: invalid type ('+accent+'), allowed only '+allowed)}
+    tmAddClass(e,'tm-'+accent);
+  },
+  setTitle(title){getEl('.tm-modal-header-title').textContent=title},
+  setClose(actionClose){
+    let eClose = getEl('.tm-modal-header-close');
+    eClose.onclick=()=>(
+      tmUiHide(this.e);
+      this.e.innerHTML=backup;
+      actionClose();
+    );
+    tmUiFlex(eClose);
+  }.
+  setMsg(msg){getEl('.tm-modal-body-alert-msg').textContent=msg},
+
+  // alert
+  buildAlert({accent='info',title='',msg='',actionClose}){
+    this.backup();
+    // validate
+    if (!title){abort('ModalManager.buildAlert: please set title.')}
+    if (!msg){abort('ModalManager.buildAlert: please set msg.')}
+    // preset
+    this.type = 'alert';
+    // wrap
+    this.setModalType(type);
+    this.setModalAccent(accent);
+    // header
+    this.setTitle(title);
+    tmUiHide(getEl('.tm-modal-header-close'));
+    // body
+    this.setMsg(msg);
+    this.setClose(actionClose);
+    tmUiFlex(getEl('.tm-modal-body-alert');
+    // show modal
+    tmUiBlock(this.e);
+  },
+
+  // dialog
+  buildDialog({kind='input', title='',msg='', actionClose, actionSubmit}) {
+    // validate
+    if (!['input','textarea'].includes(kind)){abort('ModalManager.buildDialog: invalid kind ('+kind+'), allowed only '+kind)}
+    if (!title){abort('ModalManager.buildDialog: please set title.')}
+    if (!msg){abort('ModalManager.buildDialog: please set msg.')}
+    if (typeof actionClose !== 'function') { abort('ModalManager.buildDialog: actionClose must be a function.')}
+    if (typeof actionSubmit !== 'function') { abort('ModalManager.buildDialog: actionSubmit must be a function.')}
+    if (!actionClose) {abort('ModalManager.buildDialog: please set actionClose.')}
+    if (!actionSubmit) {abort('ModalManager.buildDialog: please set actionSubmit.')}
+    // preset
+    this.type = 'dialog-'+kind;
+    this.accent = 'info';
+    // wrap
+    this.setModalType(type);
+    this.setModalAccent(accent);
+    // header
+    this.setTitle(title);
+    this.setClose(actionClose);
+    // body
+    this.setMsg(msg);
+    if (kind ==='input') {
+      tmUiFlex(getEl('.tm-modal-body-dialog-input'))
+    } else {
+      tmUiFlex(getEl('.tm-modal-body-dialog-textarea'))
+    }
+    getEl('.tm-modal-body-dialog-submit').onclick=()=>actionSubmit();
+    tmUiFlex(getEl('.tm-modal-body-dialog');
+    // Обработка нажатий клавиш
+    modal.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        handleSubmit();
+      } else if (event.key === 'Escape') {
+        cleanup();
+        tmUiReset();
+      }
+    });
+    // show modal
+    tmUiBlock(this.e);
+  },
+
+  // content
+  buildContent(title='') {
+    // validate
+    if (!title){abort('ModalManager.buildContent: please set title.')}
+    // preset
+    this.type = 'content';
+    this.accent = 'info';
+    // wrap
+    this.setModalType(type);
+    this.setModalAccent(accent);
+    // header
+    this.setTitle(title);
+    this.setClose(actionClose);
+    // body
+    tmUiFlex(getEl('.tm-modal-body-content');
+    // show modal
+    tmUiBlock(this.e);
+  },
+};
