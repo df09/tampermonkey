@@ -1,12 +1,42 @@
-migrate to modals
-back: fix prep
-minimized: fix prep
-minimized: save/restore
-resize: check user presets
-barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
-Shift+a - search active jobs
-
-twins - скачать pdf, нажать на кнопку out of corner
-twins - если есть 3 точки подряд скипать строку
-crl - закупка hw
-alert - replace to modals
+now:
+  check/fix back
+  check/fix minimize
+  styles - general upd:
+    main
+    prep
+    exec
+    modal:
+      alert
+        info
+        success
+        warning
+        error
+      dialog
+        info
+        success
+        warning
+        error
+      content
+        info
+        success
+        warning
+        error
+  operations:
+    old restore:
+      create-barcoes
+      redirect2job
+      thiws
+    old upd:
+      barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+      twins:
+        скачать pdf
+        out of corner
+        если есть 3 точки подряд скипать строку
+    new add:
+      Shift+a - search active jobs
+      crl - закупка hw
+v2:
+  start action: add requred url - redirect or (modal-alert + abort)
+  resize: fix styles - with min-h, min-w
+  add auto operations (ex. login)
+  add cross-domain for dev

@@ -5,7 +5,7 @@ function createBarcodes(){tmStart('createBarcodes');createBarcodesStart()}
 // === ui =====================================
 const tmMap = {
   readme: 'https://github.com/df09/tampermonkey/blob/main/bravura-crm.com/readme.md',
-  hotkeyPairs: [
+  hotkeys: [
     ['redirect-to-job', 'Redirect to job', 'Shift+J', redirectToJob],
     ['search-active-job', 'Search Active Job', 'Shift+S', searchActiveJob],
   ],

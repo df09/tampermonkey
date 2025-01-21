@@ -1,57 +1,59 @@
+// vars
+const eContainer = getEl('#tm-container');
+// vars.header
+const eOperation = getEl('#tm-operation');
+const eAbort = getEl('#tm-abort');
+const eBack = getEl('#tm-back');
+const eMinimize = getEl('#tm-minimize');
+// vars.main
+const eMain = getEl('#tm-main');
+const eMainReadme = getEl('#tm-main-readme');
+const eMainHotkeys = getEl('#tm-main-hotkeys');
+const eMainPrep = getEl('#tm-main-prep');
+const eMainExec = getEl('#tm-main-exec');
+const eMainStorage = getEl('#tm-main-storage');
+const eMainStorageBody = getEl('#tm-main-storage-body');
+const eMainStorageBodyView = getEl('#tm-main-storage-body-view');
+const eMainStorageBodyReset = getEl('#tm-main-storage-body-reset');
+const eMainStorageBodyClean = getEl('#tm-main-storage-body-clean');
+// vars.prep
+const ePrep = getEl('#tm-prep');
+const ePrepTitle = getEl('#tm-prep-title');
+const ePrepTextarea = getEl('#tm-prep-textarea');
+// vars.exec
+const eExec = getEl('#tm-exec');
+const eExecContinue = getEl('#tm-exec-continue');
+const eExecCancel = getEl('#tm-exec-cancel');
+
 // helpers
-function tmAddClass(element, ...classes) {
-  classes.forEach(cls => {
-    if (!element.classList.contains(cls)) {
-      element.classList.add(cls);
-    }
-  });
+function tmAddCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
+function tmRemCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
+function tmUiHide(...els){els.forEach(e=>{e.classList.add('tm-dnone')})}
+function tmUiShow(...els){els.forEach(e=>{e.classList.remove('tm-dnone')})}
+function tmUiShowMain(){
+  tmUiRecalcHeader();
+  tmUiShow(eMinimize,eMain);
+  tmUiHide(eBack,ePrep,eExec);
 }
-function tmRemoveClass(element, ...classes) {
-  classes.forEach(cls => {
-    if (element.classList.contains(cls)) {
-      element.classList.remove(cls);
-    }
-  });
+function tmUiShowPrep(){
+  tmUiRecalcHeader();
+  tmUiShow(eBack,ePrep);
+  tmUiHide(eMinimize,eMain,eExec);
 }
-function tmUiBlock(...els) {
-    setTimeout(() => {
-        els.forEach(e => {
-            e.classList.remove('tm-hidden', 'tm-flex');
-            e.classList.add('tm-block');
-        });
-    }, 300);
+function tmUiShowExec(){
+  tmUiRecalcHeader();
+  tmUiShow(eExec);
+  tmUiHide(eBack,eMinimize,eMain,ePrep);
 }
-
-function tmUiFlex(...els) {
-    setTimeout(() => {
-        els.forEach(e => {
-            e.classList.remove('tm-hidden', 'tm-block');
-            e.classList.add('tm-flex');
-        });
-    }, 300);
-}
-
-function tmUiHide(...els) {
-    setTimeout(() => {
-        els.forEach(e => {
-            e.classList.remove('tm-block', 'tm-flex');
-            e.classList.add('tm-hidden');
-        });
-    }, 300);
-}
-function tmUiShowMain(){tmUiInitOperation();tmUiHide(getEl('#tm-prep'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize',getEl('#tm-main')))}
-function tmUiShowPrep(){tmUiInitOperation();tmUiHide(getEl('#tm-main'),getEl('#tm-execution'));tmUiFlex(getEl('#tm-minimize'),getEl('#tm-prep'))}
-function tmUiShowExecution(){tmUiInitOperation();tmUiHide(getEl('#tm-minimize'),getEl('#tm-main'),getEl('#tm-prep'));tmUiFlex(getEl('#tm-execution'))}
-function makeResizebale(selector) {
-  let c = getEl(selector);
+function makeResizebale(c) {
   // Restore last size
-  c.style.width = tmsGet('tm_keep_uiWidth_' + selector) || c.style.width;
-  c.style.height = tmsGet('tm_keep_uiHeight_' + selector) || c.style.height;
+  c.style.width = tmsGet('tm_keep_uiWidth_' + c.id) || c.style.width;
+  c.style.height = tmsGet('tm_keep_uiHeight_' + c.id) || c.style.height;
   // Resize
   let isResizing = false;
   let startX, startY, startWidth, startHeight;
   c.addEventListener("mousedown", (e) => {
-    if (e.target.matches("button, input, .tm-slider")) return; // Skip excluded elements
+    if (e.target.matches("button, input, textarea, .tm-slider")) return; // Skip excluded elements
     if (e.button !== 0) return; // Only left mouse button
     isResizing = true;
     startX = e.clientX;
@@ -71,176 +73,155 @@ function makeResizebale(selector) {
     if (isResizing) {
       isResizing = false;
       document.body.style.userSelect = "";
-      tmsSet('tm_keep_uiWidth_' + selector, c.style.width);
-      tmsSet('tm_keep_uiHeight_' + selector, c.style.height);
+      tmsSet('tm_keep_uiWidth_' + c.id, c.style.width);
+      tmsSet('tm_keep_uiHeight_' + c.id, c.style.height);
     }
   });
 }
 // container
 // header
-function tmUiInitOperation() {
-  let operation = tmsGetOperation();
-  let txt = operation || 'None';
-  // elements
-  let e = getEl('#tm-operation');
-  let span = e.querySelector('span');
-  // upd txt
-  span.textContent = txt;
-  // classes
+function tmUiRecalcHeader() {
+  let operation = tmsGetOperation(); let txt = operation || 'None';
+  let eSpan = eOperation.querySelector('span');
+  // upd
+  eSpan.textContent = txt;
   if (txt === 'None') {
-    tmRemoveClass(e,'tm-border-r');tmAddClass(e,'tm-border-g');
-    tmRemoveClass(span,'tm-r');tmAddClass(span,'tm-g');
+    tmAddCls(eSpan,'tm-g');tmAddCls(eOperation,'tm-border-g');
+    tmRemCls(eSpan,'tm-r');tmRemCls(eOperation,'tm-border-r');
   } else {
-    tmRemoveClass(e,'tm-border-g');tmAddClass(e,'tm-border-r');
-    tmRemoveClass(span,'tm-g');tmAddClass(span,'tm-r');
+    tmAddCls(eSpan,'tm-r');tmAddCls(eOperation,'tm-border-r');
+    tmRemCls(eSpan,'tm-g');tmRemCls(eOperation,'tm-border-g');
   }
-  // abort button
-  tmUiInitAbortBtn(operation);
+  if (operation) {tmUiShow(eAbort)} else {tmUiHide(eAbort)}
 }
-function tmUiInitAbortBtn(operation) {
-  let e = getEl('#tm-abort');
-  e.addEventListener('click',()=>{tmUiAbort('Execution aborted by user. All data was deleted from storage.')})
-  if (operation) {tmUiFlex(e)} else {tmUiHide(e)}
-}
+function tmUiInitAbortBtn(){eAbort.addEventListener('click',()=>{tmUiAbort('Exec aborted by user. All data was deleted from storage.')})}
+function tmUiInitBack(){eBack.addEventListener('click',()=>{tmUiShowMain()})}
 function tmUiInitMinimize() {
-  e = getEl('#tm-minimize');
-  e.addEventListener('click',()=>{
-    if (e.textContent === 'X') {
-      let target = getEl('#tm-main').classList.contains('tm-hidden')?'#tm-prep':'#tm-main';
-      tmsSet('tm_keep_minimized', target);
-      e.textContent='^';
-      tmUiHide(getEl(target));
+  eMinimize.addEventListener('click',()=>{
+    if (eMinimize.textContent === 'X') {
+      tmsSet('tm_keep_minimized', 1);
+      eMinimize.textContent='^';
+      tmUiHide(eMain);
     } else {
-      let restore_target = tmsGet('tm_keep_minimized');
       tmsDelete('tm_keep_minimized');
-      e.textContent='X';
-      tmUiFlex(getEl(restore_target));
+      eMinimize.textContent='X';
+      tmUiShow(eMain);
     }
   })
 }
 // main
-function tmUiInitMain() {makeResizebale('#tm-main')}
-function tmUiInitReadme(link){getEl('#tm-main-readme a').href=link}
-function getKey(hotkeyPair,n) {
-  const key = hotkeyPair.split('+')[n];
+function tmUiInitMain() {makeResizebale(eMain)}
+function tmUiInitReadme(link){eMainReadme.querySelector('a').href=link}
+function getKey(hotkey,n) {
+  const key = hotkey.split('+')[n];
   if (key === 'Shift') return event.shiftKey;
   if (key === 'Ctrl') return event.ctrlKey;
   if (key === 'Alt') return event.altKey;
   if (key === 'Meta') return event.metaKey;
   return event.key === key;
 }
-function tmUiInitHotkeyPair(data) {
-  let [idpfx, title, hotkeyPair, action] = data;
-  let id = 'tm-thmb-' + idpfx;
-  let c = getEl('#tm-main-hotkey-pairs');
-  // Добавляем hotkeyPair в HTML
-  c.insertAdjacentHTML('beforeend', `
-    <div id="${id}" class="tm-row">
-      <h3 class="tm-title tm-row tm-hotkey-title"><span>${title}</span><span class="tm-hotkey">(${hotkeyPair})</span></h3>
-      <label class="tm-switch">
+function tmUiInitHotkeys(data) {
+  let [idpfx, title, hotkey, action] = data;
+  let id = 'tm-hotkey-' + idpfx;
+  let groupClass = 'tm-group-hotkey';
+  // Добавляем hotkey в HTML
+  eMainHotkeys.insertAdjacentHTML('beforeend', `
+    <div id="${id}" class="tm-row ${groupClass}">
+      <h3 id="tm-hotkey-title" class="tm-row tm-title"><span>${title}</span><span class="tm-hotkey-keys">(${hotkey})</span></h3>
+      <label class="tm-hotkey-switch tm-ml0 tm-mb0">
         <input type="checkbox">
-        <span class="tm-slider"></span>
+        <span class="tm-hotkey-slider"></span>
       </label>
     </div>
   `);
+  // event
   let checkbox = getEl('#'+id+' input[type="checkbox"]');
-  // Обработчик изменения состояния чекбокса
   checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
       console.log(id+': ON');
-      tmsSet('tm_keep_hotkeyPair-'+idpfx, '1')
-      function hotkeyHandler(event){if(getKey(hotkeyPair,0)&&getKey(hotkeyPair,1)){action()}}
+      tmsSet('tm_keep_hotkey-'+idpfx, '1')
+      function hotkeyHandler(event){if(getKey(hotkey,0)&&getKey(hotkey,1)){action()}}
       checkbox.hotkeyHandler = hotkeyHandler;
       document.addEventListener('keydown', hotkeyHandler);
     } else {
       console.log(id+': OFF');
-      tmsDelete('tm_keep_hotkeyPair-'+idpfx)
+      tmsDelete('tm_keep_hotkey-'+idpfx)
       if (checkbox.hotkeyHandler) {
         document.removeEventListener('keydown', checkbox.hotkeyHandler);
         checkbox.hotkeyHandler = null;
       }
     }
   });
-  // воостановить пользовательские значения
-  if (tmsGet('tm_keep_hotkeyPair-' + idpfx) === '1') {
-    checkbox.checked = true; // Установить состояние чекбокса как включенное
-    checkbox.dispatchEvent(new Event('change')); // Триггерим обработчик для применения действия
+  // user settings
+  if (tmsGet('tm_keep_hotkey-' + idpfx) === '1') {
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event('change'));
   }
   // show
-  tmUiFlex(c);
+  tmUiShow(eMainHotkeys);
 }
 // main.buttons
 function tmUiInitBtnPrep(data) {
   let [idpfx, title, action] = data;
-  let cMain = getEl('#tm-main-btns-prep');
-  let cPrep = getEl('#tm-prep-body');
-  let mainGroupClass = 'tm-main-btn-prep';
-  let prepGroupClass = 'tm-prep-btn-exec';
+  let mainGroupClass = 'tm-group-main-prep';
+  let prepGroupClass = 'tm-group-prep-exec';
   let mainId = mainGroupClass+'-'+idpfx;
   let prepId = prepGroupClass+'-'+idpfx;
-  // Добавляем кнопки в DOM
-  cMain.insertAdjacentHTML(
+  // html
+  eMainPrep.insertAdjacentHTML(
     'beforeend',
-    `<button id="${mainId}" class="tm-btn-g ${mainGroupClass}">${title} -&gt;</button>`
+    `<button id="${mainId}" class="${mainGroupClass} tm-btn-g">${title} -&gt;</button>`
   );
-  tmUiFlex(cMain);
-  cPrep.insertAdjacentHTML(
+  ePrep.insertAdjacentHTML(
     'beforeend',
-    `<button id="${prepId}" class="tm-btn-r ${prepGroupClass}">EXEC</button>`
+    `<button id="${prepId}" class="${prepGroupClass} tm-btn-r">EXEC</button>`
   );
-  // Привязываем обработчик к кнопке
+  // event
   getEl('#'+mainId).addEventListener('click', () => {
-    getEl('#tm-prep-title').textContent = title;
-    let textarea = getEl('#tm-prep-textarea');
-    textarea.value = tmsGet('tm_keep_uiTextareaValue_'+idpfx, '');
-    textarea.addEventListener('input', () => {
-      tmsSet('tm_keep_uiTextareaValue_'+idpfx, textarea.value);
-    });
+    ePrepTitle.textContent = title;
+    ePrepTextarea.value = tmsGet('tm_keep_uiTextareaValue_'+idpfx, '');
     // Скрываем другие EXEC кнопки
     getEls('.'+prepGroupClass).forEach(e => tmUiHide(e));
     // Показ текущей EXEC кнопки
     let prepExec = getEl('#'+prepId);
-    tmUiBlock(prepExec);
+    tmUiShow(prepExec);
     prepExec.addEventListener('click', () => {
-      tmUiShowExecution();
+      tmsSet('tm_keep_uiTextareaValue_'+idpfx, ePrepTextarea.value);
+      tmUiShowExec();
       action();
     });
     tmUiShowPrep();
   });
+  // show
+  tmUiShow(eMainPrep);
 }
 function tmUiInitBtnExec(data) {
   let [idpfx, title, action] = data;
-  let groupClass = 'tm-main-btn-exec';
-  let id = `${groupClass}-${idpfx}`;
-  let container = getEl('#tm-main-btns-exec');
-
-  // Добавляем кнопку в контейнер
-  container.insertAdjacentHTML(
+  let groupClass = 'tm-group-main-exec';
+  let id = 'tm-main-exec-'+idpfx;
+  // html
+  eMainExec.insertAdjacentHTML(
     'beforeend',
-    `<button id="${id}" class="tm-btn-y ${groupClass}">EXEC: ${title}</button>`
+    `<button id="${id}" class="${groupClass} tm-btn-y">EXEC: ${title}</button>`
   );
-  tmUiFlex(getEl('#tm-main-btns-exec'));
-
-  // Привязываем обработчик события к только что созданной кнопке
-  let button = getEl(`#${id}`);
+  // event
+  let button = getEl('#'+id);
   button.addEventListener('click', () => {
-    tmUiShowExecution();
+    tmUiShowExec();
     action();
   });
-
-  // Лог для отладки
-  console.log('EXEC Button added: '+id);
+  // show
+  tmUiShow(eMainExec);
 }
-
 // main.storage
+// TODO: migrate to ModalManager
 function tmUiInitStorageView() {
   // Инициализация кнопки для отображения модального окна
-  getEl('#tm-storage-view').addEventListener('click', () => {
+  eMainStorageBodyView.addEventListener('click', () => {
     // Заполняем содержимое модального окна
     const data = tmsGetAll(); // Получаем все ключи
     const contentEl = getEl('#tm-modal-storage-view-content'); // Контейнер для строк
     contentEl.innerHTML = ''; // Очищаем существующее содержимое
-
     // Создаем строки для каждого ключа
     data.forEach(key => {
       const value = localStorage.getItem(key);
@@ -254,7 +235,6 @@ function tmUiInitStorageView() {
       `;
       contentEl.appendChild(row);
     });
-
     // Добавляем обработчики событий для кнопок Copy после их создания
     getEls('.tm-storage-copy-row').forEach(e => {
       e.addEventListener('click', (event) => {
@@ -264,11 +244,9 @@ function tmUiInitStorageView() {
           .catch(e => { console.error(`Failed to copy value: ${e}`); });
       });
     });
-
     // Показываем модальное окно
-    tmUiBlock(getEl('#tm-modal-storage-view'));
+    tmUiShow(getEl('#tm-modal-storage-view'));
   });
-
   // Копирование всех ключей и значений
   getEl('#tm-storage-copy-all').addEventListener('click', () => {
     const allData = tmsGetAll().map(key => {
@@ -277,18 +255,17 @@ function tmUiInitStorageView() {
     }).join('\n');
     navigator.clipboard.writeText(allData)
       .then(() => {
-        console.log('Copied all key-value pairs to clipboard');
+        console.log('Copied all key-value to clipboard');
       })
       .catch(e => {
-        console.error(`Failed to copy all key-value pairs: ${e}`);
+        console.error(`Failed to copy all key-value: ${e}`);
       });
   });
 }
 function tmUiInitStorageReset() {
-  getEl('#tm-storage-reset').addEventListener('click',()=>{
+  eMainStorageBodyReset.addEventListener('click',()=>{
     tmsReset();
-    tmUiInitOperation();
-    // allert('Storage.Reset: all non-premanent data was removed from storage.')
+    tmUiRecalcHeader();
     ModalManager.buildAlert({
       accent: 'warning',
       title: 'Storage.Reset',
@@ -298,10 +275,9 @@ function tmUiInitStorageReset() {
   });
 }
 function tmUiInitStorageClean() {
-  getEl('#tm-storage-clean').addEventListener('click',()=>{
+  eMainStorageBodyClean.addEventListener('click',()=>{
     tmsDeleteAll();
-    tmUiInitOperation();
-    // allert('Storage.CLEAN: all data was deleted from storage.')
+    tmUiRecalcHeader();
     ModalManager.buildAlert({
       accent: 'error',
       title: 'Storage.CLEAN',
@@ -311,12 +287,9 @@ function tmUiInitStorageClean() {
   });
 }
 // prep
-function tmUiInitPrep(){makeResizebale('#tm-prep')}
-function tmUiInitBack(){getEl('#tm-prep-back').addEventListener('click',()=>{tmUiShowMain()})}
+function tmUiInitPrep(){makeResizebale(ePrep)}
 async function tmUiPause(msg) {
-  let e = getEl('#tm-execution-continue');
-  tmUiBlock(e);
-  // allert('tmUiPause: '+msg);
+  tmUiShow(eExecContinue);
   ModalManager.buildAlert({
     accent: 'warning',
     title: 'tmUiPause',
@@ -324,51 +297,44 @@ async function tmUiPause(msg) {
     actionClose: ()=>{},
   });
   await new Promise(resolve => {
-    e.onclick = resolve;
+    eExecContinue.onclick = resolve;
   });
-  tmUiHide(e);
+  tmUiHide(eExecContinue);
 }
-// execution
-function tmUiInitBtnCancel() {
-  getEl('#tm-execution-cancel').addEventListener('click',()=>{tmUiReset('Execution canceled by user.')});
-}
+// exec
+function tmUiInitBtnCancel(){eExecCancel.addEventListener('click',()=>{tmUiReset('Exec canceled by user.')})}
 
 // === init ==============================
 function tmUiInit(map) {
-  // container
-  console.log('tmUiInit.container: done.');
+  let operation = tmsGetOperation();
   // header
+  tmUiInitAbortBtn();
+  tmUiInitBack();
   tmUiInitMinimize();
-  console.log('tmUiInit.header: done.');
   // main
   tmUiInitMain();
   tmUiInitReadme(map.readme);
-  for (let data of map.hotkeyPairs){tmUiInitHotkeyPair(data)}
+  for (let data of map.hotkeys){tmUiInitHotkeys(data)}
   for (let data of map.btnsPrep){tmUiInitBtnPrep(data)}
   for (let data of map.btnsExec){tmUiInitBtnExec(data)}
   tmUiInitStorageView();
   tmUiInitStorageClean();
   tmUiInitStorageReset();
-  console.log('tmUiInit.main: done.');
   // prep
   tmUiInitPrep();
-  tmUiInitBack();
   // exec
   tmUiInitBtnCancel();
   // show
-  let operation = tmsGetOperation();
   if (operation) {
-    tmUiShowExecution()
+    tmUiShowExec();
   } else {
-    // show menu
-    tmUiShowMain()
-    // restore user minimize state
-    let e=getEl('#tm-main');
-    if (tmsGet('tm_keep_minimized')==='#tm-main') {
-      tmUiHide(e);
-      getEl('#tm-minimize').textContent='^';
+    tmUiShowMain();
+    // minimize - user settings
+    if (tmsGet('tm_keep_minimized')) {
+      tmUiHide(eMain);
+      eMinimize.textContent='^';
     } else {
-      tmUiFlex(e)
+      tmUiShow(eMain);
     }
   }
   console.log('tmUiInit: done.');
@@ -389,7 +355,6 @@ function tmUiReset(...args) {
     const joinedArgs = args.map(arg =>
       typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
     ).join(' ');
-    // allert('tmUiReset: ' + joinedArgs);
     ModalManager.buildAlert({
       accent: 'warning',
       title: 'tmUiReset',
@@ -401,5 +366,5 @@ function tmUiReset(...args) {
 }
 function tmStart(actionName) {
   tmsSetOperation(actionName+'/start');
-  tmUiShowExecution();
+  tmUiShowExec();
 }
