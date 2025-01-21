@@ -1,6 +1,4 @@
 now:
-  check/fix back
-  check/fix minimize
   styles - general upd:
     main
     prep
@@ -23,8 +21,6 @@ now:
         error
   operations:
     old restore:
-      create-barcoes
-      redirect2job
       thiws
     old upd:
       barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ

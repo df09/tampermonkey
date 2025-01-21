@@ -3,16 +3,16 @@ injectHTML(`
 <div id="tm-container" class="tm-container">
   <!-- header -->
   <div id="tm-header" class="tm-row">
-    <h3 id="tm-operation" class="tm-title tm-p5 tm-border-y">Operation:<span class="tm-y">Unknown</span></h3>
+    <h3 id="tm-operation" class="tm-p5 tm-title tm-border-y tm-operation">Operation:<span class="tm-y">Unknown</span></h3>
     <div id="tm-header-btn-wrap" class="tm-row">
-      <button id="tm-abort" class="tm-dnone tm-btn-r">ABORT</button>
-      <button id="tm-back" class="tm-dnone tm-btn-gray">&lt;</button>
-      <button id="tm-minimize" class="tm-dnone tm-btn-gray">X</button>
+      <button id="tm-abort" class="tm-dnone tm-btn-header tm-btn-r tm-btn-header-r">ABORT</button>
+      <button id="tm-back" class="tm-dnone tm-btn-header tm-btn-b tm-btn-header-b">&lt;</button>
+      <button id="tm-minimize" class="tm-dnone tm-btn-header tm-btn-r tm-btn-header-r">X</button>
     </div>
   </div>
   <!-- main -->
-  <div id="tm-main" class="tm-dnone tm-col tm-border-w">
-    <div id="tm-main-readme" class="tm-pt5"><a class="tm-link" href="[readme-url]" target="_blank">Readme</a></div>
+  <div id="tm-main" class="tm-dnone tm-body tm-col tm-border-w">
+    <div id="tm-main-readme"><a class="tm-link" href="[readme-url]" target="_blank">Readme</a></div>
     <div id="tm-main-hotkeys" class="tm-dnone tm-col tm-pt5"></div>
     <div id="tm-main-prep" class="tm-dnone tm-col tm-pt5">
       <!-- <button id="tm-main-prep+id">[title] -&gt;</button> -->
@@ -30,13 +30,13 @@ injectHTML(`
     </div>
   </div>
   <!-- prep -->
-  <div id="tm-prep" class="tm-dnone tm-col tm-border-w">
-    <h3 id="tm-prep-title" class="tm-title">[title]</h3>
-    <textarea id="tm-prep-textarea" spellcheck="false"></textarea>
+  <div id="tm-prep" class="tm-dnone tm-body tm-col tm-border-w">
+    <h3 id="tm-prep-title" class="tm-prep-title">[title]</h3>
+    <textarea id="tm-prep-textarea" class="tm-mb5" spellcheck="false"></textarea>
     <!-- <button id="tm-prep-exec+id">EXEC</button>
   </div>
   <!-- exec -->
-  <div id="tm-exec" class="tm-dnone tm-col tm-border-w">
+  <div id="tm-exec" class="tm-dnone tm-body tm-col tm-border-w">
     <button id="tm-exec-continue" class="tm-dnone tm-btn-y">Continue</button>
     <button id="tm-exec-cancel" class="tm-btn-r">CANCEL</button>
   </div>
@@ -68,7 +68,7 @@ injectHTML(`
     <div id="tm-modal-content-storage-view" class="tm-dnone">
       <table>
         <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
-        <tbody id="tm-modal-storage-view-content">
+        <tbody>
           <!-- ... -->
         </tbody>
       </table>

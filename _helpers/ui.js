@@ -32,8 +32,20 @@ function tmUiHide(...els){els.forEach(e=>{e.classList.add('tm-dnone')})}
 function tmUiShow(...els){els.forEach(e=>{e.classList.remove('tm-dnone')})}
 function tmUiShowMain(){
   tmUiRecalcHeader();
-  tmUiShow(eMinimize,eMain);
-  tmUiHide(eBack,ePrep,eExec);
+  if (tmsGet('tm_keep_minimized')) {
+    tmRemCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+    tmAddCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+    eMinimize.textContent='^';
+    tmUiShow(eMinimize);
+    tmUiHide(eBack,eMain,ePrep,eExec);
+  } else {
+    tmRemCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+    tmAddCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+    eMinimize.textContent='X';
+    // show
+    tmUiShow(eMinimize,eMain);
+    tmUiHide(eBack,ePrep,eExec);
+  }
 }
 function tmUiShowPrep(){
   tmUiRecalcHeader();
@@ -45,7 +57,7 @@ function tmUiShowExec(){
   tmUiShow(eExec);
   tmUiHide(eBack,eMinimize,eMain,ePrep);
 }
-function makeResizebale(c) {
+function makeResizable(c) {
   // Restore last size
   c.style.width = tmsGet('tm_keep_uiWidth_' + c.id) || c.style.width;
   c.style.height = tmsGet('tm_keep_uiHeight_' + c.id) || c.style.height;
@@ -66,8 +78,9 @@ function makeResizebale(c) {
     if (!isResizing) return;
     let newWidth = startWidth - (e.clientX - startX);
     let newHeight = startHeight - (e.clientY - startY);
-    c.style.width = `${Math.max(newWidth, 50)}px`; // Minimum width
-    c.style.height = `${Math.max(newHeight, 50)}px`; // Minimum height
+    // Apply size with constraints
+    c.style.width = `${Math.max(newWidth, 300)}px`; // Minimum width 300px
+    c.style.height = `${Math.max(newHeight, 50)}px`; // Minimum height 50px
   });
   document.addEventListener("mouseup", () => {
     if (isResizing) {
@@ -83,14 +96,16 @@ function makeResizebale(c) {
 function tmUiRecalcHeader() {
   let operation = tmsGetOperation(); let txt = operation || 'None';
   let eSpan = eOperation.querySelector('span');
-  // upd
+  // reacalc operation
   eSpan.textContent = txt;
   if (txt === 'None') {
-    tmAddCls(eSpan,'tm-g');tmAddCls(eOperation,'tm-border-g');
+    tmRemCls(eSpan,'tm-y');tmRemCls(eOperation,'tm-border-y');
     tmRemCls(eSpan,'tm-r');tmRemCls(eOperation,'tm-border-r');
+    tmAddCls(eSpan,'tm-w');tmAddCls(eOperation,'tm-border-w');
   } else {
+    tmRemCls(eSpan,'tm-y');tmRemCls(eOperation,'tm-border-y');
+    tmRemCls(eSpan,'tm-w');tmRemCls(eOperation,'tm-border-w');
     tmAddCls(eSpan,'tm-r');tmAddCls(eOperation,'tm-border-r');
-    tmRemCls(eSpan,'tm-g');tmRemCls(eOperation,'tm-border-g');
   }
   if (operation) {tmUiShow(eAbort)} else {tmUiHide(eAbort)}
 }
@@ -100,17 +115,21 @@ function tmUiInitMinimize() {
   eMinimize.addEventListener('click',()=>{
     if (eMinimize.textContent === 'X') {
       tmsSet('tm_keep_minimized', 1);
+      tmRemCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+      tmAddCls(eMinimize,'tm-btn-b','tm-btn-header-b');
       eMinimize.textContent='^';
       tmUiHide(eMain);
     } else {
       tmsDelete('tm_keep_minimized');
+      tmRemCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+      tmAddCls(eMinimize,'tm-btn-r','tm-btn-header-r');
       eMinimize.textContent='X';
       tmUiShow(eMain);
     }
   })
 }
 // main
-function tmUiInitMain() {makeResizebale(eMain)}
+function tmUiInitMain() {makeResizable(eMain)}
 function tmUiInitReadme(link){eMainReadme.querySelector('a').href=link}
 function getKey(hotkey,n) {
   const key = hotkey.split('+')[n];
@@ -127,7 +146,7 @@ function tmUiInitHotkeys(data) {
   // Добавляем hotkey в HTML
   eMainHotkeys.insertAdjacentHTML('beforeend', `
     <div id="${id}" class="tm-row ${groupClass}">
-      <h3 id="tm-hotkey-title" class="tm-row tm-title"><span>${title}</span><span class="tm-hotkey-keys">(${hotkey})</span></h3>
+      <h3 class="tm-hotkey-title tm-row"><span>${title}</span><span class="tm-hotkey-keys">(${hotkey})</span></h3>
       <label class="tm-hotkey-switch tm-ml0 tm-mb0">
         <input type="checkbox">
         <span class="tm-hotkey-slider"></span>
@@ -220,7 +239,7 @@ function tmUiInitStorageView() {
   eMainStorageBodyView.addEventListener('click', () => {
     // Заполняем содержимое модального окна
     const data = tmsGetAll(); // Получаем все ключи
-    const contentEl = getEl('#tm-modal-storage-view-content'); // Контейнер для строк
+    const contentEl = getEl('#tm-modal-content-storage-view tbody'); // Контейнер для строк
     contentEl.innerHTML = ''; // Очищаем существующее содержимое
     // Создаем строки для каждого ключа
     data.forEach(key => {
@@ -245,7 +264,7 @@ function tmUiInitStorageView() {
       });
     });
     // Показываем модальное окно
-    tmUiShow(getEl('#tm-modal-storage-view'));
+    tmUiShow(getEl('#tm-modal-content-storage-view'));
   });
   // Копирование всех ключей и значений
   getEl('#tm-storage-copy-all').addEventListener('click', () => {
@@ -287,7 +306,7 @@ function tmUiInitStorageClean() {
   });
 }
 // prep
-function tmUiInitPrep(){makeResizebale(ePrep)}
+function tmUiInitPrep(){makeResizable(ePrep)}
 async function tmUiPause(msg) {
   tmUiShow(eExecContinue);
   ModalManager.buildAlert({
@@ -329,13 +348,6 @@ function tmUiInit(map) {
     tmUiShowExec();
   } else {
     tmUiShowMain();
-    // minimize - user settings
-    if (tmsGet('tm_keep_minimized')) {
-      tmUiHide(eMain);
-      eMinimize.textContent='^';
-    } else {
-      tmUiShow(eMain);
-    }
   }
   console.log('tmUiInit: done.');
 }

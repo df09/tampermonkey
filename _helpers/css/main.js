@@ -40,6 +40,7 @@ injectCSS(`
   cursor: pointer;
   padding: 5px 10px;
   border: none;
+  border-radius: 5px;
 }
 .tm-btn-b { background-color: #007bff; color: #fff; }
 .tm-btn-g { background-color: #28a745; color: #fff; }
@@ -60,11 +61,12 @@ injectCSS(`
   min-height: 100px;
 }
 .tm-title {
-  font-size: 16px; 
+  font-size: 16px;
   font-weight: normal;
   padding: 5px;
   margin: 0;
 }
+.tm-body { padding: 5px 10px 10px 10px; border: 1px solid #ccc; border-top: 0; }
 
 /* ===== container ============================ */
 #tm-container {
@@ -74,25 +76,23 @@ injectCSS(`
 }
 
 /* ===== header ============================ */
-#tm-header {
-  justify-content: space-between;
-}
-#tm-operation {
-  width: 100%; height: 100%;
-  padding: 5px;
-}
-#tm-minimize {
-  font-size: 13px;
-}
+#tm-header { justify-content: space-between; }
+.tm-operation { width: 100%; height: 30px; padding: 5px;}
+.tm-btn-header { font-size: 12px; height: 30px; border-radius: 0; }
+.tm-btn-header-r { border: 1px solid #ff6666; background-color: #993333; }
+.tm-btn-header-b { border: 1px solid #384489; background-color: #5d6ec7; }
 
 /* ===== main ============================ */
-#tm-main {
-  padding: 0 10px 10px 10px;
-}
 
 /* ===== main.hotkeys ============================ */
 .tm-group-hotkey {}
-.tm-hotkey-title { width: 100%; }
+.tm-hotkey-title {
+  font-size: 16px;
+  font-weight: normal;
+  width: 100%;
+  padding: 5px 5px 5px 0;
+  margin: 0;
+}
 .tm-hotkey-keys { color: #f14354; }
 .tm-hotkey-switch {
   display: inline-block;
@@ -103,8 +103,8 @@ injectCSS(`
 .tm-hotkey-slider {
   cursor: pointer;
   transition: 0.1s;
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  width: 40px;
   background-color: #ccc;
   border-radius: 24px;
 }
@@ -117,10 +117,13 @@ injectCSS(`
   border-radius: 50%;
 }
 input:checked + .tm-hotkey-slider { background-color: #4caf50; }
-input:checked + .tm-hotkey-slider:before { transform: translateX(18px); }
+input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
 
 /* ===== main.prep ============================ */
-
+#tm-prep-textarea {
+  width: 100%;
+  height: 100%;
+}
 /* ===== main.exec ============================ */
 
 /* ===== main.storage ============================ */
@@ -129,17 +132,18 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(18px); }
 }
 
 /* ===== prep ============================ */
-#tm-prep {
-  padding: 0 10px 10px 10px;
+.tm-prep-title {
+  font-size: 16px;
+  font-weight: normal;
+  width: 100%;
+  padding: 5px 5px 5px 0;
+  margin: 0;
 }
 #tm-prep-exec {
   text-align: center;
 }
 
 /* ===== exec ============================ */
-#tm-exec {
-  padding: 0 10px 10px 10px;
-}
 
 /* ===== modal ============================ */
 #tm-modal-overlay {

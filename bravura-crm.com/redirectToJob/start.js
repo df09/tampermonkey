@@ -1,5 +1,5 @@
 function redirectToJobStart() {
-  let eInput = getEl('.tm-modal-body-dialog-input');
+  let eInput = getEl('#tm-modal-dialog-input');
   ModalManager.buildDialog({
     kind: 'input',
     title: 'Redirect to Job by ID',

@@ -9,9 +9,8 @@ async function createBarcodesSectionsDetail() {
   await clickEl(getEl(barcodesCheckboxSelector), 300);
   // === done ======================================
   tmsReset();
-  tmUiInitOperation();
+  tmUiRecalcHeader();
   tmUiShowMain();
-  // allert('Done - please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok');
   ModalManager.buildAlert({
     accent: 'success',
     title: 'Create Barcodes: Done',

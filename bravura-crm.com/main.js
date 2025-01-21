@@ -10,7 +10,7 @@ const tmMap = {
     ['search-active-job', 'Search Active Job', 'Shift+S', searchActiveJob],
   ],
   btnsPrep: [
-    ['create-barcodes', 'Create Barcodes', createBarcodes],
+    ['create-bcodes', 'Create Barcodes', createBarcodes],
   ],
   btnsExec: [],
 }

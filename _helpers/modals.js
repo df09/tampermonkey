@@ -23,19 +23,19 @@ const ModalManager = {
     if (!allowed.includes(type)) {
       abort('ModalManager.setModalType: invalid type (' + type + '), allowed only ' + allowed);
     }
-    tmAddClass(this.e, 'tm-model-' + type);
+    tmAddCls(this.e, 'tm-model-' + type);
   },
   setModalAccent(accent) {
     const allowed = ['info', 'success', 'warning', 'error'];
     if (!allowed.includes(accent)) {
       abort('ModalManager.setModalAccent: invalid type (' + accent + '), allowed only ' + allowed);
     }
-    tmAddClass(this.e, 'tm-modal-' + accent);
+    tmAddCls(this.e, 'tm-modal-' + accent);
   },
   setTitle(title){this.eHeaderTitle.textContent=title},
   setClose(actionClose) {
     this.eHeaderClose.onclick=()=>{
-      tmUiHide(this.e);
+      tmUiHide(this.eOverlay);
       this.e.innerHTML = this.backup;
       actionClose();
     };
@@ -61,7 +61,7 @@ const ModalManager = {
     this.setClose(actionClose);
     tmUiShow(this.eAlert);
     // show modal
-    tmUiShow(this.e);
+    tmUiShow(this.eOverlay);
   },
 
   // dialog
@@ -100,7 +100,7 @@ const ModalManager = {
       }
     });
     // show modal
-    tmUiShow(this.e);
+    tmUiShow(this.eOverlay);
   },
 
   // content
@@ -125,6 +125,6 @@ const ModalManager = {
       }
     });
     // show modal
-    tmUiShow(this.e);
+    tmUiShow(this.eOverlay);
   },
 };
