@@ -119,38 +119,7 @@ function tmsOperationsHandle(config) {
     tmUiAbort(operation+': unknown action "'+action+'"');
   }
 }
-// request
-async function tmsRequest(key) {
-    let result = tmsGet(key);
-    if (result) { return result; }
-    // Показываем всплывающее окно и ждем ввода
-    let new_val = await new Promise((resolve) => {
-        let input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = `Введите значение для ${key}`;
-
-        let dialog = document.createElement("div");
-        dialog.style.position = "fixed";
-        dialog.style.top = "50%";
-        dialog.style.left = "50%";
-        dialog.style.transform = "translate(-50%, -50%)";
-        dialog.style.background = "#fff";
-        dialog.style.border = "1px solid #ccc";
-        dialog.style.padding = "20px";
-        dialog.style.zIndex = "1000";
-        let button = document.createElement("button");
-        button.textContent = "OK";
-        button.onclick = function() {
-            let value = input.value.trim();
-            if (value) {
-                resolve(value);
-                document.body.removeChild(dialog);
-            }
-        };
-        dialog.appendChild(input);
-        dialog.appendChild(button);
-        document.body.appendChild(dialog);
-    });
-    tmsSet(key, new_val);
-    return new_val;
-};
+function tmStart(actionName) {
+  tmsSetOperation(actionName+'/start');
+  tmUiShowExec();
+}

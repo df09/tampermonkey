@@ -1,24 +1,30 @@
 now:
-  styles - general upd:
-    main
-    prep
-    exec
+  check func:
+    storage 1 2 3
+    alert
+    dialog
+    pause
+    twins
+
+  styles:
+    storage
     modal:
-      alert
-        info
-        success
-        warning
-        error
-      dialog
-        info
-        success
-        warning
-        error
-      content
-        info
-        success
-        warning
-        error
+    alert
+      info
+      success
+      warning
+      error
+    dialog
+      info
+      success
+      warning
+      error
+    content
+      info
+      success
+      warning
+      error
+
   operations:
     old restore:
       thiws

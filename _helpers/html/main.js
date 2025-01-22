@@ -64,17 +64,27 @@ injectHTML(`
       <!-- modal.dialog.submit -->
       <button id="tm-modal-dialog-submit" class="tm-btn-g">Submit</button>
     </div>
-    <!-- modal.content.storage-view -->
-    <div id="tm-modal-content-storage-view" class="tm-dnone">
-      <table>
-        <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
-        <tbody>
-          <!-- ... -->
-        </tbody>
-      </table>
-      <button id="tm-storage-copy-all" class="tm-btn-g">Copy All</button>
-    </div>
     <!-- modal.content.... -->
   </div>
 </div>
 `)
+// modal-content-storage-view
+const tmHTMLModalStorageView = `
+  <!-- modal.content.storage-view -->
+  <div id="tm-modal-content-storage-view" class="tm-dnone">
+    <table>
+      <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
+      <tbody>
+        <!-- ... -->
+      </tbody>
+    </table>
+    <button id="tm-storage-copy-all" class="tm-btn-g">Copy All</button>
+  </div>`;
+const tmHTMLModalStorageViewRow = `
+  <tr>
+    <td>[key]</td>
+    <td>
+      <button class="tm-storage-copy-row tm-btn-g" data-value="[value]">Copy</button>
+      <span class="tm-storage-value">[value]</span>
+    </td>
+  </tr>`;

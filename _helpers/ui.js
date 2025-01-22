@@ -1,11 +1,10 @@
-// vars
+// header
 const eContainer = getEl('#tm-container');
-// vars.header
 const eOperation = getEl('#tm-operation');
 const eAbort = getEl('#tm-abort');
 const eBack = getEl('#tm-back');
 const eMinimize = getEl('#tm-minimize');
-// vars.main
+// main
 const eMain = getEl('#tm-main');
 const eMainReadme = getEl('#tm-main-readme');
 const eMainHotkeys = getEl('#tm-main-hotkeys');
@@ -16,14 +15,26 @@ const eMainStorageBody = getEl('#tm-main-storage-body');
 const eMainStorageBodyView = getEl('#tm-main-storage-body-view');
 const eMainStorageBodyReset = getEl('#tm-main-storage-body-reset');
 const eMainStorageBodyClean = getEl('#tm-main-storage-body-clean');
-// vars.prep
+// prep
 const ePrep = getEl('#tm-prep');
 const ePrepTitle = getEl('#tm-prep-title');
 const ePrepTextarea = getEl('#tm-prep-textarea');
-// vars.exec
+// exec
 const eExec = getEl('#tm-exec');
 const eExecContinue = getEl('#tm-exec-continue');
 const eExecCancel = getEl('#tm-exec-cancel');
+// modal
+const eModalHeader = getEl('#tm-modal-header');
+const eModalHeaderTitle = getEl('#tm-modal-header-title');
+const eModalHeaderClose = getEl('#tm-modal-header-close');
+const eModalAlert = getEl('#tm-modal-alert');
+const eModalAlertMsg = getEl('#tm-modal-alert-msg');
+const eModalAlertOk = getEl('#tm-modal-alert-ok');
+const eModalDialog = getEl('#tm-modal-dialog');
+const eModalDialogMsg = getEl('#tm-modal-dialog-msg');
+const eModalDialogInput = getEl('#tm-modal-dialog-input');
+const eModalDialogTextarea = getEl('#tm-modal-dialog-textarea');
+const eModalDialogSubmit = getEl('#tm-modal-dialog-submit');
 
 // helpers
 function tmAddCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
@@ -132,16 +143,16 @@ function tmUiInitMinimize() {
 function tmUiInitMain() {makeResizable(eMain)}
 function tmUiInitReadme(link){eMainReadme.querySelector('a').href=link}
 function getKey(hotkey,n) {
-  const key = hotkey.split('+')[n];
-  if (key === 'Shift') return event.shiftKey;
-  if (key === 'Ctrl') return event.ctrlKey;
-  if (key === 'Alt') return event.altKey;
-  if (key === 'Meta') return event.metaKey;
-  return event.key === key;
+  const k = hotkey.split('+')[n];
+  if (k === 'Shift') return event.shiftKey;
+  if (k === 'Ctrl') return event.ctrlKey;
+  if (k === 'Alt') return event.altKey;
+  if (k === 'Meta') return event.metaKey;
+  return event.k === k;
 }
 function tmUiInitHotkeys(data) {
-  let [idpfx, title, hotkey, action] = data;
-  let id = 'tm-hotkey-' + idpfx;
+  let [idsfx, title, hotkey, action] = data;
+  let id = 'tm-hotkey-' + idsfx;
   let groupClass = 'tm-group-hotkey';
   // Добавляем hotkey в HTML
   eMainHotkeys.insertAdjacentHTML('beforeend', `
@@ -158,13 +169,13 @@ function tmUiInitHotkeys(data) {
   checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
       console.log(id+': ON');
-      tmsSet('tm_keep_hotkey-'+idpfx, '1')
+      tmsSet('tm_keep_hotkey-'+idsfx, '1')
       function hotkeyHandler(event){if(getKey(hotkey,0)&&getKey(hotkey,1)){action()}}
       checkbox.hotkeyHandler = hotkeyHandler;
       document.addEventListener('keydown', hotkeyHandler);
     } else {
       console.log(id+': OFF');
-      tmsDelete('tm_keep_hotkey-'+idpfx)
+      tmsDelete('tm_keep_hotkey-'+idsfx)
       if (checkbox.hotkeyHandler) {
         document.removeEventListener('keydown', checkbox.hotkeyHandler);
         checkbox.hotkeyHandler = null;
@@ -172,7 +183,7 @@ function tmUiInitHotkeys(data) {
     }
   });
   // user settings
-  if (tmsGet('tm_keep_hotkey-' + idpfx) === '1') {
+  if (tmsGet('tm_keep_hotkey-' + idsfx) === '1') {
     checkbox.checked = true;
     checkbox.dispatchEvent(new Event('change'));
   }
@@ -181,11 +192,11 @@ function tmUiInitHotkeys(data) {
 }
 // main.buttons
 function tmUiInitBtnPrep(data) {
-  let [idpfx, title, action] = data;
+  let [idsfx, title, action] = data;
   let mainGroupClass = 'tm-group-main-prep';
   let prepGroupClass = 'tm-group-prep-exec';
-  let mainId = mainGroupClass+'-'+idpfx;
-  let prepId = prepGroupClass+'-'+idpfx;
+  let mainId = mainGroupClass+'-'+idsfx;
+  let prepId = prepGroupClass+'-'+idsfx;
   // html
   eMainPrep.insertAdjacentHTML(
     'beforeend',
@@ -198,14 +209,14 @@ function tmUiInitBtnPrep(data) {
   // event
   getEl('#'+mainId).addEventListener('click', () => {
     ePrepTitle.textContent = title;
-    ePrepTextarea.value = tmsGet('tm_keep_uiTextareaValue_'+idpfx, '');
+    ePrepTextarea.value = tmsGet('tm_keep_uiTextareaValue_'+idsfx, '');
     // Скрываем другие EXEC кнопки
     getEls('.'+prepGroupClass).forEach(e => tmUiHide(e));
     // Показ текущей EXEC кнопки
     let prepExec = getEl('#'+prepId);
     tmUiShow(prepExec);
     prepExec.addEventListener('click', () => {
-      tmsSet('tm_keep_uiTextareaValue_'+idpfx, ePrepTextarea.value);
+      tmsSet('tm_keep_uiTextareaValue_'+idsfx, ePrepTextarea.value);
       tmUiShowExec();
       action();
     });
@@ -215,9 +226,9 @@ function tmUiInitBtnPrep(data) {
   tmUiShow(eMainPrep);
 }
 function tmUiInitBtnExec(data) {
-  let [idpfx, title, action] = data;
+  let [idsfx, title, action] = data;
   let groupClass = 'tm-group-main-exec';
-  let id = 'tm-main-exec-'+idpfx;
+  let id = 'tm-main-exec-'+idsfx;
   // html
   eMainExec.insertAdjacentHTML(
     'beforeend',
@@ -233,75 +244,76 @@ function tmUiInitBtnExec(data) {
   tmUiShow(eMainExec);
 }
 // main.storage
-// TODO: migrate to ModalManager
 function tmUiInitStorageView() {
-  // Инициализация кнопки для отображения модального окна
-  eMainStorageBodyView.addEventListener('click', () => {
-    // Заполняем содержимое модального окна
-    const data = tmsGetAll(); // Получаем все ключи
-    const contentEl = getEl('#tm-modal-content-storage-view tbody'); // Контейнер для строк
-    contentEl.innerHTML = ''; // Очищаем существующее содержимое
-    // Создаем строки для каждого ключа
-    data.forEach(key => {
-      const value = localStorage.getItem(key);
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${key}</td>
-        <td>
-          <button class="tm-storage-copy-row tm-btn-g" data-value="${value}">Copy</button>
-          <span class="tm-storage-value">${value}</span>
-        </td>
-      `;
-      contentEl.appendChild(row);
+  function prepareContent() {
+    eModal.insertAdjacentHTML('beforeend', tmHTMLModalStorageView);
+    const data = tmsGetAll();
+    const eContent = eModal.lastElementChild;
+    const eTbody = eContent.querySelector('tbody');
+    eTbody.innerHTML = '';
+    // upd
+    data.forEach(k => {
+      eTbody.insertAdjacentHTML('beforeend', tmHTMLModalStorageViewRow);
+      const value = tmsGet(k);
+      const eRow = eTbody.lastElementChild;
+      eRow.querySelector('td:first-child').textContent = k;
+      eRow.querySelector('.tm-storage-copy-row').setAttribute('data-value', value);
+      eRow.querySelector('.tm-storage-value').textContent = value;
     });
-    // Добавляем обработчики событий для кнопок Copy после их создания
-    getEls('.tm-storage-copy-row').forEach(e => {
-      e.addEventListener('click', (event) => {
+    // events
+    getEls('.tm-storage-copy-row').forEach(e=>{
+      e.addEventListener('click',(event)=>{
         const value = event.target.getAttribute('data-value');
         navigator.clipboard.writeText(value)
           .then(() => { console.log(`Copied: ${value}`); })
           .catch(e => { console.error(`Failed to copy value: ${e}`); });
       });
     });
-    // Показываем модальное окно
+    getEl('#tm-storage-copy-all').addEventListener('click',()=>{
+      const allData = data.map(k=>{const v=tmsGet(k);return k+': '+v}).join('\n');
+      navigator.clipboard.writeText(allData)
+        .then(() => {console.log('Copied all key-value to clipboard')})
+        .catch(e => {console.error(`Failed to copy all key-value: ${e}`)})
+    });
+  }
+  // click view
+  eMainStorageBodyView.addEventListener('click', () => {
+    ModalManager.buildContent({
+      idsfx: 'storage-view',
+      accent: 'info',
+      title: 'Storage View',
+      actionPrepareContent: prepareContent,
+      actionClose:()=>{},
+    });
     tmUiShow(getEl('#tm-modal-content-storage-view'));
-  });
-  // Копирование всех ключей и значений
-  getEl('#tm-storage-copy-all').addEventListener('click', () => {
-    const allData = tmsGetAll().map(key => {
-      const value = localStorage.getItem(key);
-      return `${key}: ${value}`;
-    }).join('\n');
-    navigator.clipboard.writeText(allData)
-      .then(() => {
-        console.log('Copied all key-value to clipboard');
-      })
-      .catch(e => {
-        console.error(`Failed to copy all key-value: ${e}`);
-      });
   });
 }
 function tmUiInitStorageReset() {
   eMainStorageBodyReset.addEventListener('click',()=>{
+    // reset
     tmsReset();
     tmUiRecalcHeader();
+    // notify
     ModalManager.buildAlert({
       accent: 'warning',
-      title: 'Storage.Reset',
-      msg: 'all non-premanent data was removed from storage.',
-      actionClose: ()=>{},
+      title: 'Storage Reset',
+      msg: 'All non-premanent data has been removed from storage.',
+      actionClose:()=>{},
     });
+    tmUiShow(getEl('#tm-modal-content-storage-view'));
   });
 }
 function tmUiInitStorageClean() {
   eMainStorageBodyClean.addEventListener('click',()=>{
+    // clean
     tmsDeleteAll();
     tmUiRecalcHeader();
+    // notify
     ModalManager.buildAlert({
       accent: 'error',
-      title: 'Storage.CLEAN',
-      msg: 'all data was deleted from storage.',
-      actionClose: ()=>{},
+      title: 'Storage CLEAN',
+      msg: 'ALL DATA has been deleted from storage.',
+      actionClose:()=>{},
     });
   });
 }
@@ -375,8 +387,4 @@ function tmUiReset(...args) {
     });
   }
   console.log('tmUiReset: done.');
-}
-function tmStart(actionName) {
-  tmsSetOperation(actionName+'/start');
-  tmUiShowExec();
 }
