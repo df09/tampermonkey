@@ -11,10 +11,11 @@ const eMainHotkeys = getEl('#tm-main-hotkeys');
 const eMainPrep = getEl('#tm-main-prep');
 const eMainExec = getEl('#tm-main-exec');
 const eMainStorage = getEl('#tm-main-storage');
+const eMainStorageTitle = getEl('#tm-main-storage-title');
 const eMainStorageBody = getEl('#tm-main-storage-body');
-const eMainStorageBodyView = getEl('#tm-main-storage-body-view');
-const eMainStorageBodyReset = getEl('#tm-main-storage-body-reset');
-const eMainStorageBodyClean = getEl('#tm-main-storage-body-clean');
+const eMainStorageBodyView = getEl('#tm-main-storage-view');
+const eMainStorageBodyReset = getEl('#tm-main-storage-reset');
+const eMainStorageBodyClean = getEl('#tm-main-storage-clean');
 // prep
 const ePrep = getEl('#tm-prep');
 const ePrepTitle = getEl('#tm-prep-title');
@@ -37,6 +38,7 @@ const eModalDialogTextarea = getEl('#tm-modal-dialog-textarea');
 const eModalDialogSubmit = getEl('#tm-modal-dialog-submit');
 
 // helpers
+function mustache(template,vars){return template.replace(/{{(\w+)}}/g,(_,key)=>{return vars[key]||''})}
 function tmAddCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
 function tmRemCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
 function tmUiHide(...els){els.forEach(e=>{e.classList.add('tm-dnone')})}
@@ -142,8 +144,8 @@ function tmUiInitMinimize() {
 // main
 function tmUiInitMain() {makeResizable(eMain)}
 function tmUiInitReadme(link){eMainReadme.querySelector('a').href=link}
-function getKey(hotkey,n) {
-  const k = hotkey.split('+')[n];
+function getKey(keys,n) {
+  const k = keys.split('+')[n];
   if (k === 'Shift') return event.shiftKey;
   if (k === 'Ctrl') return event.ctrlKey;
   if (k === 'Alt') return event.altKey;
@@ -151,26 +153,18 @@ function getKey(hotkey,n) {
   return event.k === k;
 }
 function tmUiInitHotkeys(data) {
-  let [idsfx, title, hotkey, action] = data;
-  let id = 'tm-hotkey-' + idsfx;
-  let groupClass = 'tm-group-hotkey';
-  // Добавляем hotkey в HTML
-  eMainHotkeys.insertAdjacentHTML('beforeend', `
-    <div id="${id}" class="tm-row ${groupClass}">
-      <h3 class="tm-hotkey-title tm-row"><span>${title}</span><span class="tm-hotkey-keys">(${hotkey})</span></h3>
-      <label class="tm-hotkey-switch tm-ml0 tm-mb0">
-        <input type="checkbox">
-        <span class="tm-hotkey-slider"></span>
-      </label>
-    </div>
-  `);
+  let [idsfx, name, keys, action] = data;
+  let id = 'tm-main-hotkeys-' + idsfx;
+  eMainHotkeys.insertAdjacentHTML('beforeend',mustache(
+    tmHTMLMainHotkeysHotkey, {id:id, name:name, keys:keys}
+  ));
   // event
   let checkbox = getEl('#'+id+' input[type="checkbox"]');
   checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
       console.log(id+': ON');
       tmsSet('tm_keep_hotkey-'+idsfx, '1')
-      function hotkeyHandler(event){if(getKey(hotkey,0)&&getKey(hotkey,1)){action()}}
+      function hotkeyHandler(event){if(getKey(keys,0)&&getKey(keys,1)){action()}}
       checkbox.hotkeyHandler = hotkeyHandler;
       document.addEventListener('keydown', hotkeyHandler);
     } else {
@@ -193,25 +187,17 @@ function tmUiInitHotkeys(data) {
 // main.buttons
 function tmUiInitBtnPrep(data) {
   let [idsfx, title, action] = data;
-  let mainGroupClass = 'tm-group-main-prep';
-  let prepGroupClass = 'tm-group-prep-exec';
-  let mainId = mainGroupClass+'-'+idsfx;
-  let prepId = prepGroupClass+'-'+idsfx;
-  // html
-  eMainPrep.insertAdjacentHTML(
-    'beforeend',
-    `<button id="${mainId}" class="${mainGroupClass} tm-btn-g">${title} -&gt;</button>`
-  );
-  ePrep.insertAdjacentHTML(
-    'beforeend',
-    `<button id="${prepId}" class="${prepGroupClass} tm-btn-r">EXEC</button>`
-  );
+  let mainId = 'tm-main-prep-'+idsfx;
+  let prepId = 'tm-prep-exec-'+idsfx;
+  // insert
+  eMainPrep.insertAdjacentHTML('beforeend',mustache(tmHTMLMainPrep,{id:mainId,title:title}));
+  ePrep.insertAdjacentHTML('beforeend',mustache(tmHTMLPrepExec,{id:prepId}));
   // event
   getEl('#'+mainId).addEventListener('click', () => {
     ePrepTitle.textContent = title;
     ePrepTextarea.value = tmsGet('tm_keep_uiTextareaValue_'+idsfx, '');
     // Скрываем другие EXEC кнопки
-    getEls('.'+prepGroupClass).forEach(e => tmUiHide(e));
+    getEls('.tm-group-prep-exec').forEach(e => tmUiHide(e));
     // Показ текущей EXEC кнопки
     let prepExec = getEl('#'+prepId);
     tmUiShow(prepExec);
@@ -227,41 +213,25 @@ function tmUiInitBtnPrep(data) {
 }
 function tmUiInitBtnExec(data) {
   let [idsfx, title, action] = data;
-  let groupClass = 'tm-group-main-exec';
   let id = 'tm-main-exec-'+idsfx;
-  // html
-  eMainExec.insertAdjacentHTML(
-    'beforeend',
-    `<button id="${id}" class="${groupClass} tm-btn-y">EXEC: ${title}</button>`
-  );
-  // event
-  let button = getEl('#'+id);
-  button.addEventListener('click', () => {
-    tmUiShowExec();
-    action();
-  });
-  // show
+  eMainExec.insertAdjacentHTML('beforeend',mustache(tmHTMLMainExec,{id:id,title:title}));
+  getEl('#'+id).addEventListener('click',()=>{tmUiShowExec();action()});
   tmUiShow(eMainExec);
 }
 // main.storage
 function tmUiInitStorageView() {
   function prepareContent() {
-    eModal.insertAdjacentHTML('beforeend', tmHTMLModalStorageView);
+    eModal.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
     const data = tmsGetAll();
     const eContent = eModal.lastElementChild;
     const eTbody = eContent.querySelector('tbody');
+    // insert
     eTbody.innerHTML = '';
-    // upd
-    data.forEach(k => {
-      eTbody.insertAdjacentHTML('beforeend', tmHTMLModalStorageViewRow);
-      const value = tmsGet(k);
-      const eRow = eTbody.lastElementChild;
-      eRow.querySelector('td:first-child').textContent = k;
-      eRow.querySelector('.tm-storage-copy-row').setAttribute('data-value', value);
-      eRow.querySelector('.tm-storage-value').textContent = value;
-    });
+    data.forEach(k=>{eTbody.insertAdjacentHTML('beforeend',mustache(
+      tmHTMLModalStorageviewRow, {key:k, value:tmsGet(k)}
+    ))});
     // events
-    getEls('.tm-storage-copy-row').forEach(e=>{
+    getEls('.tm-modal-storageview-row-copy').forEach(e=>{
       e.addEventListener('click',(event)=>{
         const value = event.target.getAttribute('data-value');
         navigator.clipboard.writeText(value)
@@ -269,7 +239,7 @@ function tmUiInitStorageView() {
           .catch(e => { console.error(`Failed to copy value: ${e}`); });
       });
     });
-    getEl('#tm-storage-copy-all').addEventListener('click',()=>{
+    getEl('#tm-modal-storageview-copyall').addEventListener('click',()=>{
       const allData = data.map(k=>{const v=tmsGet(k);return k+': '+v}).join('\n');
       navigator.clipboard.writeText(allData)
         .then(() => {console.log('Copied all key-value to clipboard')})
@@ -278,14 +248,13 @@ function tmUiInitStorageView() {
   }
   // click view
   eMainStorageBodyView.addEventListener('click', () => {
+    // modal
     ModalManager.buildContent({
-      idsfx: 'storage-view',
-      accent: 'info',
+      idsfx: 'storage-view', accent: 'info',
       title: 'Storage View',
       actionPrepareContent: prepareContent,
       actionClose:()=>{},
     });
-    tmUiShow(getEl('#tm-modal-content-storage-view'));
   });
 }
 function tmUiInitStorageReset() {
@@ -293,10 +262,9 @@ function tmUiInitStorageReset() {
     // reset
     tmsReset();
     tmUiRecalcHeader();
-    // notify
+    // modal
     ModalManager.buildAlert({
-      accent: 'warning',
-      title: 'Storage Reset',
+      accent: 'warning', title: 'Storage Reset',
       msg: 'All non-premanent data has been removed from storage.',
       actionClose:()=>{},
     });
@@ -308,10 +276,9 @@ function tmUiInitStorageClean() {
     // clean
     tmsDeleteAll();
     tmUiRecalcHeader();
-    // notify
+    // modal
     ModalManager.buildAlert({
-      accent: 'error',
-      title: 'Storage CLEAN',
+      accent: 'error', title: 'Storage CLEAN',
       msg: 'ALL DATA has been deleted from storage.',
       actionClose:()=>{},
     });
@@ -337,7 +304,6 @@ function tmUiInitBtnCancel(){eExecCancel.addEventListener('click',()=>{tmUiReset
 
 // === init ==============================
 function tmUiInit(map) {
-  let operation = tmsGetOperation();
   // header
   tmUiInitAbortBtn();
   tmUiInitBack();
@@ -356,7 +322,7 @@ function tmUiInit(map) {
   // exec
   tmUiInitBtnCancel();
   // show
-  if (operation) {
+  if (tmsGetOperation()) {
     tmUiShowExec();
   } else {
     tmUiShowMain();

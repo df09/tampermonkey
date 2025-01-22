@@ -10,9 +10,9 @@
   window.tmDIR = 'bravura-crm.com';
   window.tmHOST = 'http://localhost:9876';
   const filesJs = [
-    '/_helpers/common.js',
     '/_helpers/css/main.js',
     '/_helpers/html/main.js',
+    '/_helpers/common.js',
     '/_helpers/storage.js',
     '/_helpers/ui.js',
     '/_helpers/modals.js',
@@ -31,5 +31,5 @@
     e.src=tmHOST+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
     document.body.appendChild(e);
   })}}
-  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(tmDIR+'/'+tmENV+': loaded');}catch(e){console.error(e);}});
+  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(tmDIR+'/'+tmENV+': loaded')}catch(e){abort(e)}});
 })();

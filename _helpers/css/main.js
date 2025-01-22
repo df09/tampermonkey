@@ -179,4 +179,4 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
   border-bottom: 1px solid #444;
   text-align: left;
 }
-`)
+`);

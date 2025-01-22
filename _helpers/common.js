@@ -56,17 +56,17 @@ function getEl(selector) {
     // Если это ID, используем getElementById
     e = document.getElementById(selector.slice(1));
     if (!e) {
-      tmUiAbort(`getEl "${selector}": not found.`);
+      abort(`getEl "${selector}": not found.`);
     }
   } else {
     // Используем querySelectorAll для произвольного селектора
     const els = document.querySelectorAll(selector);
     if (els.length === 0) {
-      tmUiAbort(`getEl "${selector}": not found.`);
+      abort(`getEl "${selector}": not found.`);
     } else if (els.length === 1) {
       e = els[0];
     } else {
-      tmUiAbort(`getEl "${selector}": multiple els found.`);
+      abort(`getEl "${selector}": multiple els found.`);
     }
   }
   console.log(`getEl "${selector}":`, e);
@@ -74,7 +74,7 @@ function getEl(selector) {
 }
 function getEls(selector) {
   const els = document.querySelectorAll(selector);
-  if (els.length === 0) {tmUiAbort('getEl: "'+selector+'" not found.')}
+  if (els.length === 0) {abort('getEl: "'+selector+'" not found.')}
   console.log('getEls "'+selector+'":', els);
   return els;
 }
