@@ -44,6 +44,7 @@ function tmRemCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.class
 function tmUiHide(...els){els.forEach(e=>{e.classList.add('tm-dnone')})}
 function tmUiShow(...els){els.forEach(e=>{e.classList.remove('tm-dnone')})}
 function tmUiShowMain(){
+  tmsSet('tm_keep_active_menu_id', eMain.id);
   tmUiRecalcHeader();
   if (tmsGet('tm_keep_minimized')) {
     tmRemCls(eMinimize,'tm-btn-r','tm-btn-header-r');
@@ -61,30 +62,33 @@ function tmUiShowMain(){
   }
 }
 function tmUiShowPrep(){
+  tmsSet('tm_keep_active_menu_id', ePrep.id);
   tmUiRecalcHeader();
   tmUiShow(eBack,ePrep);
   tmUiHide(eMinimize,eMain,eExec);
 }
 function tmUiShowExec(){
+  tmsSet('tm_keep_active_menu_id', eExec.id);
   tmUiRecalcHeader();
   tmUiShow(eExec);
   tmUiHide(eBack,eMinimize,eMain,ePrep);
 }
-function makeResizable(c) {
+function makeResizable() {
+  const activeId = tmsGet('tm_keep_active_menu_id');
   // Restore last size
-  c.style.width = tmsGet('tm_keep_uiWidth_' + c.id) || c.style.width;
-  c.style.height = tmsGet('tm_keep_uiHeight_' + c.id) || c.style.height;
+  eContainer.style.width = tmsGet('tm_keep_uiWidth_' + activeId) || eContainer.style.width;
+  eContainer.style.height = tmsGet('tm_keep_uiHeight_' + activeId) || eContainer.style.height;
   // Resize
   let isResizing = false;
   let startX, startY, startWidth, startHeight;
-  c.addEventListener("mousedown", (e) => {
+  eContainer.addEventListener("mousedown", (e) => {
     if (e.target.matches("button, input, textarea, .tm-slider")) return; // Skip excluded elements
     if (e.button !== 0) return; // Only left mouse button
     isResizing = true;
     startX = e.clientX;
     startY = e.clientY;
-    startWidth = c.offsetWidth;
-    startHeight = c.offsetHeight;
+    startWidth = eContainer.offsetWidth;
+    startHeight = eContainer.offsetHeight;
     document.body.style.userSelect = "none"; // Disable text selection
   });
   document.addEventListener("mousemove", (e) => {
@@ -92,19 +96,20 @@ function makeResizable(c) {
     let newWidth = startWidth - (e.clientX - startX);
     let newHeight = startHeight - (e.clientY - startY);
     // Apply size with constraints
-    c.style.width = `${Math.max(newWidth, 300)}px`; // Minimum width 300px
-    c.style.height = `${Math.max(newHeight, 50)}px`; // Minimum height 50px
+    eContainer.style.width = Math.max(newWidth, 300)+'px'; // Minimum width 300px
+    eContainer.style.height = Math.max(newHeight, 50)+'px'; // Minimum height 50px
   });
   document.addEventListener("mouseup", () => {
     if (isResizing) {
       isResizing = false;
       document.body.style.userSelect = "";
-      tmsSet('tm_keep_uiWidth_' + c.id, c.style.width);
-      tmsSet('tm_keep_uiHeight_' + c.id, c.style.height);
+      tmsSet('tm_keep_uiWidth_' + activeId, eContainer.style.width);
+      tmsSet('tm_keep_uiHeight_' + activeId, eContainerc.style.height);
     }
   });
 }
 // container
+function tmUiContainer(){makeResizable()}
 // header
 function tmUiRecalcHeader() {
   let operation = tmsGetOperation(); let txt = operation || 'None';
@@ -142,7 +147,7 @@ function tmUiInitMinimize() {
   })
 }
 // main
-function tmUiInitMain() {makeResizable(eMain)}
+function tmUiInitMain(){}
 function tmUiInitReadme(link){eMainReadme.querySelector('a').href=link}
 function getKey(keys,n) {
   const k = keys.split('+')[n];
@@ -285,7 +290,7 @@ function tmUiInitStorageClean() {
   });
 }
 // prep
-function tmUiInitPrep(){makeResizable(ePrep)}
+function tmUiInitPrep(){}
 async function tmUiPause(msg) {
   tmUiShow(eExecContinue);
   ModalManager.buildAlert({

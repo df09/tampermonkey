@@ -1,3 +1,10 @@
+function injectCSS(css) {
+  if (!css||typeof css!=='string'){abort('injectCSS: Invalid content provided.')}
+  const styleElement = document.createElement('style');
+  styleElement.type = 'text/css';
+  styleElement.textContent = css;
+  document.head.appendChild(styleElement);
+}
 injectCSS(`
 /* ===== common ============================ */
 .tm-dnone{display:none!important;}

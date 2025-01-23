@@ -1,20 +1,28 @@
+// abort
+class AbortExecution extends Error{constructor(message){super(message);this.name="AbortExecution";}}
+function abort(...args) {
+  console.log('abort: init..')
+  tmsDeleteAll(); // clean storage
+  // Formulate message
+  const joinedArgs=args.map(arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)).join(' ');
+  alert('Abort' + (joinedArgs ? `: ${joinedArgs}` : '.'))
+  console.log('abort: done.'); throw new AbortExecution(joinedArgs); // Throw exception
+}
 // prefix/serialize/deserialize
 const PREFIX = 'tm_';
 function ensurePrefix(key) {
-  if (!key.startsWith(PREFIX)) { tmUiAbort(`Key must start with '${PREFIX}': ${key}`); }
+  if (!key.startsWith(PREFIX)) { abort(`Key must start with '${PREFIX}': ${key}`); }
   return key;
 }
-function serialize(value) {
-  return JSON.stringify({ type: typeof value, value });
-}
+function serialize(value){return JSON.stringify({type:typeof value, value})}
 function deserialize(serialized) {
-  const { type, value } = JSON.parse(serialized);
+  const {type, value} = JSON.parse(serialized);
   if (type === 'number') return Number(value);
   if (type === 'boolean') return Boolean(value);
   if (type === 'object') return value;
   if (type === 'string') return String(value);
   if (type === 'undefined') return undefined;
-  tmUiAbort(`Unsupported data type: ${type}`);
+  abort(`Unsupported data type: ${type}`);
 }
 // set
 function tmsSet(key, value) {
@@ -75,7 +83,7 @@ function tmsReset() {
 // operations
 function tmsSetOperation(operation) {
     const operationFormat = /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/;
-    if (!operationFormat.test(operation)) {tmUiAbort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
+    if (!operationFormat.test(operation)) {abort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
     const [action, step] = operation.split('/');
     tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
     console.log('tmsSetOperation: "'+operation+'".');
@@ -93,7 +101,7 @@ function tmsOperationsGetHandlers(config) {
       if (typeof window[handlerName] === 'function') {
         fullHandlers[action][step] = window[handlerName];
       } else {
-        tmUiAbort(`Handler function "${handlerName}" not found`);
+        abort(`Handler function "${handlerName}" not found`);
       }
     }
   }
@@ -113,13 +121,13 @@ function tmsOperationsHandle(config) {
     if (actionHandlers[step]) {
       actionHandlers[step]();
     } else {
-      tmUiAbort(operation+': unknown step "'+step+'"');
+      abort(operation+': unknown step "'+step+'"');
     }
   } else {
-    tmUiAbort(operation+': unknown action "'+action+'"');
+    abort(operation+': unknown action "'+action+'"');
   }
 }
 function tmStart(actionName) {
   tmsSetOperation(actionName+'/start');
-  tmUiShowExec();
+  abort();
 }

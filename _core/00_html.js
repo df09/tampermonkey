@@ -1,3 +1,9 @@
+function injectHTML(html) {
+  if (!html || typeof html !== 'string') { abort('injectHTML: Invalid content provided.'); }
+  const container = document.createElement('div'); container.innerHTML = html;
+  document.body.append(container);
+  console.log('injectHTML: done.');
+}
 injectHTML(`
   <!-- container -->
   <div id="tm-container" class="tm-container">
