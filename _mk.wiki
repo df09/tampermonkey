@@ -1,45 +1,24 @@
-now:
-  check func:
-    storage 1 2 3
-    alert
-    dialog
-    pause
-    twins
-
-  styles:
-    storage
-    modal:
-    alert
-      info
-      success
-      warning
-      error
-    dialog
-      info
-      success
-      warning
-      error
-    content
-      info
-      success
-      warning
-      error
-
-  operations:
-    old restore:
-      thiws
-    old upd:
-      barcodes - УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
-      twins:
-        скачать pdf
-        out of corner
-        если есть 3 точки подряд скипать строку
-    new add:
-      Shift+a - search active jobs
-      crl - закупка hw
-v2:
+tests:
+  resize:
+    clean/reload>resize>prep>resize>main>prep>main>reload>main>prep>main
+  minimize:
+    clean/reload>off>on
+    clean/reload>off>reload>on
+  resize+minimize:
+    clean/reload>resize>on>off>resize
+    clean/reload>resize>on>reload>off>resize
+    clean/reload>resize>prep>resize>main>off>on>resize
+    clean/reload>resize>prep>resize>main>off>reload>on>resize
+todo:
+  thiws: restore
+  barcodes:
+    УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
+    start action: add requred url - redirect or (modal-alert + abort)
+  twins:
+    скачать pdf
+    out of corner
+  search active jobs
+  crl - закупка hw
   resize + move
-  start action: add requred url - redirect or (modal-alert + abort)
-  resize: fix styles - with min-h, min-w
-  add auto operations (ex. login)
-  add cross-domain for dev
+  auto operations (ex. login)
+  cross-domain for dev

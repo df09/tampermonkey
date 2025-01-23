@@ -44,41 +44,36 @@ const eModalDialogSubmit = getEl('#tm-modal-dialog-submit');
 function tmUiHide(...els){els.forEach(e=>{e.classList.add('tm-dnone')})}
 function tmUiShow(...els){els.forEach(e=>{e.classList.remove('tm-dnone')})}
 function tmUiShowMain(){
-  tmsSet('tm_keep_active_menu_id', eMain.id);
+  tmsSet('tm_keep_activeId', eMain.id);
   tmUiRecalcHeader();tmUiRecalcSize();
   // minimize
   if (tmsGet('tm_keep_minimized')) {
+    // hide
     remCls(eMinimize,'tm-btn-r','tm-btn-header-r');
     addCls(eMinimize,'tm-btn-b','tm-btn-header-b');
     eMinimize.textContent='^';
     tmUiShow(eMinimize);
     tmUiHide(eBack,eMain,ePrep,eExec);
   } else {
+    // show
     remCls(eMinimize,'tm-btn-b','tm-btn-header-b');
     addCls(eMinimize,'tm-btn-r','tm-btn-header-r');
     eMinimize.textContent='X';
-    // show
     tmUiShow(eMinimize,eMain);
     tmUiHide(eBack,ePrep,eExec);
   }
 }
 function tmUiShowPrep(){
-  tmsSet('tm_keep_active_menu_id', ePrep.id);
+  tmsSet('tm_keep_activeId', ePrep.id);
   tmUiRecalcHeader();tmUiRecalcSize();
-  // show
   tmUiShow(eBack,ePrep);
   tmUiHide(eMinimize,eMain,eExec);
 }
 function tmUiShowExec(){
-  tmsSet('tm_keep_active_menu_id', eExec.id);
+  tmsSet('tm_keep_activeId', eExec.id);
   tmUiRecalcHeader();tmUiRecalcSize();
   tmUiShow(eExec);
   tmUiHide(eBack,eMinimize,eMain,ePrep);
-}
-function tmUiRecalcSize() {
-  const activeId = tmsGet('tm_keep_active_menu_id');
-  eContainer.style.width = tmsGet('tm_keep_uiWidth_'+activeId);
-  eContainer.style.height = tmsGet('tm_keep_uiHeight_'+activeId);
 }
 function tmUiRecalcHeader() {
   const operation = tmsGetOperation(); const txt = operation || 'None';
@@ -93,65 +88,77 @@ function tmUiRecalcHeader() {
   }
   if (operation) {tmUiShow(eAbort)} else {tmUiHide(eAbort)}
 }
+function tmUiRecalcSize() {
+  const activeId = tmsGet('tm_keep_activeId');
+  const style = window.getComputedStyle(eContainer);
+  eContainer.style.width = tmsGet('tm_keep_uiWidth_'+activeId);
+  eContainer.style.height = tmsGet('tm_keep_uiHeight_'+activeId);
+}
 
 // === init functions ==============================
-function tmUiInitContainer() {
-  // Resize
+function makeResizable(e) {
   let isResizing = false;
   let startX, startY, startWidth, startHeight;
-  eContainer.addEventListener("mousedown", (e) => {
-    if (e.target.matches("button, input, textarea, .tm-slider")) return; // Skip excluded elements
-    if (e.button !== 0) return; // Only left mouse button
+  e.addEventListener("mousedown", (event) => {
+    if (event.target.matches("button, input, textarea, .tm-slider")) return; // Пропуск определённых элементов
+    if (event.button !== 0) return; // Только левая кнопка мыши
     isResizing = true;
-    startX = e.clientX;
-    startY = e.clientY;
+    startX = event.clientX;
+    startY = event.clientY;
     startWidth = eContainer.offsetWidth;
     startHeight = eContainer.offsetHeight;
-    document.body.style.userSelect = "none"; // Disable text selection
+    document.body.style.userSelect = "none"; // Отключить выделение текста
   });
-  document.addEventListener("mousemove", (e) => {
+  document.addEventListener("mousemove", (event) => {
     if (!isResizing) return;
-    const newWidth = startWidth - (e.clientX - startX);
-    const newHeight = startHeight - (e.clientY - startY);
-    // Apply size with constraints
-    eContainer.style.width = Math.max(newWidth, parseFloat(getComputedStyle(eContainer).minWidth))+'px'; // Minimum width 300px
-    eContainer.style.height = Math.max(newHeight, parseFloat(getComputedStyle(eContainer).minHeight))+'px'; // Minimum height 50px
+    const newWidth = startWidth - (event.clientX - startX);
+    const newHeight = startHeight - (event.clientY - startY);
+    // применяем размеры с минимальными ограничениями
+    const style = window.getComputedStyle(eContainer);
+    eContainer.style.width = Math.max(newWidth, parseInt(style.minWidth, 10))+'px';
+    eContainer.style.height = Math.max(newHeight, parseInt(style.minHeight, 10))+'px';
   });
   document.addEventListener("mouseup", () => {
     if (isResizing) {
       isResizing = false;
-      document.body.style.userSelect = "";
-      const activeId = tmsGet('tm_keep_active_menu_id');
-      tmsSet('tm_keep_uiWidth_'+activeId, eContainer.style.width);
-      tmsSet('tm_keep_uiHeight_'+activeId, eContainer.style.height);
+      document.body.style.userSelect = ""; // Включить выделение текста
+      // save size
+      const activeId = tmsGet("tm_keep_activeId");
+      const style = window.getComputedStyle(eContainer);
+      tmsSet('tm_keep_uiWidth_'+activeId, style.width);
+      tmsSet('tm_keep_uiHeight_'+activeId, style.height);
     }
   });
 }
 function tmUiInitHeaderAbort(){eAbort.addEventListener('click',()=>{
   tmUiAbort('Exec aborted by user. All data was deleted from storage.')
 })}
-function tmUiInitHeaderBack(){
-  eBack.addEventListener('click',()=>{
-    tmUiShowMain()})
-}
+function tmUiInitHeaderBack(){eBack.addEventListener('click',()=>{tmUiShowMain()})}
 function tmUiInitHeaderMinimize() {
+  const activeId = tmsGet("tm_keep_activeId");
+  const style = window.getComputedStyle(eContainer);
   eMinimize.addEventListener('click',()=>{
     if (eMinimize.textContent === 'X') {
       tmsSet('tm_keep_minimized', 1);
       remCls(eMinimize,'tm-btn-r','tm-btn-header-r');
       addCls(eMinimize,'tm-btn-b','tm-btn-header-b');
       eMinimize.textContent='^';
+      // save size
+      tmsSet('tm_keep_uiWidth_'+activeId, style.width);
+      tmsSet('tm_keep_uiHeight_'+activeId, style.height);
+      // hide and resize
       tmUiHide(eMain);
-      eContainer.style.width = getComputedStyle(eContainer).minWidth;
-      eContainer.style.height = getComputedStyle(eContainer).minHeight;
+      eContainer.style.width = tmsGet('tm_keep_uiWidth_'+activeId);
+      eContainer.style.height = style.minHeight;
     } else {
       tmsDelete('tm_keep_minimized');
       remCls(eMinimize,'tm-btn-b','tm-btn-header-b');
       addCls(eMinimize,'tm-btn-r','tm-btn-header-r');
       eMinimize.textContent='X';
+      // show and resize
       tmUiShow(eMain);
-      eContainer.style.width = tmsGet('tm_keep_uiWidth_'+eMain.id);
-      eContainer.style.height = tmsGet('tm_keep_uiHeight_'+eMain.id);
+      eContainer.style.width = tmsGet('tm_keep_uiWidth_'+activeId) || '0px';
+      eContainer.style.height = tmsGet('tm_keep_uiHeight_'+activeId) || style.minHeight;
     }
   })
 }
@@ -287,38 +294,6 @@ function tmUiInitMainStorageClean() {
 }
 function tmUiInitExecCancel(){eExecCancel.addEventListener('click',()=>{tmUiReset('Exec canceled by user.')})}
 
-// === init ==============================
-function tmUiInit(map) {
-  tmUiInitContainer();
-  tmUiInitHeaderAbort();
-  tmUiInitHeaderBack();
-  tmUiInitHeaderMinimize();
-  tmUiInitMainReadme(map.readme);
-  for (let data of map.hotkeys) {tmUiInitMainHotkey(data)}
-  for (let data of map.btnsPrep){tmUiInitMainPrep(data)}
-  for (let data of map.btnsExec){tmUiInitMainExec(data)}
-  tmUiInitMainStorageView();
-  tmUiInitMainStorageReset();
-  tmUiInitMainStorageClean();
-  tmUiInitExecCancel();
-  // show
-  if (tmsGetOperation()) {
-    tmUiShowExec()
-  } else {
-    tmUiShowMain()
-  }
-  function emulateResizeByOnePixel() {
-    const startEvent = new MouseEvent("mousedown", {clientX:0, clientY:0, button:0});
-    const moveEvent = new MouseEvent("mousemove", {clientX:0, clientY:-1});
-    const endEvent = new MouseEvent("mouseup");
-    eContainer.dispatchEvent(startEvent);
-    document.dispatchEvent(moveEvent);
-    document.dispatchEvent(endEvent);
-  }
-  emulateResizeByOnePixel();
-  console.log('tmUiInit: done.');
-}
-
 // === pause/reset/cancel ==============================
 async function tmUiPause(msg) {
   tmUiShow(eExecContinue);
@@ -367,3 +342,33 @@ function tmUiAbort(...args) {
   });
   throw new AbortExecution(joinedArgs);
 }
+
+// === init ==============================
+function tmUiInit(map) {
+  tmUiInitHeaderAbort();
+  tmUiInitHeaderBack();
+  tmUiInitHeaderMinimize();
+  tmUiInitMainReadme(map.readme);
+  for (let data of map.hotkeys) {tmUiInitMainHotkey(data)}
+  for (let data of map.btnsPrep){tmUiInitMainPrep(data)}
+  for (let data of map.btnsExec){tmUiInitMainExec(data)}
+  tmUiInitMainStorageView();
+  tmUiInitMainStorageReset();
+  tmUiInitMainStorageClean();
+  tmUiInitExecCancel();
+  makeResizable(eMain);
+  makeResizable(ePrep);
+  // show
+  if (tmsGetOperation()){tmUiShowExec()}else{tmUiShowMain()}
+  function emulateResizeByOnePixel() {
+    const startEvent = new MouseEvent("mousedown", {clientX:0, clientY:0, button:0});
+    const moveEvent = new MouseEvent("mousemove", {clientX:0, clientY:-1});
+    const endEvent = new MouseEvent("mouseup");
+    eContainer.dispatchEvent(startEvent);
+    document.dispatchEvent(moveEvent);
+    document.dispatchEvent(endEvent);
+  }
+  emulateResizeByOnePixel();
+  console.log('tmUiInit: done.');
+}
+

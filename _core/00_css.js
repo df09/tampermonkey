@@ -1,11 +1,8 @@
-function injectCSS(css) {
-  if (!css||typeof css!=='string'){abort('injectCSS: Invalid content provided.')}
-  const styleElement = document.createElement('style');
-  styleElement.type = 'text/css';
-  styleElement.textContent = css;
-  document.head.appendChild(styleElement);
-}
-injectCSS(`
+function injectCSS(css){
+  if(!css||typeof css!=='string'){abort('injectCSS: Invalid css.')}
+  const e=document.createElement('style');e.type='text/css';e.textContent=css;
+  document.head.appendChild(e);
+};injectCSS(`
 /* ===== common ============================ */
 .tm-dnone{display:none!important;}
 .tm-dflex{display:flex;}
@@ -38,7 +35,6 @@ injectCSS(`
 .tm-border-gray{border:1px solid #111111;}
 
 /* ===== common.elements ============================ */
-.tm-container * { font-family: monospace; }
 .tm-col { display: flex; flex-direction: column; }
 .tm-row { display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
 .tm-btn-b, .tm-btn-g, .tm-btn-y, .tm-btn-r, .tm-btn-gray {
@@ -75,14 +71,17 @@ injectCSS(`
 }
 
 /* ===== container ============================ */
+#tm-container * { font-family: monospace; }
 #tm-container {
   z-index: 10000; position: fixed; bottom: 5px; right: 10px;
-  min-width: 300px; min-height: 30px;
   background-color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 30px;
+  transform: none; /* Сбрасываем смещение */
+  transition: none; /* Убираем возможные анимации */
 }
 
 /* ===== header ============================ */
-#tm-header { justify-content: space-between; }
+#tm-header { min-height: 30px; }
 .tm-operation { width: 100%; height: 30px; padding: 5px;}
 .tm-btn-header { font-size: 12px; height: 30px; border-radius: 0; }
 .tm-btn-header-r { border: 1px solid #ff6666; background-color: #993333; }
