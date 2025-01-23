@@ -5,7 +5,7 @@
 // @run-at  document-end
 // ==/UserScript==
 (function(){'use strict';
-  const dir = 'bravura-crm.com';
+  const dir = 'solimp.crlaurence.com';
   const host = 'http://localhost:9876';
   const filesJs = [
     '/_core/00_css.js',
@@ -22,5 +22,5 @@
     e.src=host+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
     document.body.appendChild(e);
   })}}
-  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(dir+'/dev: loaded')}catch(e){abort(e)}});
+  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(dir+'/dev: loaded')}catch(e){abort('',e)}});
 })();

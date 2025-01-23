@@ -10,7 +10,7 @@ function injectHTML(html){
       <div id="tm-header-btns-wrap" class="tm-row">
         <button id="tm-abort" class="tm-dnone tm-btn-header tm-btn-r tm-header-btn-r">ABORT</button>
         <button id="tm-back" class="tm-dnone tm-btn-header tm-btn-b tm-header-btn-b">&lt;</button>
-        <button id="tm-minimize" class="tm-dnone tm-btn-header tm-btn-r tm-header-btn-r">X</button>
+        <button id="tm-minimize" class="tm-dnone tm-btn-header tm-btn-r tm-header-btn-r tm-m0">X</button>
       </div>
     </div>
     <!-- main -->
