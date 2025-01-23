@@ -26,14 +26,14 @@ injectCSS(`
 .tm-mv10{margin-top:10px; margin-bottom:10px;} .tm-mv5{margin-top:5px; margin-bottom:5px;} .tm-mv0{margin-top:0px; margin-bottom:0px;}
 .tm-w{color:#ffffff;}
 .tm-b{color:#007bff;}
-.tm-g{color:#28a745;}
-.tm-y{color:#ffc107;}
+.tm-g{color:#3fa356;}
+.tm-y{color:#e6b114;}
 .tm-r{color:#dc3545;}
 .tm-gray{color:#111111;}
 .tm-border-w{border:1px solid #cccccc;}
 .tm-border-b{border:1px solid #007bff;}
-.tm-border-g{border:1px solid #28a745;}
-.tm-border-y{border:1px solid #ffc107;}
+.tm-border-g{border:1px solid #3fa356;}
+.tm-border-y{border:1px solid #e6b114;}
 .tm-border-r{border:1px solid #dc3545;}
 .tm-border-gray{border:1px solid #111111;}
 
@@ -50,35 +50,34 @@ injectCSS(`
   border-radius: 5px;
 }
 .tm-btn-b { background-color: #007bff; color: #fff; }
-.tm-btn-g { background-color: #28a745; color: #fff; }
-.tm-btn-y { background-color: #ffc107; color: #fff; }
+.tm-btn-g { background-color: #3fa356; color: #fff; }
+.tm-btn-y { background-color: #e6b114; color: #fff; }
 .tm-btn-r { background-color: #dc3545; color: #fff; }
 .tm-btn-b:hover { background-color: #0056b3; }
-.tm-btn-g:hover { background-color: #1e7e34; }
-.tm-btn-y:hover { background-color: #e0a800; }
+.tm-btn-g:hover { background-color: #42af5b; }
+.tm-btn-y:hover { background-color: #ffbf00; }
 .tm-btn-r:hover { background-color: #c82333; }
 .tm-link { color: blue; text-decoration: underline; }
 .tm-link:visited { color: purple; }
 .tm-link:hover { color: darkblue; text-decoration: none; }
 .tm-link:active { color: red; }
-.tm-textarea {
-  resize: none;
-  width: 100%;
-  height: auto;
-  min-height: 100px;
-}
 .tm-title {
   font-size: 16px;
   font-weight: normal;
   padding: 5px;
   margin: 0;
 }
-.tm-body { padding: 5px 10px 10px 10px; border: 1px solid #ccc; border-top: 0; }
+.tm-body {
+  height: 100%;
+  padding: 5px 10px 10px 10px;
+  border: 1px solid #ccc;
+  border-top: 0;
+}
 
 /* ===== container ============================ */
 #tm-container {
   z-index: 10000; position: fixed; bottom: 5px; right: 10px;
-  min-width: 300px; min-height: 20px;
+  min-width: 300px; min-height: 30px;
   background-color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

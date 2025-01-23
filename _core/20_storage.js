@@ -1,17 +1,22 @@
 // abort
-class AbortExecution extends Error{constructor(message){super(message);this.name="AbortExecution";}}
+class AbortExecution extends Error{constructor(m){super(m);this.name="AbortExecution"}}
 function abort(...args) {
-  console.log('abort: init..')
-  tmsDeleteAll(); // clean storage
+  const pfx = 'abort: ';
+  console.log(pfx+'init..');
+  tmsDeleteAll();
   // Formulate message
-  const joinedArgs=args.map(arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)).join(' ');
-  alert('Abort' + (joinedArgs ? `: ${joinedArgs}` : '.'))
-  console.log('abort: done.'); throw new AbortExecution(joinedArgs); // Throw exception
+  const joinedArgs=args.map(
+    arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
+  ).join('\n');
+  const sfx = joinedArgs?joinedArgs:'done.';
+  console.log(pfx+sfx);
+  alert(pfx+sfx)
+  throw new AbortExecution(joinedArgs);
 }
 // prefix/serialize/deserialize
 const PREFIX = 'tm_';
 function ensurePrefix(key) {
-  if (!key.startsWith(PREFIX)) { abort(`Key must start with '${PREFIX}': ${key}`); }
+  if (!key.startsWith(PREFIX)){abort('Key must start with '+PREFIX+': '+key)}
   return key;
 }
 function serialize(value){return JSON.stringify({type:typeof value, value})}
@@ -22,17 +27,17 @@ function deserialize(serialized) {
   if (type === 'object') return value;
   if (type === 'string') return String(value);
   if (type === 'undefined') return undefined;
-  abort(`Unsupported data type: ${type}`);
+  abort('Unsupported data type: '+type);
 }
 // set
 function tmsSet(key, value) {
   key = ensurePrefix(key);
   localStorage.setItem(key, serialize(value));
-  console.log(`tmsSet: Key '${key}' was set to`, value);
+  console.log('tmsSet: '+key+' => '+value);
 }
 function tmsSetMulti(data) {
   Object.entries(data).forEach(([key, value]) => { tmsSet(key, value); });
-  console.log(`tmsSetMulti: Keys were set`, data);
+  console.log('tmsSetMulti:', data);
 }
 // get
 function tmsGet(key, defaultValue) {
@@ -40,40 +45,40 @@ function tmsGet(key, defaultValue) {
   const storedValue = localStorage.getItem(key);
   if (storedValue === null) { return defaultValue; }
   const value = deserialize(storedValue);
-  console.log(`tmsGet: Retrieved key '${key}' with value`, value);
+  console.log('tmsGet: '+key+'='+value);
   return value;
 }
-function tmsGetMilti(keys) {
+function tmsGetMulti(keys) {
   const result = {};
   keys.forEach(key => { result[key] = tmsGet(key, null); });
-  console.log(`tmsGetMilti: Retrieved data`, result);
+  console.log('tmsGetMulti:', result);
   return result;
 }
 function tmsGetFiltered(filter) {
   const keys = tmsGetAll().filter(key => filter.test(key));
-  const result = tmsGetMilti(keys);
-  console.log(`tmsGetFiltered: Filtered keys`, result);
+  const result = tmsGetMulti(keys);
+  console.log('tmsGetFiltered:', result);
   return result;
 }
 function tmsGetAll() {
   const keys = Object.keys(localStorage).filter(key => key.startsWith(PREFIX));
-  console.log(`tmsGetAll: Listed keys`, keys);
+  console.log('tmsGetAll:', keys);
   return keys;
 }
 // delete
 function tmsDelete(key) {
   key = ensurePrefix(key);
   localStorage.removeItem(key);
-  console.log(`tmsDelete: Key '${key}' was deleted`);
+  console.log('tmsDelete: Key '+key+' was deleted');
 }
 function tmsDeleteMulti(keys) {
   keys.forEach(key => { tmsDelete(key); });
-  console.log(`tmsDeleteMulti: Keys were deleted`, keys);
+  console.log('tmsDeleteMulti: Keys were deleted', keys);
 }
 function tmsDeleteAll() {
   const keys = tmsGetAll();
   keys.forEach(key => localStorage.removeItem(key));
-  console.log(`tmsDeleteAll: All keys with prefix '${PREFIX}' were deleted`);
+  console.log('tmsDeleteAll: All keys with prefix '+PREFIX+' were deleted');
 }
 function tmsReset() {
   const keys = tmsGetAll();
@@ -98,36 +103,22 @@ function tmsOperationsGetHandlers(config) {
     fullHandlers[action] = {};
     for (const step of steps) {
       const handlerName = camelCase(action + '_' + step);
-      if (typeof window[handlerName] === 'function') {
-        fullHandlers[action][step] = window[handlerName];
-      } else {
-        abort(`Handler function "${handlerName}" not found`);
+      if (typeof window[handlerName] !== 'function') {
+        abort('tmsOperationsGetHandlers: Handler function "'+handlerName+'" not found.');
       }
+      fullHandlers[action][step] = window[handlerName];
     }
   }
   return fullHandlers;
 }
 function tmsOperationsHandle(config) {
   const operation = tmsGetOperation();
-  if (!operation) {
-    console.log('tmsOperationsHandle: no active operations.')
-    return
-  }
-  const action = tmsGetAction();
-  const step = tmsGetStep();
+  if (!operation){console.log('tmsOperationsHandle: no active operations.');return}
   const handlers = tmsOperationsGetHandlers(config);
-  if (handlers[action]) {
-    const actionHandlers = handlers[action];
-    if (actionHandlers[step]) {
-      actionHandlers[step]();
-    } else {
-      abort(operation+': unknown step "'+step+'"');
-    }
-  } else {
-    abort(operation+': unknown action "'+action+'"');
-  }
-}
-function tmStart(actionName) {
-  tmsSetOperation(actionName+'/start');
-  abort();
+  const action = tmsGetAction();
+  if (!handlers[action]){abort(operation+': unknown action "'+action+'"')}
+  const actionHandlers = handlers[action];
+  const step = tmsGetStep();
+  if (!actionHandlers[step]){abort(operation+': unknown step "'+step+'"')}
+  actionHandlers[step]();
 }

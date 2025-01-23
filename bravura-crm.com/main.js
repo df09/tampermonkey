@@ -1,7 +1,7 @@
 // === entrypoints =====================================
-function redirectToJob(hotkey){tmStart('redirectToJob');redirectToJobStart(hotkey)}
-function searchActiveJob(){tmStart('searchActiveJob');searchActiveJobStart()}
-function createBarcodes(){tmStart('createBarcodes');createBarcodesStart()}
+function redirectToJob(hotkey){tmsSetOperation('redirectToJob/start');redirectToJobStart(hotkey)}
+function searchActiveJob(){tmsSetOperation('searchActiveJob/start');searchActiveJobStart()}
+function createBarcodes(){tmsSetOperation('createBarcodes/start');createBarcodesStart()}
 // === ui =====================================
 const tmMap = {
   readme: 'https://github.com/df09/tampermonkey/blob/main/bravura-crm.com/readme.md',

@@ -1,3 +1,4 @@
+// === vars ====================================
 // header
 const eContainer = getEl('#tm-container');
 const eOperation = getEl('#tm-operation');
@@ -25,6 +26,8 @@ const eExec = getEl('#tm-exec');
 const eExecContinue = getEl('#tm-exec-continue');
 const eExecCancel = getEl('#tm-exec-cancel');
 // modal
+const eModalOverlay = getEl('#tm-modal-overlay');
+const eModal = getEl('#tm-modal');
 const eModalHeader = getEl('#tm-modal-header');
 const eModalHeaderTitle = getEl('#tm-modal-header-title');
 const eModalHeaderClose = getEl('#tm-modal-header-close');
@@ -37,24 +40,22 @@ const eModalDialogInput = getEl('#tm-modal-dialog-input');
 const eModalDialogTextarea = getEl('#tm-modal-dialog-textarea');
 const eModalDialogSubmit = getEl('#tm-modal-dialog-submit');
 
-// helpers
-function mustache(template,vars){return template.replace(/{{(\w+)}}/g,(_,key)=>{return vars[key]||''})}
-function tmAddCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
-function tmRemCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
+// === helpers ==============================
 function tmUiHide(...els){els.forEach(e=>{e.classList.add('tm-dnone')})}
 function tmUiShow(...els){els.forEach(e=>{e.classList.remove('tm-dnone')})}
 function tmUiShowMain(){
   tmsSet('tm_keep_active_menu_id', eMain.id);
-  tmUiRecalcHeader();
+  tmUiRecalcHeader();tmUiRecalcSize();
+  // minimize
   if (tmsGet('tm_keep_minimized')) {
-    tmRemCls(eMinimize,'tm-btn-r','tm-btn-header-r');
-    tmAddCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+    remCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+    addCls(eMinimize,'tm-btn-b','tm-btn-header-b');
     eMinimize.textContent='^';
     tmUiShow(eMinimize);
     tmUiHide(eBack,eMain,ePrep,eExec);
   } else {
-    tmRemCls(eMinimize,'tm-btn-b','tm-btn-header-b');
-    tmAddCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+    remCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+    addCls(eMinimize,'tm-btn-r','tm-btn-header-r');
     eMinimize.textContent='X';
     // show
     tmUiShow(eMinimize,eMain);
@@ -63,21 +64,38 @@ function tmUiShowMain(){
 }
 function tmUiShowPrep(){
   tmsSet('tm_keep_active_menu_id', ePrep.id);
-  tmUiRecalcHeader();
+  tmUiRecalcHeader();tmUiRecalcSize();
+  // show
   tmUiShow(eBack,ePrep);
   tmUiHide(eMinimize,eMain,eExec);
 }
 function tmUiShowExec(){
   tmsSet('tm_keep_active_menu_id', eExec.id);
-  tmUiRecalcHeader();
+  tmUiRecalcHeader();tmUiRecalcSize();
   tmUiShow(eExec);
   tmUiHide(eBack,eMinimize,eMain,ePrep);
 }
-function makeResizable() {
+function tmUiRecalcSize() {
   const activeId = tmsGet('tm_keep_active_menu_id');
-  // Restore last size
-  eContainer.style.width = tmsGet('tm_keep_uiWidth_' + activeId) || eContainer.style.width;
-  eContainer.style.height = tmsGet('tm_keep_uiHeight_' + activeId) || eContainer.style.height;
+  eContainer.style.width = tmsGet('tm_keep_uiWidth_'+activeId);
+  eContainer.style.height = tmsGet('tm_keep_uiHeight_'+activeId);
+}
+function tmUiRecalcHeader() {
+  const operation = tmsGetOperation(); const txt = operation || 'None';
+  const eSpan = eOperation.querySelector('span');
+  eSpan.textContent = txt;
+  if (txt === 'None') {
+    addCls(eOperation,'tm-border-w');remCls(eOperation,'tm-border-y','tm-border-r');
+    addCls(eSpan,'tm-w');remCls(eSpan,'tm-y','tm-r');
+  } else {
+    addCls(eOperation,'tm-border-r');remCls(eOperation,'tm-border-y','tm-border-w');
+    addCls(eSpan,'tm-r');remCls(eSpan,'tm-y','tm-w');
+  }
+  if (operation) {tmUiShow(eAbort)} else {tmUiHide(eAbort)}
+}
+
+// === init functions ==============================
+function tmUiInitContainer() {
   // Resize
   let isResizing = false;
   let startX, startY, startWidth, startHeight;
@@ -93,78 +111,60 @@ function makeResizable() {
   });
   document.addEventListener("mousemove", (e) => {
     if (!isResizing) return;
-    let newWidth = startWidth - (e.clientX - startX);
-    let newHeight = startHeight - (e.clientY - startY);
+    const newWidth = startWidth - (e.clientX - startX);
+    const newHeight = startHeight - (e.clientY - startY);
     // Apply size with constraints
-    eContainer.style.width = Math.max(newWidth, 300)+'px'; // Minimum width 300px
-    eContainer.style.height = Math.max(newHeight, 50)+'px'; // Minimum height 50px
+    eContainer.style.width = Math.max(newWidth, parseFloat(getComputedStyle(eContainer).minWidth))+'px'; // Minimum width 300px
+    eContainer.style.height = Math.max(newHeight, parseFloat(getComputedStyle(eContainer).minHeight))+'px'; // Minimum height 50px
   });
   document.addEventListener("mouseup", () => {
     if (isResizing) {
       isResizing = false;
       document.body.style.userSelect = "";
-      tmsSet('tm_keep_uiWidth_' + activeId, eContainer.style.width);
-      tmsSet('tm_keep_uiHeight_' + activeId, eContainerc.style.height);
+      const activeId = tmsGet('tm_keep_active_menu_id');
+      tmsSet('tm_keep_uiWidth_'+activeId, eContainer.style.width);
+      tmsSet('tm_keep_uiHeight_'+activeId, eContainer.style.height);
     }
   });
 }
-// container
-function tmUiContainer(){makeResizable()}
-// header
-function tmUiRecalcHeader() {
-  let operation = tmsGetOperation(); let txt = operation || 'None';
-  let eSpan = eOperation.querySelector('span');
-  // reacalc operation
-  eSpan.textContent = txt;
-  if (txt === 'None') {
-    tmRemCls(eSpan,'tm-y');tmRemCls(eOperation,'tm-border-y');
-    tmRemCls(eSpan,'tm-r');tmRemCls(eOperation,'tm-border-r');
-    tmAddCls(eSpan,'tm-w');tmAddCls(eOperation,'tm-border-w');
-  } else {
-    tmRemCls(eSpan,'tm-y');tmRemCls(eOperation,'tm-border-y');
-    tmRemCls(eSpan,'tm-w');tmRemCls(eOperation,'tm-border-w');
-    tmAddCls(eSpan,'tm-r');tmAddCls(eOperation,'tm-border-r');
-  }
-  if (operation) {tmUiShow(eAbort)} else {tmUiHide(eAbort)}
+function tmUiInitHeaderAbort(){eAbort.addEventListener('click',()=>{
+  tmUiAbort('Exec aborted by user. All data was deleted from storage.')
+})}
+function tmUiInitHeaderBack(){
+  eBack.addEventListener('click',()=>{
+    tmUiShowMain()})
 }
-function tmUiInitAbortBtn(){eAbort.addEventListener('click',()=>{tmUiAbort('Exec aborted by user. All data was deleted from storage.')})}
-function tmUiInitBack(){eBack.addEventListener('click',()=>{tmUiShowMain()})}
-function tmUiInitMinimize() {
+function tmUiInitHeaderMinimize() {
   eMinimize.addEventListener('click',()=>{
     if (eMinimize.textContent === 'X') {
       tmsSet('tm_keep_minimized', 1);
-      tmRemCls(eMinimize,'tm-btn-r','tm-btn-header-r');
-      tmAddCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+      remCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+      addCls(eMinimize,'tm-btn-b','tm-btn-header-b');
       eMinimize.textContent='^';
       tmUiHide(eMain);
+      eContainer.style.width = getComputedStyle(eContainer).minWidth;
+      eContainer.style.height = getComputedStyle(eContainer).minHeight;
     } else {
       tmsDelete('tm_keep_minimized');
-      tmRemCls(eMinimize,'tm-btn-b','tm-btn-header-b');
-      tmAddCls(eMinimize,'tm-btn-r','tm-btn-header-r');
+      remCls(eMinimize,'tm-btn-b','tm-btn-header-b');
+      addCls(eMinimize,'tm-btn-r','tm-btn-header-r');
       eMinimize.textContent='X';
       tmUiShow(eMain);
+      eContainer.style.width = tmsGet('tm_keep_uiWidth_'+eMain.id);
+      eContainer.style.height = tmsGet('tm_keep_uiHeight_'+eMain.id);
     }
   })
 }
-// main
-function tmUiInitMain(){}
-function tmUiInitReadme(link){eMainReadme.querySelector('a').href=link}
-function getKey(keys,n) {
-  const k = keys.split('+')[n];
-  if (k === 'Shift') return event.shiftKey;
-  if (k === 'Ctrl') return event.ctrlKey;
-  if (k === 'Alt') return event.altKey;
-  if (k === 'Meta') return event.metaKey;
-  return event.k === k;
-}
-function tmUiInitHotkeys(data) {
-  let [idsfx, name, keys, action] = data;
-  let id = 'tm-main-hotkeys-' + idsfx;
+function tmUiInitMainReadme(link){eMainReadme.querySelector('a').href=link}
+function tmUiInitMainHotkey(hotkey) {
+  const [idsfx, name, keys, action] = hotkey;
+  const id = 'tm-main-hotkeys-' + idsfx;
+  // insert
   eMainHotkeys.insertAdjacentHTML('beforeend',mustache(
     tmHTMLMainHotkeysHotkey, {id:id, name:name, keys:keys}
   ));
   // event
-  let checkbox = getEl('#'+id+' input[type="checkbox"]');
+  const checkbox = getEl('#'+id+' input[type="checkbox"]');
   checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
       console.log(id+': ON');
@@ -189,11 +189,10 @@ function tmUiInitHotkeys(data) {
   // show
   tmUiShow(eMainHotkeys);
 }
-// main.buttons
-function tmUiInitBtnPrep(data) {
-  let [idsfx, title, action] = data;
-  let mainId = 'tm-main-prep-'+idsfx;
-  let prepId = 'tm-prep-exec-'+idsfx;
+function tmUiInitMainPrep(data) {
+  const [idsfx, title, action] = data;
+  const mainId = 'tm-main-prep-'+idsfx;
+  const prepId = 'tm-prep-exec-'+idsfx;
   // insert
   eMainPrep.insertAdjacentHTML('beforeend',mustache(tmHTMLMainPrep,{id:mainId,title:title}));
   ePrep.insertAdjacentHTML('beforeend',mustache(tmHTMLPrepExec,{id:prepId}));
@@ -202,9 +201,9 @@ function tmUiInitBtnPrep(data) {
     ePrepTitle.textContent = title;
     ePrepTextarea.value = tmsGet('tm_keep_uiTextareaValue_'+idsfx, '');
     // Скрываем другие EXEC кнопки
-    getEls('.tm-group-prep-exec').forEach(e => tmUiHide(e));
+    getEls('.tm-group-prep-exec').forEach(e=>tmUiHide(e));
     // Показ текущей EXEC кнопки
-    let prepExec = getEl('#'+prepId);
+    const prepExec = getEl('#'+prepId);
     tmUiShow(prepExec);
     prepExec.addEventListener('click', () => {
       tmsSet('tm_keep_uiTextareaValue_'+idsfx, ePrepTextarea.value);
@@ -216,21 +215,20 @@ function tmUiInitBtnPrep(data) {
   // show
   tmUiShow(eMainPrep);
 }
-function tmUiInitBtnExec(data) {
-  let [idsfx, title, action] = data;
-  let id = 'tm-main-exec-'+idsfx;
+function tmUiInitMainExec(data) {
+  const [idsfx, title, action] = data;
+  const id = 'tm-main-exec-'+idsfx;
   eMainExec.insertAdjacentHTML('beforeend',mustache(tmHTMLMainExec,{id:id,title:title}));
   getEl('#'+id).addEventListener('click',()=>{tmUiShowExec();action()});
   tmUiShow(eMainExec);
 }
-// main.storage
-function tmUiInitStorageView() {
+function tmUiInitMainStorageView() {
   function prepareContent() {
-    eModal.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
     const data = tmsGetAll();
+    // insert
+    eModal.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
     const eContent = eModal.lastElementChild;
     const eTbody = eContent.querySelector('tbody');
-    // insert
     eTbody.innerHTML = '';
     data.forEach(k=>{eTbody.insertAdjacentHTML('beforeend',mustache(
       tmHTMLModalStorageviewRow, {key:k, value:tmsGet(k)}
@@ -255,28 +253,26 @@ function tmUiInitStorageView() {
   eMainStorageBodyView.addEventListener('click', () => {
     // modal
     ModalManager.buildContent({
-      idsfx: 'storage-view', accent: 'info',
-      title: 'Storage View',
+      idsfx:'storage-view', accent:'info', title:'Storage View',
       actionPrepareContent: prepareContent,
       actionClose:()=>{},
     });
   });
 }
-function tmUiInitStorageReset() {
+function tmUiInitMainStorageReset() {
   eMainStorageBodyReset.addEventListener('click',()=>{
     // reset
     tmsReset();
     tmUiRecalcHeader();
     // modal
     ModalManager.buildAlert({
-      accent: 'warning', title: 'Storage Reset',
+      accent:'warning', title:'Storage Reset',
       msg: 'All non-premanent data has been removed from storage.',
       actionClose:()=>{},
     });
-    tmUiShow(getEl('#tm-modal-content-storage-view'));
   });
 }
-function tmUiInitStorageClean() {
+function tmUiInitMainStorageClean() {
   eMainStorageBodyClean.addEventListener('click',()=>{
     // clean
     tmsDeleteAll();
@@ -285,12 +281,45 @@ function tmUiInitStorageClean() {
     ModalManager.buildAlert({
       accent: 'error', title: 'Storage CLEAN',
       msg: 'ALL DATA has been deleted from storage.',
-      actionClose:()=>{},
+      actionClose:()=>{}
     });
   });
 }
-// prep
-function tmUiInitPrep(){}
+function tmUiInitExecCancel(){eExecCancel.addEventListener('click',()=>{tmUiReset('Exec canceled by user.')})}
+
+// === init ==============================
+function tmUiInit(map) {
+  tmUiInitContainer();
+  tmUiInitHeaderAbort();
+  tmUiInitHeaderBack();
+  tmUiInitHeaderMinimize();
+  tmUiInitMainReadme(map.readme);
+  for (let data of map.hotkeys) {tmUiInitMainHotkey(data)}
+  for (let data of map.btnsPrep){tmUiInitMainPrep(data)}
+  for (let data of map.btnsExec){tmUiInitMainExec(data)}
+  tmUiInitMainStorageView();
+  tmUiInitMainStorageReset();
+  tmUiInitMainStorageClean();
+  tmUiInitExecCancel();
+  // show
+  if (tmsGetOperation()) {
+    tmUiShowExec()
+  } else {
+    tmUiShowMain()
+  }
+  function emulateResizeByOnePixel() {
+    const startEvent = new MouseEvent("mousedown", {clientX:0, clientY:0, button:0});
+    const moveEvent = new MouseEvent("mousemove", {clientX:0, clientY:-1});
+    const endEvent = new MouseEvent("mouseup");
+    eContainer.dispatchEvent(startEvent);
+    document.dispatchEvent(moveEvent);
+    document.dispatchEvent(endEvent);
+  }
+  emulateResizeByOnePixel();
+  console.log('tmUiInit: done.');
+}
+
+// === pause/reset/cancel ==============================
 async function tmUiPause(msg) {
   tmUiShow(eExecContinue);
   ModalManager.buildAlert({
@@ -304,58 +333,37 @@ async function tmUiPause(msg) {
   });
   tmUiHide(eExecContinue);
 }
-// exec
-function tmUiInitBtnCancel(){eExecCancel.addEventListener('click',()=>{tmUiReset('Exec canceled by user.')})}
-
-// === init ==============================
-function tmUiInit(map) {
-  // header
-  tmUiInitAbortBtn();
-  tmUiInitBack();
-  tmUiInitMinimize();
-  // main
-  tmUiInitMain();
-  tmUiInitReadme(map.readme);
-  for (let data of map.hotkeys){tmUiInitHotkeys(data)}
-  for (let data of map.btnsPrep){tmUiInitBtnPrep(data)}
-  for (let data of map.btnsExec){tmUiInitBtnExec(data)}
-  tmUiInitStorageView();
-  tmUiInitStorageClean();
-  tmUiInitStorageReset();
-  // prep
-  tmUiInitPrep();
-  // exec
-  tmUiInitBtnCancel();
-  // show
-  if (tmsGetOperation()) {
-    tmUiShowExec();
-  } else {
-    tmUiShowMain();
-  }
-  console.log('tmUiInit: done.');
-}
-// abort/reset
-function tmUiAbort(...args) {
-  console.log('tmUiAbort: init..')
-  tmsDeleteAll(); // clean storage
-  tmUiShowMain();
-  abort(...args);
-}
 function tmUiReset(...args) {
   console.log('tmUiReset: init..');
   tmsReset();
   tmUiShowMain();
-  // Если есть аргументы, формируем сообщение и вызываем alert
-  if (args.length > 0) {
-    const joinedArgs = args.map(arg =>
-      typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-    ).join(' ');
-    ModalManager.buildAlert({
-      accent: 'warning',
-      title: 'tmUiReset',
-      msg: joinedArgs,
-      actionClose: ()=>{},
-    });
-  }
+  // modal
+  if(args.length>0){const joined=args.map(
+    arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
+  ).join(' ')}
+  ModalManager.buildAlert({
+    accent: 'warning',
+    title: 'tmUiReset',
+    msg: joined,
+    actionClose: ()=>{},
+  });
   console.log('tmUiReset: done.');
+}
+function tmUiAbort(...args) {
+  const pfx = 'tmUiAbort';
+  console.log(pfx+': init..');
+  tmsDeleteAll();
+  // Formulate message
+  const joinedArgs=args.map(
+    arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
+  ).join('\n');
+  const msg = joinedArgs?joinedArgs:pfx+'.';
+  console.log(msg);
+  ModalManager.buildAlert({
+    accent: 'error',
+    title: 'tmUiAbort',
+    msg: msg,
+    actionClose:()=>{},
+  });
+  throw new AbortExecution(joinedArgs);
 }

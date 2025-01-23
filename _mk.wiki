@@ -38,6 +38,7 @@ now:
       Shift+a - search active jobs
       crl - закупка hw
 v2:
+  resize + move
   start action: add requred url - redirect or (modal-alert + abort)
   resize: fix styles - with min-h, min-w
   add auto operations (ex. login)

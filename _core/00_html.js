@@ -6,7 +6,7 @@ function injectHTML(html) {
 }
 injectHTML(`
   <!-- container -->
-  <div id="tm-container" class="tm-container">
+  <div id="tm-container" class="tm-container tm-col">
     <!-- header -->
     <div id="tm-header" class="tm-row">
       <h3 id="tm-operation" class="tm-p5 tm-title tm-border-y tm-operation">Operation:<span class="tm-y">Unknown</span></h3>
@@ -86,7 +86,8 @@ const tmHTMLMainHotkeysHotkey = `
   <div id="{{id}}" class="tm-row tm-group-main-hotkeys">
     <h3 class="tm-hotkey-title tm-row">
       <span class="tm-hotkey-title-name">{{name}}</span>
-      <span class="tm-hotkey-title-keys">({{keys}})</span></h3>
+      <span class="tm-hotkey-title-keys tm-r">({{keys}})</span>
+    </h3>
     <label class="tm-hotkey-switch tm-ml0 tm-mb0">
       <input type="checkbox">
       <span class="tm-hotkey-slider"></span>
@@ -117,7 +118,8 @@ const tmHTMLModalStorageviewRow = `
   <tr class="tm-modal-storageview-row">
     <td class="tm-modal-storageview-row-tdkey">{{key}}</td>
     <td class="tm-modal-storageview-row-tdval">
-      <button class="tm-modal-storageview-row-copy tm-btn-g" data-value="{{value}}">Copy</button>
-      <span class="tm-modal-storageview-row-value">{{value}}</span>
+      <span class="tm-modal-storageview-row-value" data-value="{{value}}">{{value}}</span>
+      <button class="tm-modal-storageview-row-copy tm-btn-g">Copy</button>
+      <button class="tm-modal-storageview-row-delete tm-btn-g">Delete</button>
     </td>
   </tr>`;

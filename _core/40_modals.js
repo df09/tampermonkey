@@ -9,14 +9,14 @@ const ModalManager = {
     if (!allowed.includes(type)) {
       abort('ModalManager.setModalType: invalid type (' + type + '), allowed only ' + allowed);
     }
-    tmAddCls(eModal, 'tm-model-' + type);
+    addCls(eModal, 'tm-model-' + type);
   },
   setModalAccent(accent) {
     const allowed = ['info', 'success', 'warning', 'error'];
     if (!allowed.includes(accent)) {
       abort('ModalManager.setModalAccent: invalid type (' + accent + '), allowed only ' + allowed);
     }
-    tmAddCls(eModal, 'tm-modal-' + accent);
+    addCls(eModal, 'tm-modal-' + accent);
   },
   setTitle(title){eModalHeaderTitle.textContent=title},
   setClose(actionClose) {

@@ -1,44 +1,41 @@
-// sleep
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve, ms))}
-// redirect
-function redirect(newUrl) {
-  console.log('redirect: "'+newUrl+'"');
-  window.location.href = newUrl; // Выполняем редирект
+function mustache(template,vars){return template.replace(/{{(\w+)}}/g,(_,key)=>{return vars[key]||''})}
+function getKey(keys,n) {
+  const k = keys.split('+')[n];
+  if (k === 'Shift') return event.shiftKey;
+  if (k === 'Ctrl') return event.ctrlKey;
+  if (k === 'Alt') return event.altKey;
+  if (k === 'Meta') return event.metaKey;
+  return event.k === k;
 }
+// redirect
 function redirect(newUrl, force=false) {
-  console.log('redirect: "' + newUrl + '"');
-  if (force || window.location.href !== newUrl) {
-    window.location.href = newUrl; // Выполняем редирект
-  } else {
-    console.log('redirect: already on the target URL.');
-  }
+  console.log('redirect: "'+newUrl+'"');
+  if (force||window.location.href!==newUrl){window.location.href=newUrl}
+  console.log('redirect: already on the target URL.');
 }
 async function fakeRedirect(newUrl, delay=2000) {
   console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');
-  window.location.href = newUrl; // Выполняем редирект
+  window.location.href = newUrl;
   await sleep(delay);
 }
 // DOM-manipulations
+function addCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
+function remCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
 function getEl(selector) {
-  let e;
+  const pfx = 'getEl "'+selector+'": ';
+  // get by id
   if (/^#[a-zA-Z0-9\-_]+$/.test(selector)) {
-    // Если это ID, используем getElementById
-    e = document.getElementById(selector.slice(1));
-    if (!e) {
-      abort(`getEl "${selector}": not found.`);
-    }
-  } else {
-    // Используем querySelectorAll для произвольного селектора
-    const els = document.querySelectorAll(selector);
-    if (els.length === 0) {
-      abort(`getEl "${selector}": not found.`);
-    } else if (els.length === 1) {
-      e = els[0];
-    } else {
-      abort(`getEl "${selector}": multiple els found.`);
-    }
+    const e = document.getElementById(selector.slice(1));
+    if (!e) {abort(pfx+'not found.')}
+    return e;
   }
-  console.log(`getEl "${selector}":`, e);
+  // get by any selector
+  const els = document.querySelectorAll(selector);
+  if (els.length === 0) {abort(pfx+'not found.')}
+  if (els.length > 1) {abort(pfx+'multiple els found.')}
+  e = els[0];
+  console.log(pfx, e);
   return e;
 }
 function getEls(selector) {
@@ -55,9 +52,9 @@ async function clickEl(e, delay=300) {
 async function updValEl(e, newVal, delay=300) {
   const oldVal = e.value;
   e.value = newVal;
-  console.log('updValEl: "' + oldVal + '" -> "' + newVal + '"', e);
+  console.log('updValEl: "'+oldVal+'" -> "'+newVal+'"', e);
   // Создаем и вызываем событие change
-  const event = new Event('change', { bubbles: true });
+  const event = new Event('change', {bubbles: true});
   e.dispatchEvent(event);
   await sleep(delay);
 }
