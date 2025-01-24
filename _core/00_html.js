@@ -1,7 +1,8 @@
 function injectHTML(html){
   if(!html||typeof html!=='string'){abort('injectHTML: Invalid html.')}
   const c = document.createElement('div');c.innerHTML=html;document.body.append(c);
-};injectHTML(`
+};
+injectHTML(`
   <!-- container -->
   <div id="tm-container" class="tm-container tm-col">
     <!-- header -->
@@ -79,7 +80,7 @@ function injectHTML(html){
   </div>
 `);
 // main.hotkeys.[hotkey]
-const tmHTMLMainHotkeysHotkey = `
+const tmHTMLMainHotkey = `
   <div id="{{id}}" class="tm-row tm-group-main-hotkeys">
     <h3 class="tm-hotkey-title tm-row">
       <span class="tm-hotkey-title-name">{{name}}</span>

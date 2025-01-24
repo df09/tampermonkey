@@ -14,7 +14,7 @@ const tmMap = {
   ],
   btnsExec: [],
 }
-tmUiInit(tmMap);
+tmMenu.init(tmMap);
 // === handle active operations =====================================
 tmsOperationsHandle({
   redirectToJob: ['start'],
