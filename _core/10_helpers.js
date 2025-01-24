@@ -8,6 +8,25 @@ function getKey(keys,n) {
   if (k === 'Meta') return event.metaKey;
   return event.k === k;
 }
+// logs
+function log(...args) {
+  const stack = new Error().stack; // Получаем стек вызовов
+  const callerLine = stack.split('\n')[2].trim(); // Получаем строку вызова
+  const match = callerLine.match(/at (\w+).*:(\d+):\d+/); // Извлекаем имя функции и номер строки
+  const functionName = match?.[1] || 'anonymous';
+  const lineNumber = match?.[2] || 'unknown';
+  console.log(`${lineNumber}:${functionName}()`, ...args);
+}
+function createObjectLogger(objectName) {
+  return function log(...args) {
+    const stack = new Error().stack;
+    const callerLine = stack.split('\n')[2].trim();
+    const match = callerLine.match(/at (\w+).*:(\d+):\d+/); // Извлекаем метод и строку
+    const methodName = match?.[1] || 'unknown';
+    const lineNumber = match?.[2] || 'unknown';
+    console.log(`${lineNumber}:${objectName}.${methodName}()`, ...args);
+  };
+}
 // redirect
 function redirect(newUrl, force=false) {
   console.log('redirect: "'+newUrl+'"');
