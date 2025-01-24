@@ -10,6 +10,7 @@ tests:
     clean/reload>resize>prep>resize>main>off>on>resize
     clean/reload>resize>prep>resize>main>off>reload>on>resize
 todo:
+  thiws: redirect2job
   thiws: restore
   barcodes:
     УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ

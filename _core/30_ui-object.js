@@ -3,7 +3,7 @@ const tmMenu = {
   e: {
     // header
     container: getEl('#tm-container'),
-    operation: getEl('#tm-operation'),
+    op: getEl('#tm-operation'),
     abort: getEl('#tm-abort'),
     back: getEl('#tm-back'),
     minimize: getEl('#tm-minimize'),
@@ -42,88 +42,105 @@ const tmMenu = {
     modalDialogTextarea: getEl('#tm-modal-dialog-textarea'),
     modalDialogSubmit: getEl('#tm-modal-dialog-submit')
   },
-
-  // === state ================================
-  state: {},
-
+  // === state ==================================
+  state: {
+    activeId: 'tm-main',
+    op: tmsGetOperation(),
+    isMinimized: 0,
+    setActiveId: function(id){tmsSet('tm_keep_activeId',id);this.activeId=id},
+    setOperation: function(id){tmsSet('tm_keep_activeId',id);this.activeId=id},
+    setIsMinimized: function(val){tmsSet('tm_keep_isMinimized', val);this.isMinimized=val},
+    style: {
+      hw: this.setHw(),
+      minWidth: window.getComputedStyle(tmMenu.e.container).minWidth,
+      minHeight: window.getComputedStyle(tmMenu.e.container).minHeight,
+      setHw: function() {
+        if (tmMenu.state.isMinimized) {
+          // using css min-height, min-width
+          this.hw = {this.minHeight, this.minWidth};
+        } else {
+          const tmsHw = tmsGet('tm_keep_hw-' + tmMenu.state.activeId);
+          if (tmsHw[0] && tmsHw[1]) {
+            // using storage
+            this.hw = {this.tmsHeight, this.tmsWidth};
+          } else {
+            // using current hw and save to storage
+            const hw = {tmMenu.e.container.offsetWidth, tmMenu.e.container.offsetWidth};
+            tmsSet('tm_keep_hw-'+tmMenu.state.activeId, hw);
+            this.hw = hw;
+          }
+        }
+      },
+    },
+  },
   // === show/hide ==============================
-  hide: function (...els) {
-    els.forEach(e => e.classList.add('tm-dnone'));
-  },
-  show: function (...els) {
-    els.forEach(e => e.classList.remove('tm-dnone'));
-  },
+  hide: function(...els){els.forEach(e=>e.classList.add('tm-dnone'))},
+  show: function(...els){els.forEach(e=>e.classList.remove('tm-dnone'))},
   showMain: function () {
-    tmsSet('tm_keep_activeId', this.e.main.id);
-    this.recalcHeader();
-    this.recalcSize();
-    const { minimize, main, back, prep, exec } = this.e;
-    if (tmsGet('tm_keep_minimized')) {
-      remCls(minimize, 'tm-btn-r', 'tm-btn-header-r');
-      addCls(minimize, 'tm-btn-b', 'tm-btn-header-b');
-      minimize.textContent = '^';
+    const {abort, back, minimize, main, prep, exec} = this.e,
+    this.render(main.id)
+    if (this.state.isMinimized) {
       this.show(minimize);
-      this.hide(back, main, prep, exec);
+      this.hide(abort, back, main, prep, exec);
     } else {
-      remCls(minimize, 'tm-btn-b', 'tm-btn-header-b');
-      addCls(minimize, 'tm-btn-r', 'tm-btn-header-r');
-      minimize.textContent = 'X';
       this.show(minimize, main);
-      this.hide(back, prep, exec);
+      this.hide(abort, back, prep, exec);
     }
   },
   showPrep: function () {
-    tmsSet('tm_keep_activeId', this.e.prep.id);
-    this.recalcHeader();
-    this.recalcSize();
-    const { back, prep, minimize, main, exec } = this.e;
+    const {abort, back, minimize, main, prep, exec} = this.e,
+    this.render(prep.id)
     this.show(back, prep);
-    this.hide(minimize, main, exec);
+    this.hide(abort, minimize, main, exec);
   },
   showExec: function () {
-    tmsSet('tm_keep_activeId', this.e.exec.id);
-    this.recalcHeader();
-    this.recalcSize();
-    const { exec, back, minimize, main, prep } = this.e;
-    this.show(exec);
+    const {abort, back, minimize, main, prep, exec} = this.e,
+    this.render(exec.id)
+    this.show(abort, exec);
     this.hide(back, minimize, main, prep);
   },
-
-  // === recalc ==============================
-  recalcHeader: function () {
-    const { operation } = this.e;
-    const op = tmsGetOperation();
-    const txt = op || 'None';
-    const span = operation.querySelector('span');
+  // === render ==============================
+  render: function (activeId) {
+    this.state.setActiveId(activeId);
+    this.renderOperation();
+    this.renderMinimize();
+    this.renderSize();
+  }
+  renderOperation: function () {
+    const txt = this.state.op || 'None';
+    const span = this.e.op.querySelector('span');
     span.textContent = txt;
-
     if (txt === 'None') {
-      addCls(operation, 'tm-border-w');
-      remCls(operation, 'tm-border-y', 'tm-border-r');
+      addCls(this.e.op, 'tm-border-w');
+      remCls(this.e.op, 'tm-border-y', 'tm-border-r');
       addCls(span, 'tm-w');
       remCls(span, 'tm-y', 'tm-r');
     } else {
-      addCls(operation, 'tm-border-r');
-      remCls(operation, 'tm-border-y', 'tm-border-w');
+      addCls(this.e.op, 'tm-border-r');
+      remCls(this.e.op, 'tm-border-y', 'tm-border-w');
       addCls(span, 'tm-r');
       remCls(span, 'tm-y', 'tm-w');
     }
-
-    if (op) {
-      this.show(this.e.abort);
+    this.state.op ? this.show(this.e.abort) : this.hide(this.e.abort);
+  },
+  renderMinimize: function() {
+    if (this.state.isMinimized) {
+      this.e.minimize.textContent = '^';
+      addCls(this.e.minimize, 'tm-btn-b', 'tm-btn-header-b');
+      remCls(this.e.minimize, 'tm-btn-r', 'tm-btn-header-r');
     } else {
-      this.hide(this.e.abort);
+      this.e.minimize.textContent = 'X';
+      addCls(this.e.minimize, 'tm-btn-r', 'tm-btn-header-r');
+      remCls(this.e.minimize, 'tm-btn-b', 'tm-btn-header-b');
     }
   },
-  recalcSize: function () {
-    const { container } = this.e;
-    const activeId = tmsGet('tm_keep_activeId');
-    const style = window.getComputedStyle(container);
-    container.style.width = tmsGet('tm_keep_uiWidth_' + activeId);
-    container.style.height = tmsGet('tm_keep_uiHeight_' + activeId);
+  renderSize: function () {
+    this.e.container.style.width = this.state.hw[0];
+    this.e.container.style.height = this.state.hw[1];
   },
 
-  // === init functions ==============================
+  // === listners ==============================
+ 
   makeResizable: function (e) {
     let isResizing = false;
     let startX, startY, startWidth, startHeight;
@@ -155,8 +172,8 @@ const tmMenu = {
       }
     });
   },
-
-  tmUiInit: function (map) {
+  // === init ==============================
+  init: function (map) {
     this.tmUiInitHeaderAbort();
     this.tmUiInitHeaderBack();
     this.tmUiInitHeaderMinimize();
@@ -174,11 +191,12 @@ const tmMenu = {
     this.tmUiInitMainStorageReset();
     this.tmUiInitMainStorageClean();
     this.tmUiInitExecCancel();
-    this.makeResizable(this.e.main);
-    this.makeResizable(this.e.prep);
+
+    // show
     if (tmsGetOperation()) {
       this.showExec();
     } else {
+      this.makeResizable(this.e.header);
       this.showMain();
     }
     console.log('tmUiInit: done.');
