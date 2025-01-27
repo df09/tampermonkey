@@ -4,7 +4,7 @@ function injectHTML(html){
 };
 injectHTML(`
   <!-- container -->
-  <div id="tm-container" class="tm-container tm-col">
+  <div id="tm-menu" class="tm-menu tm-col">
     <!-- header -->
     <div id="tm-header" class="tm-row">
       <h3 id="tm-operation" class="tm-p5 tm-title tm-border-y tm-operation">Operation:<span class="tm-y">Unknown</span></h3>
@@ -16,22 +16,22 @@ injectHTML(`
     </div>
     <!-- main -->
     <div id="tm-main" class="tm-dnone tm-body tm-col tm-border-w">
-      <div id="tm-main-readme"><a class="tm-link" href="[readme-url]" target="_blank">Readme</a></div>
-      <div id="tm-main-hotkeys" class="tm-dnone tm-col tm-pt5">
-        <!-- tm-main-hotkeys.[hotkey] -->
+      <div id="tm-readme"><a class="tm-link" href="[readme-url]" target="_blank">Readme</a></div>
+      <div id="tm-hotkeys" class="tm-dnone tm-col tm-pt5">
+        <!-- main-hotkeys.[hotkey] -->
       </div>
       <div id="tm-main-prep" class="tm-dnone tm-col tm-pt5">
-        <!-- tm-main-prep.[prep] -->
+        <!-- main-prep.[prep] -->
       </div>
       <div id="tm-main-exec" class="tm-dnone tm-col tm-pt5">
-        <!-- tm-main-exec.[exec] -->
+        <!-- main-exec.[exec] -->
       </div>
-      <div id="tm-main-storage" class="tm-col tm-mt5 tm-border-w">
-        <h3 id="tm-main-storage-title" class="tm-title">Storage</h3>
-        <div id="tm-main-storage-body" class="tm-row">
-          <button id="tm-main-storage-view" class="tm-btn-g tm-m5">View</button>
-          <button id="tm-main-storage-reset" class="tm-btn-y tm-m5">Reset</button>
-          <button id="tm-main-storage-clean" class="tm-btn-r tm-m5">CLEAN</button>
+      <div id="tm-storage" class="tm-col tm-mt5 tm-border-w">
+        <h3 id="tm-storage-title" class="tm-title">Storage</h3>
+        <div id="tm-storage-body" class="tm-row">
+          <button id="tm-storage-view" class="tm-btn-g tm-m5">View</button>
+          <button id="tm-storage-reset" class="tm-btn-y tm-m5">Reset</button>
+          <button id="tm-storage-clean" class="tm-btn-r tm-m5">CLEAN</button>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@ injectHTML(`
     <div id="tm-prep" class="tm-dnone tm-body tm-col tm-border-w">
       <h3 id="tm-prep-title" class="tm-prep-title">[title]</h3>
       <textarea id="tm-prep-textarea" class="tm-mb5" spellcheck="false"></textarea>
-      <!-- tm-prep-exec.[exec] -->
+      <!-- prep-exec.[exec] -->
     </div>
     <!-- exec -->
     <div id="tm-exec" class="tm-dnone tm-body tm-col tm-border-w">
@@ -47,35 +47,36 @@ injectHTML(`
       <button id="tm-exec-cancel" class="tm-btn-r">CANCEL</button>
     </div>
   </div>
-
-  <!-- modal overlay -->
+  <!-- modal -->
   <div id="tm-modal-overlay" class="tm-dnone tm-flex">
     <div id="tm-modal" class="tm-col">
       <div id="tm-modal-header" class="tm-row">
-        <h3 id="tm-modal-header-title" class="tm-title">[title]</h3>
-        <button id="tm-modal-header-close" class="tm-dnone tm-btn-gray">X</button>
+        <h3 id="tm-modal-title" class="tm-title">[title]</h3>
+        <button id="tm-modal-close" class="tm-btn-gray">X</button>
       </div>
       <div id="tm-modal-body">
-        <!-- modal.alert -->
-        <div id="tm-modal-alert" class="tm-dnone tm-col">
-          <div id="tm-modal-alert-msg" class="tm-col">[msg]</div>
-          <button id="tm-modal-alert-ok" class="tm-btn-gray">[ok]</button>
+        <!-- modal.info -->
+        <div id="tm-modal-info" class="tm-dnone tm-col">
+          <div id="tm-modal-info-msg">[msg]</div>
+          <button id="tm-modal-info-btn" class="tm-btn-gray">[ok]</button>
         </div>
-        <!-- modal.dialog -->
-        <div id="tm-modal-dialog" class="tm-dnone tm-col">
-          <div id="tm-modal-dialog-msg" class="tm-col">[msg]</div>
-          <input id="tm-modal-dialog-input" class="tm-dnone" spellcheck="false"></input>
-          <textarea id="tm-modal-dialog-textarea" class="tm-dnone" spellcheck="false"></textarea>
-          <div id="tm-modal-dialog-yesno" class="tm-dnone tm-col">
-            <button id="tm-modal-dialog-yesno-no" class="tm-dnone tm-btn-r">[no]</button>
-            <button id="tm-modal-dialog-yesno-yes" class="tm-dnone tm-btn-g">[yes]</button>
-          </div>
-          <button id="tm-modal-dialog-submit" class="tm-dnone tm-btn-g">[submit]</button>
+        <!-- modal.yn -->
+        <div id="tm-modal-yn" class="tm-dnone tm-col">
+          <div id="tm-modal-yn-msg">[msg]</div>
+          <button id="tm-modal-yn-btn-no" class="tm-btn-r">[no]</button>
+          <button id="tm-modal-yn-btn-yes" class="tm-btn-g">[yes]</button>
+        </div>
+        <!-- modal.input -->
+        <div id="tm-modal-input" class="tm-dnone tm-col">
+          <div id="tm-modal-input-msg">[msg]</div>
+          <input id="tm-modal-input-input" spellcheck="false"></input>
+          <button id="tm-modal-input-submit" class="tm-btn-g">[submit]</button>
         </div>
         <!-- modal.content -->
-        <div id="tm-modal-content" class="tm-dnone">
+        <div id="tm-modal-content" class="tm-dnone tm-col">
           <!-- modal.content.[content] -->
         </div>
+      </div>
     </div>
   </div>
 `);
@@ -102,15 +103,14 @@ const tmHTMLPrepExec = `
   <button id="{{id}}" class="tm-group-prep-exec tm-btn-r">EXEC</button>`;
 // modal.content.storageview
 const tmHTMLModalStorageview = `
-  <div id="tm-modal-content-storageview">
-    <table>
-      <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
-      <tbody>
-        <!-- modal.content.storageview.[row] -->
-      </tbody>
-    </table>
-    <button id="tm-modal-storageview-copyall" class="tm-btn-g">Copy All</button>
-  </div>`;
+  <table>
+    <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
+    <tbody>
+      <!-- modal.content.storageview.[row] -->
+    </tbody>
+  </table>
+  <button id="tm-modal-storageview-copyall" class="tm-btn-g">Copy All</button>
+`;
 // modal.content.storageview.row
 const tmHTMLModalStorageviewRow = `
   <tr class="tm-modal-storageview-row">

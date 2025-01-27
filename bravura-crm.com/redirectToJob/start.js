@@ -1,27 +1,22 @@
 function redirectToJobStart() {
-  let eInput = getEl('#tm-modal-dialog-input');
-  ModalManager.buildDialog({
-    kind: 'input',
-    title: 'Redirect to Job by ID',
-    msg: 'Please enter JobID:',
-    actionClose: ()=>{
-      tmUiReset();
-      tmUiShowMain();
-    },
+  console.log('redirectToJobStart: start..')
+  let e = getEl('#tm-modal-input-input');
+  tmModal.input({
+    accent: 'info', title: 'Redirect to Job by ID', msg: 'Please enter JobID:',
+    actionClose: ()=>{},
     actionSubmit: ()=>{
-      const data = eInput.value;
+      const data = e.value;
       const jobId = Number(data);
       if (data && Number.isInteger(jobId) && jobId >= 0) {
-        tmUiReset();
-        tmUiShowMain();
+        tmsReset();
+        tmMenu.showMain();
         redirect('http://bravura-crm.com/jobs/' + jobId);
       } else {
-        tmUiReset('Invalid jobId.');
-        tmUiShowMain();
+        tmsReset('Invalid JobID.');
+        tmMenu.showMain();
       }
     },
   });
-  setTimeout(() => {
-    eInput.focus();
-  }, 300);
+  e.focus();
+  e.value = '';
 }

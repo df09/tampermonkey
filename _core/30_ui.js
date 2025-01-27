@@ -1,9 +1,9 @@
 const tmMenu = {
-  log:createObjectLogger('tmMenu'),
   // === elements ====================================
   e: {
+    container: getEl('#tm-menu'),
     // header
-    container: getEl('#tm-container'),
+    header: getEl('#tm-header'),
     operation: getEl('#tm-operation'),
     abort: getEl('#tm-abort'),
     back: getEl('#tm-back'),
@@ -28,75 +28,72 @@ const tmMenu = {
     exec: getEl('#tm-exec'),
     execContinue: getEl('#tm-exec-continue'),
     execCancel: getEl('#tm-exec-cancel'),
-    // modal
-    modalOverlay: getEl('#tm-modal-overlay'),
-    modal: getEl('#tm-modal'),
-    modalHeader: getEl('#tm-modal-header'),
-    modalTitle: getEl('#tm-modal-title'),
-    modalClose: getEl('#tm-modal-close'),
-    modalAlert: getEl('#tm-modal-alert'),
-    modalAlertMsg: getEl('#tm-modal-alert-msg'),
-    modalAlertOk: getEl('#tm-modal-alert-ok'),
-    modalDialog: getEl('#tm-modal-dialog'),
-    modalDialogMsg: getEl('#tm-modal-dialog-msg'),
-    modalDialogInput: getEl('#tm-modal-dialog-input'),
-    modalDialogTextarea: getEl('#tm-modal-dialog-textarea'),
-    modalDialogSubmit: getEl('#tm-modal-dialog-submit')
   },
   // === state ==================================
   state: {
     activeId: 'tm-main',
     operation: tmsGetOperation(),
-    isMinimized: 0,
-    hw: this.setHw(),
-    minWidth: window.getComputedStyle(tmMenu.e.container).minWidth,
-    minHeight: window.getComputedStyle(tmMenu.e.container).minHeight,
-    setActiveId: function(id){tmsSet('tmKeep_activeId',id);this.activeId=id},
-    setOperation: function(op){tmsSet('tmKeep_operation',op);this.operation=op},
-    setIsMinimized: function(val){tmsSet('tmKeep_isMinimized',val);this.isMinimized=val},
-    setHw: function() {
-      if (this.isMinimized) {
-        this.hw = {this.minHeight, this.minWidth};
-        this.log('using css min-height, min-width.', this.hw);
+    mainHw: null,
+    prepHw: null,
+    initHw: [250,350],
+    minHeight: null,
+    minWidth: null,
+    isMinimized: false,
+    minimizedHeight: 30,
+    setActiveId: function(id){tmsSet('tm_keep_activeId',id);this.activeId=id},
+    setOperation: function(op){tmsSet('tm_keep_operation',op);this.operation=op},
+    setIsMinimized: function(val){tmsSet('tm_keep_isMinimized',val);this.isMinimized=val},
+    setHw: function(activeId, isInit=false) {
+      // main, minimized
+      if (activeId == 'tm-main' && this.isMinimized) {
+        this.mainHw = [this.minimizedHeight, this.minWidth];
+        console.log('tmMenu.state.setHw(): main,minimized - using css min-height, min-width.', this.mainHw);
+        return;
+      }
+      // main + prep, storage
+      const tmsHw = tmsGet('tm_keep_hw-'+activeId);
+      if (Array.isArray(tmsHw) && tmsHw.length === 2) {
+        if (activeId === 'tm-main') { this.mainHw = tmsHw; } else { this.prepHw = tmsHw; }
+        console.log('tmMenu.state.setHw(): '+activeId+' - using storage.', tmsHw);
+        return;
+      }
+      // main + prep, init size
+      let hw = [];
+      if (isInit) {
+        hw = this.initHw;
+        console.log('tmMenu.state.setHw(): '+activeId+' - init using initHw and save to storage.', hw);
+      // main + prep, current size
       } else {
-        const tmsHw = tmsGet('tmKeep_hw-' + this.activeId);
-        if (tmsHw[0] && tmsHw[1]) {
-          this.hw = {this.tmsHeight, this.tmsWidth};
-          this.log('using storage.', this.hw);
-        } else {
-          const hw = {tmMenu.e.container.offsetWidth, tmMenu.e.container.offsetWidth};
-          tmsSet('tmKeep_hw-'+this.activeId, hw);
-          this.hw = hw;
-          this.log('using current hw and save to storage.', this.hw);
-        }
-      },
+        hw = [tmMenu.e.container.offsetHeight, tmMenu.e.container.offsetWidth];
+        console.log('tmMenu.state.setHw(): '+activeId+' - using current hw and save to storage.', hw);
+      }
+      tmsSet('tm_keep_hw-'+activeId, hw);
+      if (activeId === 'tm-main') { this.mainHw = hw; } else { this.prepHw = hw; }
     },
   },
   // === show/hide ==============================
-  hide: function(...els){els.forEach(e=>e.classList.add('tm-dnone'))},
-  show: function(...els){els.forEach(e=>e.classList.remove('tm-dnone'))},
   showMain: function(){
-    const {abort, back, minimize, main, prep, exec} = this.e,
-    this.render(main.id)
+    const {abort, back, minimize, main, prep, exec} = this.e;
     if (this.state.isMinimized) {
-      this.show(minimize);
-      this.hide(abort, back, main, prep, exec);
+      tmShow(minimize);
+      tmHide(abort, back, main, prep, exec);
     } else {
-      this.show(minimize, main);
-      this.hide(abort, back, prep, exec);
+      tmShow(minimize, main);
+      tmHide(abort, back, prep, exec);
     }
+    this.render(main.id);
   },
   showPrep: function(){
     const {abort, back, minimize, main, prep, exec} = this.e;
+    tmShow(back, prep);
+    tmHide(abort, minimize, main, exec);
     this.render(prep.id);
-    this.show(back, prep);
-    this.hide(abort, minimize, main, exec);
   },
   showExec: function(){
     const {abort, back, minimize, main, prep, exec} = this.e;
+    tmShow(abort, exec);
+    tmHide(back, minimize, main, prep);
     this.render(exec.id);
-    this.show(abort, exec);
-    this.hide(back, minimize, main, prep);
   },
 
   // === render ==============================
@@ -105,7 +102,7 @@ const tmMenu = {
     this.renderOperation();
     this.renderMinimize();
     this.renderSize();
-    this.log('done.');
+    console.log('tmMenu.render(): done.');
   },
   renderOperation: function(){
     const txt = this.state.operation || 'None';
@@ -122,7 +119,7 @@ const tmMenu = {
       addCls(span, 'tm-r');
       remCls(span, 'tm-y', 'tm-w');
     }
-    this.state.operation ? this.show(this.e.abort) : this.hide(this.e.abort);
+    this.state.operation ? tmShow(this.e.abort) : tmHide(this.e.abort);
   },
   renderMinimize: function() {
     if (this.state.isMinimized) {
@@ -136,9 +133,17 @@ const tmMenu = {
     }
   },
   renderSize: function(){
-    this.e.container.style.width = this.state.hw[0];
-    this.e.container.style.height = this.state.hw[1];
-    this.log(this.state.hw);
+    if (this.state.isMinimized) {
+      hw = [this.state.minHeight, this.state.mainHw[1]];
+    } else {
+      hw = this.state.activeId === 'tm-main' ? this.state.mainHw : this.state.prepHw
+    }
+    this.e.container.style.position = 'fixed';
+    this.e.container.style.bottom = '5px';
+    this.e.container.style.right = '10px';
+    this.e.container.style.height = hw[0]+'px';
+    this.e.container.style.width = hw[1]+'px';
+    console.log('tmMenu.renderSize(): done.', this.state.activeId, hw);
   },
 
   // === listners ==============================
@@ -147,16 +152,14 @@ const tmMenu = {
   })},
   handleBack: function(){this.e.back.addEventListener('click',()=>{this.showMain()})},
   handleMinimize: function(){this.e.minimize.addEventListener('click',()=>{
-    const hw = {this.state.hw[0], this.state.minHeight};
-    if (hw === 'X') {
-      this.state.hw = hw; // save
+    if (this.e.minimize.textContent === 'X') {
       this.state.setIsMinimized(true);
-      tmsSet('tmKeep_hw-'+this.state.activeId, hw);
-      log('off -> on', hw, this.state)
+      console.log('tmMenu.handleMinimize(): off -> on');
     } else {
       this.state.setIsMinimized(false);
-      log('on -> off', hw, this.state)
+      console.log('tmMenu.handleMinimize(): on -> off');
     }
+    this.showMain();
   })},
   handleReadme: function(link){this.e.readme.querySelector('a').href=link},
   handleHotkey: function(hotkey) {
@@ -167,30 +170,34 @@ const tmMenu = {
       tmHTMLMainHotkey, {id:id, name:name, keys:keys}
     ));
     // event
-    const e = getEl('#'+id+' input[type="checkbox"]');
-    e.addEventListener('change',function(){
-      if (e.checked) {
-        log(id+': ON');
-        tmsSet('tmKeep_hotkey-'+idsfx, '1')
-        function hotkeyHandler(event){if(getKey(keys,0)&&getKey(keys,1)){action()}}
-        e.hotkeyHandler = hotkeyHandler;
+    const checkbox = getEl('#' + id + ' input[type="checkbox"]');
+    const hotkeyHandler = (event) => {
+      console.log('hotkeyHandler: start..');
+      if (getKey(event, keys, 0) && getKey(event, keys, 1)) {
+      // if (event.shiftKey && event.key === 'J') { // Проверяем нажатие Shift + J
+        console.log('hotkeyHandler: get keys ok..');
+        action();
+      }
+      console.log('hotkeyHandler: done.');
+    };
+    checkbox.addEventListener('change', function () {
+      if (checkbox.checked) {
+        console.log('tmMenu.handleHotkey(): ' + id + ': ON');
+        tmsSet('tm_keep_hotkey-' + idsfx, '1');
         document.addEventListener('keydown', hotkeyHandler);
       } else {
-        console.log(id+': OFF');
-        tmsDelete('tmKeep_hotkey-'+idsfx)
-        if (e.hotkeyHandler) {
-          document.removeEventListener('keydown', e.hotkeyHandler);
-          e.hotkeyHandler = null;
-        }
+        console.log('tmMenu.handleHotkey(): ' + id + ': OFF');
+        tmsDelete('tm_keep_hotkey-' + idsfx);
+        document.removeEventListener('keydown', hotkeyHandler);
       }
     });
     // user settings
-    if (tmsGet('tmKeep_hotkey-' + idsfx) === '1') {
-      e.checked = true;
-      e.dispatchEvent(new Event('change'));
+    if (tmsGet('tm_keep_hotkey-' + idsfx) === '1') {
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event('change'));
     }
     // show
-    this.show(eMainHotkeys);
+    tmShow(this.e.hotkeys);
   },
   handlePrep: function(data) {
     const [idsfx, title, action] = data;
@@ -203,37 +210,38 @@ const tmMenu = {
     getEl('#'+mainId).addEventListener('click', () => {
       // mainPrep
       this.e.prepTitle.textContent = title;
-      this.e.prepTextarea.value = tmsGet('tmKeep_prepTextarea-'+idsfx, '');
+      this.e.prepTextarea.value = tmsGet('tm_keep_prepTextarea-'+idsfx, '');
       // prepExec
-      getEls('.tm-group-prep-exec').forEach(e=>this.hide(e));
+      getEls('.tm-group-prep-exec').forEach(e=>tmHide(e));
       const prepExec = getEl('#'+prepId);
       prepExec.addEventListener('click', () => {
-        tmsSet('tmKeep_prepTextarea-'+idsfx, this.e.prepTextarea.value);
+        tmsSet('tm_keep_prepTextarea-'+idsfx, this.e.prepTextarea.value);
         this.showExec();
         action();
       });
-      this.show(prepExec);
+      tmShow(prepExec);
       this.showPrep();
     });
     // show
-    this.show(eMainPrep);
+    tmShow(this.e.mainPrep);
   },
   handleMainExec: function(data) {
     const [idsfx, title, action] = data;
     const id = 'tm-main-exec-'+idsfx;
     this.e.mainExec.insertAdjacentHTML('beforeend',mustache(tmHTMLMainExec,{id:id,title:title}));
     getEl('#'+id).addEventListener('click',()=>{this.e.showExec();action()});
-    this.show(eMainExec);
+    tmShow(this.e.mainExec);
   },
   handleStorageView: function(){
-    function contentInit() {
-      const data = tmsGetAll();
+    function prepareContent() {
       // insert
-      this.e.modal.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
-      const eContent = this.e.modal.lastElementChild;
-      const eTbody = eContent.querySelector('tbody');
-      eTbody.innerHTML = '';
-      data.forEach(k=>{eTbody.insertAdjacentHTML('beforeend',mustache(
+      const e = getEl('#tm-modal-storageview');
+      const data = tmsGetAll();
+      e.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
+      const content = e.lastElementChild;
+      const tbody = content.querySelector('tbody');
+      tbody.innerHTML = '';
+      data.forEach(k=>{tbody.insertAdjacentHTML('beforeend',mustache(
         tmHTMLModalStorageviewRow, {key:k, value:tmsGet(k)}
       ))});
       // events
@@ -241,34 +249,31 @@ const tmMenu = {
         e.addEventListener('click',()=>{
           const value = e.getAttribute('data-value');
           navigator.clipboard.writeText(value)
-            .then(() => {log(`Copied: ${value}`); })
-            .catch(e => {console.error(`Failed to copy value: ${e}`); });
+            .then(() => {console.log('tmMenu.storageView(): copied', value)})
+            .catch(e => {abort('tmMenu.storageView(): failed to copy value', e)})
         });
       });
       getEl('#tm-modal-storageview-copyall').addEventListener('click',()=>{
         const allData = data.map(k=>{const v=tmsGet(k);return k+': '+v}).join('\n');
         navigator.clipboard.writeText(allData)
-          .then(() => {console.log('Copied all key-value to clipboard')})
-          .catch(e => {console.error(`Failed to copy all key-value: ${e}`)})
+          .then(() => {console.log('tmMenu.storageView(): copied all.')})
+          .catch(e => {abort('tmMenu.storageView(): failed to copy all', e)})
       });
     }
     // click view
-    eMainStorageBodyView.addEventListener('click', () => {
-      // modal
-      ModalManager.buildContent({
-        idsfx:'storage-view', accent:'info', title:'Storage View',
-        actionPrepareContent: prepareContent,
-        actionClose:()=>{},
+    this.e.storageView.addEventListener('click', () => {
+      tmModal.content({
+        id: 'tm-modal-content-storageview', accent:'info', title:'Storage View',
+        actionClose: ()=>{},
+        actionContent: ()=>prepareContent(),
       });
     });
   },
   handleStorageReset: function(){
-    eMainStorageBodyReset.addEventListener('click',()=>{
-      // reset
+    this.e.storageReset.addEventListener('click',()=>{
       tmsReset();
-      this.renderOperation();
-      // modal
-      ModalManager.buildAlert({
+      this.showMain();
+      tmModal.info({
         accent:'warning', title:'Storage Reset',
         msg: 'All non-premanent data has been removed from storage.',
         actionClose:()=>{},
@@ -276,15 +281,13 @@ const tmMenu = {
     });
   },
   handleStorageClean: function(){
-    eMainStorageBodyClean.addEventListener('click',()=>{
-      // clean
+    this.e.storageClean.addEventListener('click',()=>{
       tmsDeleteAll();
       this.renderOperation();
-      // modal
-      ModalManager.buildAlert({
+      tmModal.info({
         accent: 'error', title: 'Storage CLEAN',
         msg: 'ALL DATA has been deleted from storage.',
-        actionClose:()=>{}
+        actionClose:()=>{},
       });
     });
   },
@@ -293,67 +296,70 @@ const tmMenu = {
   })},
   makeResizable: function(e) {
     let isResizing = false; let startX, startY, startWidth, startHeight;
+    e.style.cursor = 'pointer';
     e.addEventListener('mousedown', (event) => {
       if (event.target.matches('button, input, textarea, .tm-slider')) return;
       if (event.button !== 0) return;
       isResizing = true;
       startX = event.clientX;
       startY = event.clientY;
-      startHeight = this.state.hw[0];
-      startWidth = this.state.hw[1];
+      hw = this.state.activeId === 'tm-main' ? this.state.mainHw : this.state.prepHw;
+      startHeight = hw[0];
+      startWidth = hw[1];
       document.body.style.userSelect = 'none';
     });
     document.addEventListener('mousemove', (event) => {
       if (!isResizing) return;
       const newWidth = startWidth - (event.clientX - startX);
       const newHeight = startHeight - (event.clientY - startY);
-      const hw = {
-        Math.max(newHeight, parseInt(this.state.minHeight, 10))+'px',
-        Math.max(newWidth, parseInt(this.state.minWidth, 10))+'px'
-      }
+      this.e.container.style.height = Math.max(newHeight, this.state.minHeight)+'px';
+      this.e.container.style.width = Math.max(newWidth, this.state.minWidth)+'px';
     });
     document.addEventListener('mouseup', () => {
       if (isResizing) {
         isResizing = false;
         document.body.style.userSelect = '';
-        tmsSet('tmKeep_hw-'+this.state.activeId, hw);
-        this.state.setHw();
+        tmsSet('tm_keep_hw-'+this.state.activeId,[
+          this.e.container.offsetHeight, this.e.container.offsetWidth
+        ]);
+        this.state.setHw(this.state.activeId);
       }
     });
   },
 
   // === pause/reset/cancel ==============================
-  pause: function(msg) {
-    this.show(eExecContinue);
-    ModalManager.buildAlert({
-      accent: 'warning',
-      title: 'tmMenu.Pause',
-      msg: msg,
-      actionClose: ()=>{},
-    });
-    await new Promise(resolve => {
-      eExecContinue.onclick = resolve;
-    });
-    this.hide(eExecContinue);
-  },
+  // TODO: remove pause at all?
+  // pause: function(msg) {
+  //   tmShow(this.e.execContinue);
+  //   tmModal.info({
+  //     accent: 'warning',
+  //     title: 'tmMenu.Pause',
+  //     msg: msg,
+  //     actionClose: ()=>{},
+  //   });
+  //   await new Promise(resolve => {
+  //     this.e.execContinue.onclick = resolve;
+  //   });
+  //   tmHide(this.e.execContinue);
+  // },
   reset: function(...args) {
-    this.log('start..');
+    console.log('tmMenu.reset(): start..');
     tmsReset();
     this.showMain();
     // modal
     if(args.length>0){const joined=args.map(
       arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
     ).join(' ')}
-    ModalManager.buildAlert({
+    tmModal.info({
       accent: 'warning',
       title: 'tmMenu.reset',
       msg: joined,
       actionClose: ()=>{},
     });
-    this.log('done.');
+    console.log('tmMenu.reset(): done.');
   },
   abort: function(...args) {
-    this.log('start..');
+    console.log('tmMenu.reset(): start..');
     tmsDeleteAll();
     this.showMain();
     // modal
@@ -362,7 +368,7 @@ const tmMenu = {
     ).join('\n');
     const msg = joinedArgs?joinedArgs:'abort.';
     console.log(msg);
-    ModalManager.buildAlert({
+    tmModal.info({
       accent: 'error',
       title: 'tmMenu.abort',
       msg: msg,
@@ -373,6 +379,11 @@ const tmMenu = {
 
   // === init ==============================
   init: function(map) {
+    console.log('tmMenu.init(): start..');
+    this.state.minHeight = parseInt(window.getComputedStyle(this.e.container).minHeight, 10);
+    this.state.minWidth = parseInt(window.getComputedStyle(this.e.container).minWidth, 10);
+    this.state.setHw('tm-main', isInit=true);
+    this.state.setHw('tm-prep', isInit=true);
     // listners
     this.handleAbort();
     this.handleBack();
@@ -392,6 +403,6 @@ const tmMenu = {
       this.makeResizable(this.e.header);
       this.showMain();
     }
-    this.log('done.');
+    console.log('tmMenu.init(): done.', this.state);
   }
 };

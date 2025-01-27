@@ -1,31 +1,15 @@
+function tmHide(...els){els.forEach(e=>e.classList.add('tm-dnone'))};
+function tmShow(...els){els.forEach(e=>e.classList.remove('tm-dnone'))};
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve, ms))}
 function mustache(template,vars){return template.replace(/{{(\w+)}}/g,(_,key)=>{return vars[key]||''})}
-function getKey(keys,n) {
+function getKey(event, keys, n) {
   const k = keys.split('+')[n];
+  if (!k) return false;
   if (k === 'Shift') return event.shiftKey;
   if (k === 'Ctrl') return event.ctrlKey;
   if (k === 'Alt') return event.altKey;
   if (k === 'Meta') return event.metaKey;
-  return event.k === k;
-}
-// logs
-function log(...args) {
-  const stack = new Error().stack; // Получаем стек вызовов
-  const callerLine = stack.split('\n')[2].trim(); // Получаем строку вызова
-  const match = callerLine.match(/at (\w+).*:(\d+):\d+/); // Извлекаем имя функции и номер строки
-  const functionName = match?.[1] || 'anonymous';
-  const lineNumber = match?.[2] || 'unknown';
-  console.log(`${lineNumber}:${functionName}()`, ...args);
-}
-function createObjectLogger(objectName) {
-  return function log(...args) {
-    const stack = new Error().stack;
-    const callerLine = stack.split('\n')[2].trim();
-    const match = callerLine.match(/at (\w+).*:(\d+):\d+/); // Извлекаем метод и строку
-    const methodName = match?.[1] || 'unknown';
-    const lineNumber = match?.[2] || 'unknown';
-    console.log(`${lineNumber}:${objectName}.${methodName}()`, ...args);
-  };
+  return event.key === k;
 }
 // redirect
 function redirect(newUrl, force=false) {

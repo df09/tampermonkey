@@ -70,9 +70,9 @@ function injectCSS(css){
   border-top: 0;
 }
 
-/* ===== container ============================ */
-#tm-container * { font-family: monospace; }
-#tm-container {
+/* ===== menu ============================ */
+#tm-menu * { font-family: monospace; }
+#tm-menu {
   z-index: 10000; position: fixed; bottom: 5px; right: 10px;
   background-color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-height: 30px;
@@ -131,8 +131,8 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
 }
 /* ===== main.exec ============================ */
 
-/* ===== main.storage ============================ */
-#tm-main-storage-body > * {
+/* ===== storage ============================ */
+#tm-storage-body > * {
   flex-grow: 1;
 }
 

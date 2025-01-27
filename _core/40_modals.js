@@ -1,121 +1,89 @@
-const ModalManager = {
-  // vars
-  backup: null,
-  eOverlay: getEl('#tm-modal-overlay'),
-  eModal: getEl('#tm-modal'),
-
-  setModalType(type) {
-    const allowed = ['alert', 'dialog-input', 'dialog-textarea', 'content'];
-    if (!allowed.includes(type)) {
-      abort('ModalManager.setModalType: invalid type (' + type + '), allowed only ' + allowed);
-    }
-    addCls(eModal, 'tm-model-' + type);
-  },
-  setModalAccent(accent) {
-    const allowed = ['info', 'success', 'warning', 'error'];
-    if (!allowed.includes(accent)) {
-      abort('ModalManager.setModalAccent: invalid type (' + accent + '), allowed only ' + allowed);
-    }
-    addCls(eModal, 'tm-modal-' + accent);
-  },
-  setTitle(title){eModalHeaderTitle.textContent=title},
-  setClose(actionClose) {
-    // button
-    eModalHeaderClose.onclick=()=>{
-      tmUiHide(eModalOverlay);
-      eModal.innerHTML = this.backup;
-      actionClose();
-    };
-    // hotkeys
-    eModal.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        tmUiHide(eModalOverlay);
-        eModal.innerHTML = this.backup;
-        actionClose();
-      }
-    });
-    tmUiShow(eModalHeaderClose);
-  },
-  setMsg(msg){eModalAlertMsg.textContent=msg},
-
-  // alert
-  buildAlert({accent='info', title='', msg='', actionClose}) {
-    this.backup = eModal.innerHTML;
-    // validate
-    if (!title) {abort('ModalManager.buildAlert: please set title.')}
-    if (!msg) {abort('ModalManager.buildAlert: please set msg.')}
-    // preset
-    const type = 'alert';
-    this.setModalType(type);
-    this.setModalAccent(accent);
+const tmModal = {
+  // === elements ====================================
+  e: {
+    overlay: getEl("#tm-modal-overlay"),
+    container: getEl("#tm-modal"),
     // header
-    this.setTitle(title);
-    tmUiHide(eModalHeaderClose);
-    // body
-    this.setMsg(msg);
-    this.setClose(actionClose);
-    tmUiShow(eModalAlert);
-    // show modal
-    tmUiShow(eModalOverlay);
-  },
-
-  // dialog
-  buildDialog({kind='input',title='',msg='',actionSubmit,actionClose}) {
-    const allowed = ['input','textarea'];
-    // validate
-    if (!allowed.includes(kind)){abort('ModalManager.buildDialog: invalid kind ('+kind+'), allowed only '+allowed)}
-    if (!title) {abort('ModalManager.buildDialog: please set title.')}
-    if (!msg) {abort('ModalManager.buildDialog: please set msg.')}
-    if (typeof actionClose !== 'function') {abort('ModalManager.buildDialog: actionClose must be a function.')}
-    if (typeof actionSubmit !== 'function') {abort('ModalManager.buildDialog: actionSubmit must be a function.')}
-    // preset
-    const type = 'dialog-' + kind;
-    const accent = 'info';
-    this.setModalType(type);
-    this.setModalAccent(accent);
-    // header
-    this.setTitle(title);
-    this.setClose(actionClose);
-    // body
-    this.setMsg(msg);
-    if (kind === 'input') {
-      tmUiShow(eModalDialogInput);
-    } else {
-      tmUiShow(eModalDialogTextarea);
-    }
-    eModalDialogSubmit.onclick = () => actionSubmit();
-    tmUiShow(eModalDialog);
-    // Обработка нажатий клавиш
-    eModal.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        actionSubmit();
-      } else if (event.key === 'Escape') {
-        actionClose();
-        tmUiReset();
-      }
-    });
-    // show modal
-    tmUiShow(eModalOverlay);
-  },
-
-  // content
-  buildContent(idsfx, accent, title, actionPrepareContent, actionClose) {
-    // validate
-    if (!idsfx) {abort('ModalManager.buildContent: please set idsfx.')}
-    if (!accent) {abort('ModalManager.buildContent: please set accent.')}
-    if (!title) {abort('ModalManager.buildContent: please set title.')}
-    if (typeof actionClose !== 'function') {abort('ModalManager.buildContent: actionClose must be a function.')}
-    if (typeof actionPrepareContent !== 'function') {abort('ModalManager.buildContent: actionPrepareContent must be a function.')}
-    // preset
-    this.setModalType('content');
-    this.setModalAccent(accent);
-    // header
-    this.setTitle(title);
-    this.setClose(actionClose);
+    header: getEl("#tm-modal-header"),
+    title: getEl("#tm-modal-title"),
+    close: getEl("#tm-modal-close"),
+    body: getEl("#tm-modal-body"),
+    // info
+    info: getEl("#tm-modal-info"),
+    infoMsg: getEl("#tm-modal-info-msg"),
+    infoBtn: getEl("#tm-modal-info-btn"),
+    // yn
+    yn: getEl("#tm-modal-yn"),
+    ynMsg: getEl("#tm-modal-yn-msg"),
+    ynBtnNo: getEl("#tm-modal-yn-btn-no"),
+    ynBtnYes: getEl("#tm-modal-yn-btn-yes"),
+    // input
+    input: getEl("#tm-modal-input"),
+    inputMsg: getEl("#tm-modal-input-msg"),
+    inputInput: getEl("#tm-modal-input-input"),
+    inputSubmit: getEl("#tm-modal-input-submit"),
     // content
-    actionPrepareContent();
-    tmUiShow(getEl('#tm-modal-content-'+idsfx));
-    // show modal
-    tmUiShow(eModalOverlay);
+    content: getEl("#tm-modal-content")
+  },
+  backup: null,
+  type: null,
+  accent: null,
+
+  init(type, accent, title) {
+    this.backup = this.e.container.innerHTML;
+    this.type = type;
+    this.accent = accent;
+    this.e.title.textContent = title;
+  },
+  handleClose(e, action) {
+    e.onclick=()=>{
+      tmHide(this.e.overlay);
+      this.e.container.innerHTML = this.backup;
+      tmsReset();
+      tmMenu.showMain();
+      action();
+    };
+    // TODO hotkeys
+  },
+  show(e) {tmShow(e); tmShow(this.e.overlay)},
+  // info
+  info({accent, title, msg, actionClose}) {
+    if (typeof actionClose !== 'function') {abort('tmModal.info: actionClose must be a function.')}
+    this.init('info', accent, title);
+    this.e.infoMsg.textContent = msg;
+    this.handleClose(this.e.close, actionClose);
+    this.handleClose(this.e.infoBtn, actionClose);
+    this.show('info');
+  },
+  // yn
+  yn({accent, title, msg, actionNo, actionYes}) {
+    if (typeof actionNo !== 'function') {abort('tmModal.info: actionNo must be a function.')}
+    if (typeof actionYes !== 'function') {abort('tmModal.info: actionYes must be a function.')}
+    this.init('yn', accent, title);
+    this.e.ynMsg.textContent = msg;
+    this.handleClose(this.e.close, actionNo);
+    this.handleClose(this.e.ynBtnNo, actionNo);
+    this.handleClose(this.e.ynBtnYes, actionYes);
+    this.show(this.e.yn);
+  },
+  // input
+  input({accent, title, msg, actionClose, actionSubmit}) {
+    if (typeof actionClose !== 'function') {abort('tmModal.input: actionClose must be a function.')}
+    if (typeof actionSubmit !== 'function') {abort('tmModal.input: actionSubmit must be a function.')}
+    this.init('input', accent, title);
+    this.e.ynMsg.textContent = msg;
+    this.handleClose(this.e.close, actionClose);
+    this.handleClose(this.e.inputSubmit, actionSubmit);
+    this.show('input');
+  },
+  // content
+  content({id, accent, title, actionClose, actionContent}) {
+    if (typeof actionClose !== 'function') {abort('tmModal.content: actionClose must be a function.')}
+    if (typeof actionContent !== 'function') {abort('tmModal.content: actionContent must be a function.')}
+    this.init('content', accent, title);
+    this.e.body.insertAdjacentHTML('beforeend', '<div id="'+id+'"></div>');
+    this.handleClose(this.e.close, actionClose);
+    actionContent();
+    this.show(this.e.content);
   },
 };
