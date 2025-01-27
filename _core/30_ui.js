@@ -30,23 +30,19 @@ const tmMenu = {
     execCancel: getEl('#tm-exec-cancel'),
   },
   // === state ==================================
-  state: {
     activeId: 'tm-main',
     operation: tmsGetOperation(),
-    mainHw: null,
-    prepHw: null,
     initHw: [250,350],
-    minHeight: null,
-    minWidth: null,
-    isMinimized: false,
-    minimizedHeight: 30,
-    setActiveId: function(id){tmsSet('tm_keep_activeId',id);this.activeId=id},
-    setOperation: function(op){tmsSet('tm_keep_operation',op);this.operation=op},
+    isMinimized: tmsGet('tm_keep_isMinimized') || false,
+    getHwMain: function(){return tmsGet('tm_keep_hwMain')},
+    getHwPrep: function(){return tmsGet('tm_keep_hwPrep')},
+    getHwMinz: function(){return tmsGet('tm_keep_hwMinz')},
+    // minimizedHeight: 30,
     setIsMinimized: function(val){tmsSet('tm_keep_isMinimized',val);this.isMinimized=val},
     setHw: function(activeId, isInit=false) {
       // main, minimized
       if (activeId == 'tm-main' && this.isMinimized) {
-        this.mainHw = [this.minimizedHeight, this.minWidth];
+        this.mainHw = this.minimizedHeight, this.e.container.offsetWidth;
         console.log('tmMenu.state.setHw(): main,minimized - using css min-height, min-width.', this.mainHw);
         return;
       }
@@ -98,7 +94,10 @@ const tmMenu = {
 
   // === render ==============================
   render: function(activeId) {
-    this.state.setActiveId(activeId);
+
+    this.state.activeId = acitveId;
+    tmsSet('tm_keep_activeId',id);
+
     this.renderOperation();
     this.renderMinimize();
     this.renderSize();
@@ -133,16 +132,22 @@ const tmMenu = {
     }
   },
   renderSize: function(){
+    let hw;
+    console.log(this.state.minimizedHeight);
+    console.log(this.e.container.offsetWidth);
+    console.log(this.state.activeId);
+    console.log(this.state.mainHw);
+    console.log(this.state.prepHw);
     if (this.state.isMinimized) {
-      hw = [this.state.minHeight, this.state.mainHw[1]];
+      hw = [this.state.minimizedHeight, this.e.container.offsetWidth];
     } else {
-      hw = this.state.activeId === 'tm-main' ? this.state.mainHw : this.state.prepHw
+      hw = this.state.activeId === 'tm-main' ? this.state.mainHw : this.state.prepHw;
     }
+    this.e.container.style.height = hw[0]+'px';
+    this.e.container.style.width = hw[1]+'px';
     this.e.container.style.position = 'fixed';
     this.e.container.style.bottom = '5px';
     this.e.container.style.right = '10px';
-    this.e.container.style.height = hw[0]+'px';
-    this.e.container.style.width = hw[1]+'px';
     console.log('tmMenu.renderSize(): done.', this.state.activeId, hw);
   },
 
@@ -154,6 +159,7 @@ const tmMenu = {
   handleMinimize: function(){this.e.minimize.addEventListener('click',()=>{
     if (this.e.minimize.textContent === 'X') {
       this.state.setIsMinimized(true);
+      this.state.mainHw = this.minimizedHeight, this.e.container.offsetWidth;
       console.log('tmMenu.handleMinimize(): off -> on');
     } else {
       this.state.setIsMinimized(false);
@@ -313,7 +319,7 @@ const tmMenu = {
       const newWidth = startWidth - (event.clientX - startX);
       const newHeight = startHeight - (event.clientY - startY);
       this.e.container.style.height = Math.max(newHeight, this.state.minHeight)+'px';
-      this.e.container.style.width = Math.max(newWidth, this.state.minWidth)+'px';
+      this.e.container.style.width = newWidth+'px';
     });
     document.addEventListener('mouseup', () => {
       if (isResizing) {
@@ -380,8 +386,6 @@ const tmMenu = {
   // === init ==============================
   init: function(map) {
     console.log('tmMenu.init(): start..');
-    this.state.minHeight = parseInt(window.getComputedStyle(this.e.container).minHeight, 10);
-    this.state.minWidth = parseInt(window.getComputedStyle(this.e.container).minWidth, 10);
     this.state.setHw('tm-main', isInit=true);
     this.state.setHw('tm-prep', isInit=true);
     // listners

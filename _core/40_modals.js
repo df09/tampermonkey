@@ -45,7 +45,14 @@ const tmModal = {
     };
     // TODO hotkeys
   },
-  show(e) {tmShow(e); tmShow(this.e.overlay)},
+  show() {
+    let e = null;
+    if (this.type === 'info') { tmShow(this.e.info); tmHide(this.e.yn, this.e.input, this.e.content); }
+    if (this.type === 'yn') { tmShow(this.e.yn); tmHide(this.e.info, this.e.input, this.e.content); }
+    if (this.type === 'input') { tmShow(this.e.input); tmHide(this.e.info, this.e.yn, this.e.content); }
+    if (this.type === 'content') { tmShow(this.e.content); tmHide(this.e.info, this.e.yn, this.e.input); }
+    tmShow(this.e.overlay);
+  },
   // info
   info({accent, title, msg, actionClose}) {
     if (typeof actionClose !== 'function') {abort('tmModal.info: actionClose must be a function.')}
@@ -53,7 +60,7 @@ const tmModal = {
     this.e.infoMsg.textContent = msg;
     this.handleClose(this.e.close, actionClose);
     this.handleClose(this.e.infoBtn, actionClose);
-    this.show('info');
+    this.show();
   },
   // yn
   yn({accent, title, msg, actionNo, actionYes}) {
@@ -64,7 +71,7 @@ const tmModal = {
     this.handleClose(this.e.close, actionNo);
     this.handleClose(this.e.ynBtnNo, actionNo);
     this.handleClose(this.e.ynBtnYes, actionYes);
-    this.show(this.e.yn);
+    this.show();
   },
   // input
   input({accent, title, msg, actionClose, actionSubmit}) {
@@ -74,7 +81,7 @@ const tmModal = {
     this.e.ynMsg.textContent = msg;
     this.handleClose(this.e.close, actionClose);
     this.handleClose(this.e.inputSubmit, actionSubmit);
-    this.show('input');
+    this.show();
   },
   // content
   content({id, accent, title, actionClose, actionContent}) {
@@ -84,6 +91,6 @@ const tmModal = {
     this.e.body.insertAdjacentHTML('beforeend', '<div id="'+id+'"></div>');
     this.handleClose(this.e.close, actionClose);
     actionContent();
-    this.show(this.e.content);
+    this.show();
   },
 };
