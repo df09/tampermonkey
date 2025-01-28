@@ -7,7 +7,7 @@ const tmMenu = {
     operation: getEl('#tm-operation'),
     abort: getEl('#tm-abort'),
     back: getEl('#tm-back'),
-    minimize: getEl('#tm-minimize'),
+    mnmz: getEl('#tm-minimize'),
     // main
     main: getEl('#tm-main'),
     readme: getEl('#tm-readme'),
@@ -29,121 +29,49 @@ const tmMenu = {
     execContinue: getEl('#tm-exec-continue'),
     execCancel: getEl('#tm-exec-cancel'),
   },
-  // === state ==================================
-  state: {
-    activeId: 'tm-main',
-    operation: tmsGetOperation(),
-    mainHw: null,
-    prepHw: null,
-    initHw: [250,350],
-    minHeight: null,
-    minWidth: null,
-    isMinimized: false,
-    minimizedHeight: 30,
-    setActiveId: function(id){tmsSet('tm_keep_activeId',id);this.activeId=id},
-    setOperation: function(op){tmsSet('tm_keep_operation',op);this.operation=op},
-    setIsMinimized: function(val){tmsSet('tm_keep_isMinimized',val);this.isMinimized=val},
-    setHw: function(activeId, isInit=false) {
-      // main, minimized
-      if (activeId == 'tm-main' && this.isMinimized) {
-        this.mainHw = [this.minimizedHeight, this.minWidth];
-        console.log('tmMenu.state.setHw(): main,minimized - using css min-height, min-width.', this.mainHw);
-        return;
-      }
-      // main + prep, storage
-      const tmsHw = tmsGet('tm_keep_hw-'+activeId);
-      if (Array.isArray(tmsHw) && tmsHw.length === 2) {
-        if (activeId === 'tm-main') { this.mainHw = tmsHw; } else { this.prepHw = tmsHw; }
-        console.log('tmMenu.state.setHw(): '+activeId+' - using storage.', tmsHw);
-        return;
-      }
-      // main + prep, init size
-      let hw = [];
-      if (isInit) {
-        hw = this.initHw;
-        console.log('tmMenu.state.setHw(): '+activeId+' - init using initHw and save to storage.', hw);
-      // main + prep, current size
-      } else {
-        hw = [tmMenu.e.container.offsetHeight, tmMenu.e.container.offsetWidth];
-        console.log('tmMenu.state.setHw(): '+activeId+' - using current hw and save to storage.', hw);
-      }
-      tmsSet('tm_keep_hw-'+activeId, hw);
-      if (activeId === 'tm-main') { this.mainHw = hw; } else { this.prepHw = hw; }
-    },
-  },
-  // === show/hide ==============================
-  showMain: function(){
-    const {abort, back, minimize, main, prep, exec} = this.e;
-    if (this.state.isMinimized) {
-      tmShow(minimize);
-      tmHide(abort, back, main, prep, exec);
-    } else {
-      tmShow(minimize, main);
-      tmHide(abort, back, prep, exec);
+  // === storage ==============================
+  validateHw: function(hw, pass=false) {
+    if (Array.isArray(hw) && hw.length === 2 &&
+      hw.every(item => typeof item === 'number' && !isNaN(item))) {
+        return hw;
     }
-    this.render(main.id);
+    if (pass) {
+        return false;
+    }
+    abort('tmMenu.validateHw(): invalid hw', hw);
   },
-  showPrep: function(){
-    const {abort, back, minimize, main, prep, exec} = this.e;
-    tmShow(back, prep);
-    tmHide(abort, minimize, main, exec);
-    this.render(prep.id);
-  },
-  showExec: function(){
-    const {abort, back, minimize, main, prep, exec} = this.e;
-    tmShow(abort, exec);
-    tmHide(back, minimize, main, prep);
-    this.render(exec.id);
-  },
+  isMain: function() {return tmsGet('tm_keep_activeId') === 'tm-main'},
+  isPrep: function() {return tmsGet('tm_keep_activeId') === 'tm-prep'},
+  isMnmz: function() {return tmsGet('tm_keep_mnmz')},
+  isExec: function() {return tmsGetOperation()},
+  getHwActual: function() {return [this.e.container.offsetHeight, this.e.container.offsetWidth]},
+  getHwMain: function() {return tmsGet('tm_keep_hwMain')},
+  getHwPrep: function() {return tmsGet('tm_keep_hwPrep')},
+  setActiveId: function(val) {tmsSet('tm_keep_activeId', val)},
+  setMnmz: function(val) {tmsSet('tm_keep_mnmz', val)},
+  setHwMain: function(val) {tmsSet('tm_keep_hwMain', this.validateHw(val))},
+  setHwPrep: function(val) {tmsSet('tm_keep_hwPrep', this.validateHw(val))},
 
-  // === render ==============================
-  render: function(activeId) {
-    this.state.setActiveId(activeId);
-    this.renderOperation();
-    this.renderMinimize();
-    this.renderSize();
-    console.log('tmMenu.render(): done.');
-  },
-  renderOperation: function(){
-    const txt = this.state.operation || 'None';
-    const span = this.e.operation.querySelector('span');
-    span.textContent = txt;
-    if (txt === 'None') {
-      addCls(this.e.operation, 'tm-border-w');
-      remCls(this.e.operation, 'tm-border-y', 'tm-border-r');
-      addCls(span, 'tm-w');
-      remCls(span, 'tm-y', 'tm-r');
-    } else {
-      addCls(this.e.operation, 'tm-border-r');
-      remCls(this.e.operation, 'tm-border-y', 'tm-border-w');
-      addCls(span, 'tm-r');
-      remCls(span, 'tm-y', 'tm-w');
-    }
-    this.state.operation ? tmShow(this.e.abort) : tmHide(this.e.abort);
-  },
-  renderMinimize: function() {
-    if (this.state.isMinimized) {
-      this.e.minimize.textContent = '^';
-      addCls(this.e.minimize, 'tm-btn-b', 'tm-btn-header-b');
-      remCls(this.e.minimize, 'tm-btn-r', 'tm-btn-header-r');
-    } else {
-      this.e.minimize.textContent = 'X';
-      addCls(this.e.minimize, 'tm-btn-r', 'tm-btn-header-r');
-      remCls(this.e.minimize, 'tm-btn-b', 'tm-btn-header-b');
-    }
-  },
-  renderSize: function(){
-    if (this.state.isMinimized) {
-      hw = [this.state.minHeight, this.state.mainHw[1]];
-    } else {
-      hw = this.state.activeId === 'tm-main' ? this.state.mainHw : this.state.prepHw
-    }
-    this.e.container.style.position = 'fixed';
-    this.e.container.style.bottom = '5px';
-    this.e.container.style.right = '10px';
-    this.e.container.style.height = hw[0]+'px';
-    this.e.container.style.width = hw[1]+'px';
-    console.log('tmMenu.renderSize(): done.', this.state.activeId, hw);
+  // === init ==============================
+  init: function(map) {
+    console.log('tmMenu.init(): start..');
+    // listners
+    this.handleAbort();
+    this.handleBack();
+    this.handleMnmz();
+    this.handleReadme(map.readme);
+    for (let data of map.hotkeys) {this.handleHotkey(data)}
+    for (let data of map.btnsPrep) {this.handlePrep(data)}
+    for (let data of map.btnsExec) {this.handleMainExec(data)}
+    this.handleStorageView();
+    this.handleStorageReset();
+    this.handleStorageClean();
+    this.handleCancel();
+    // show
+    this.setActiveId(tmsGet('tm_keep_activeId') ?? 'tm-main');
+    this.show();
+    // done
+    console.log('tmMenu.init(): done.');
   },
 
   // === listners ==============================
@@ -151,13 +79,11 @@ const tmMenu = {
     this.abort('Exec aborted by user. ALL DATA was deleted from storage.')
   })},
   handleBack: function(){this.e.back.addEventListener('click',()=>{this.showMain()})},
-  handleMinimize: function(){this.e.minimize.addEventListener('click',()=>{
-    if (this.e.minimize.textContent === 'X') {
-      this.state.setIsMinimized(true);
-      console.log('tmMenu.handleMinimize(): off -> on');
+  handleMnmz: function(){this.e.mnmz.addEventListener('click',()=>{
+    if (this.e.mnmz.textContent === 'X') {
+      this.setMnmz(true); console.log('tmMenu.handleMnmz(): off -> on');
     } else {
-      this.state.setIsMinimized(false);
-      console.log('tmMenu.handleMinimize(): on -> off');
+      this.setMnmz(false); console.log('tmMenu.handleMnmz(): on -> off');
     }
     this.showMain();
   })},
@@ -174,7 +100,6 @@ const tmMenu = {
     const hotkeyHandler = (event) => {
       console.log('hotkeyHandler: start..');
       if (getKey(event, keys, 0) && getKey(event, keys, 1)) {
-      // if (event.shiftKey && event.key === 'J') { // Проверяем нажатие Shift + J
         console.log('hotkeyHandler: get keys ok..');
         action();
       }
@@ -283,7 +208,7 @@ const tmMenu = {
   handleStorageClean: function(){
     this.e.storageClean.addEventListener('click',()=>{
       tmsDeleteAll();
-      this.renderOperation();
+      this.updOperation();
       tmModal.info({
         accent: 'error', title: 'Storage CLEAN',
         msg: 'ALL DATA has been deleted from storage.',
@@ -295,66 +220,160 @@ const tmMenu = {
     this.reset('Exec canceled by user.')
   })},
   makeResizable: function(e) {
-    let isResizing = false; let startX, startY, startWidth, startHeight;
-    e.style.cursor = 'pointer';
+    let isResizing = false;
+    let yxStart, hwStart;
+    if (!this.isMnmz()) {e.style.cursor='pointer'} else {e.style.cursor=''}
     e.addEventListener('mousedown', (event) => {
+      if (this.isMnmz()) return;
       if (event.target.matches('button, input, textarea, .tm-slider')) return;
       if (event.button !== 0) return;
       isResizing = true;
-      startX = event.clientX;
-      startY = event.clientY;
-      hw = this.state.activeId === 'tm-main' ? this.state.mainHw : this.state.prepHw;
-      startHeight = hw[0];
-      startWidth = hw[1];
+      yxStart = [event.clientY, event.clientX];
+      hwStart = this.getHwActual();
+      console.log('yxStart:', yxStart);
+      console.log('hwStart:', hwStart);
       document.body.style.userSelect = 'none';
     });
     document.addEventListener('mousemove', (event) => {
       if (!isResizing) return;
-      const newWidth = startWidth - (event.clientX - startX);
-      const newHeight = startHeight - (event.clientY - startY);
-      this.e.container.style.height = Math.max(newHeight, this.state.minHeight)+'px';
-      this.e.container.style.width = Math.max(newWidth, this.state.minWidth)+'px';
+      this.e.container.style.height = hwStart[0] - (event.clientY - yxStart[0]) + 'px';
+      this.e.container.style.width = hwStart[1] - (event.clientX - yxStart[1]) + 'px';
     });
     document.addEventListener('mouseup', () => {
       if (isResizing) {
         isResizing = false;
         document.body.style.userSelect = '';
-        tmsSet('tm_keep_hw-'+this.state.activeId,[
-          this.e.container.offsetHeight, this.e.container.offsetWidth
-        ]);
-        this.state.setHw(this.state.activeId);
+        // set hw
+        if (this.isMnmz()) return; // Не сохранять размеры в режиме mnmz
+        const hw = this.getHwActual();
+        if (this.isMain()) {
+          this.setHwMain(hw)
+        } else if (this.isPrep()) {
+          this.setHwPrep(hw)
+        } else {
+          abort('tmMenu.makeResizable(): wrong menu-type.')
+        }
       }
     });
   },
 
-  // === pause/reset/cancel ==============================
-  // TODO: remove pause at all?
-  // pause: function(msg) {
-  //   tmShow(this.e.execContinue);
-  //   tmModal.info({
-  //     accent: 'warning',
-  //     title: 'tmMenu.Pause',
-  //     msg: msg,
-  //     actionClose: ()=>{},
-  //   });
-  //   await new Promise(resolve => {
-  //     this.e.execContinue.onclick = resolve;
-  //   });
-  //   tmHide(this.e.execContinue);
-  // },
+  // === show ==============================
+  show: function() {
+    if (this.isExec()) {this.showExec();return} // exec
+    if (this.isMain()) {this.showMain();return} // main
+    if (this.isPrep()) {this.showPrep();return} // prep
+    abort('tmMenu.show(): unknown menu-type.');
+  },
+  showExec: function() {
+    const {container, back, mnmz, main, prep, exec} = this.e;
+    this.setActiveId('tm-exec');
+    // upd
+    this.updOperation();
+    this.updMnmz();
+    // show
+    tmShow(this.e.abort, exec);
+    tmHide(back, mnmz, main, prep);
+    return;
+  },
+  showMain: function() {
+    const {container, back, mnmz, main, prep, exec} = this.e;
+    this.setActiveId('tm-main');
+    if (this.isMnmz()) {
+      // upd
+      this.updOperation();
+      this.updMnmz();
+      this.updContainer(false);
+      // show
+      tmShow(mnmz);
+      tmHide(this.e.abort, back, main, prep, exec);
+      return;
+    };
+    // upd
+    this.updOperation();
+    this.updMnmz();
+    this.updContainer(this.getHwMain());
+    // show
+    tmShow(mnmz, main);
+    tmHide(this.e.abort, back, prep, exec);
+    // resize
+    this.makeResizable(this.e.header);
+    return;
+  },
+  showPrep: function() {
+    const {container, back, mnmz, main, prep, exec} = this.e;
+    this.setActiveId('tm-prep');
+    // upd
+    this.updOperation();
+    this.updMnmz();
+    this.updContainer(this.getHwPrep());
+    // show
+    tmShow(back, prep);
+    tmHide(this.e.abort, mnmz, main, exec);
+    // resize
+    this.makeResizable(this.e.header);
+    return;
+  },
+  // === upd ==============================
+  updOperation: function(){
+    const txt = this.operation || 'None';
+    const span = this.e.operation.querySelector('span');
+    span.textContent = txt;
+    if (txt === 'None') {
+      addCls(this.e.operation, 'tm-border-w');
+      remCls(this.e.operation, 'tm-border-y', 'tm-border-r');
+      addCls(span, 'tm-w');
+      remCls(span, 'tm-y', 'tm-r');
+    } else {
+      addCls(this.e.operation, 'tm-border-r');
+      remCls(this.e.operation, 'tm-border-y', 'tm-border-w');
+      addCls(span, 'tm-r');
+      remCls(span, 'tm-y', 'tm-w');
+    }
+    this.operation ? tmShow(this.e.abort) : tmHide(this.e.abort);
+  },
+  updMnmz: function() {
+    if (this.isMnmz()) {
+      this.e.mnmz.textContent = '^';
+      addCls(this.e.mnmz, 'tm-btn-b', 'tm-btn-header-b');
+      remCls(this.e.mnmz, 'tm-btn-r', 'tm-btn-header-r');
+    } else {
+      this.e.mnmz.textContent = 'X';
+      addCls(this.e.mnmz, 'tm-btn-r', 'tm-btn-header-r');
+      remCls(this.e.mnmz, 'tm-btn-b', 'tm-btn-header-b');
+    }
+  },
+  updContainer: function(hw) {
+    const c = this.e.container;
+    c.removeAttribute('style');
+    if (this.validateHw(hw, pass=true)) {
+      c.style.position = 'fixed';
+      c.style.bottom = '5px';
+      c.style.right = '10px';
+      c.style.height = hw[0]+'px';
+      c.style.width = hw[1]+'px';
+    }
+  },
+
+  // === reset/cancel ==============================
   reset: function(...args) {
     console.log('tmMenu.reset(): start..');
     tmsReset();
     this.showMain();
-    // modal
-    if(args.length>0){const joined=args.map(
-      arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
-    ).join(' ')}
+    // Объединяем аргументы в строку
+    let joined = 'NONE';
+    if (args.length > 0) {
+      joined = args.map(arg =>
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ');
+    }
+    // Показываем модальное окно
     tmModal.info({
       accent: 'warning',
       title: 'tmMenu.reset',
       msg: joined,
-      actionClose: ()=>{},
+      actionClose: () => {
+        console.log('tmModal closed.');
+      }, // Добавлен лог при закрытии модального окна
     });
     console.log('tmMenu.reset(): done.');
   },
@@ -376,33 +395,4 @@ const tmMenu = {
     });
     throw new AbortExecution(joinedArgs);
   },
-
-  // === init ==============================
-  init: function(map) {
-    console.log('tmMenu.init(): start..');
-    this.state.minHeight = parseInt(window.getComputedStyle(this.e.container).minHeight, 10);
-    this.state.minWidth = parseInt(window.getComputedStyle(this.e.container).minWidth, 10);
-    this.state.setHw('tm-main', isInit=true);
-    this.state.setHw('tm-prep', isInit=true);
-    // listners
-    this.handleAbort();
-    this.handleBack();
-    this.handleMinimize();
-    this.handleReadme(map.readme);
-    for (let data of map.hotkeys) {this.handleHotkey(data)}
-    for (let data of map.btnsPrep) {this.handlePrep(data)}
-    for (let data of map.btnsExec) {this.handleMainExec(data)}
-    this.handleStorageView();
-    this.handleStorageReset();
-    this.handleStorageClean();
-    this.handleCancel();
-    // show
-    if (this.state.operation) {
-      this.showExec();
-    } else {
-      this.makeResizable(this.e.header);
-      this.showMain();
-    }
-    console.log('tmMenu.init(): done.', this.state);
-  }
 };
