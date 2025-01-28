@@ -30,6 +30,7 @@ const tmModal = {
   accent: null,
 
   init(type, accent, title) {
+    tmMenu.showExec();
     this.backup = this.e.container.innerHTML;
     this.type = type;
     this.accent = accent;
@@ -37,7 +38,6 @@ const tmModal = {
   },
   handleClose(e, action) {
     e.onclick=()=>{
-      tmHide(this.e.overlay);
       this.e.container.innerHTML = this.backup;
       tmsReset();
       tmMenu.showMain();
@@ -45,13 +45,16 @@ const tmModal = {
     };
     // TODO hotkeys
   },
-  show() {
-    let e = null;
-    if (this.type === 'info') { tmShow(this.e.info); tmHide(this.e.yn, this.e.input, this.e.content); }
-    if (this.type === 'yn') { tmShow(this.e.yn); tmHide(this.e.info, this.e.input, this.e.content); }
-    if (this.type === 'input') { tmShow(this.e.input); tmHide(this.e.info, this.e.yn, this.e.content); }
-    if (this.type === 'content') { tmShow(this.e.content); tmHide(this.e.info, this.e.yn, this.e.input); }
-    tmShow(this.e.overlay);
+  show(type) {
+    let e;
+    if (type === 'info') {e = this.e.info}
+    if (type === 'yn') {e = this.e.yn}
+    if (type === 'input') {e = this.e.input}
+    if (type === 'content') {e = this.e.content}
+    if (!e) {abort('tmModal.show(): invalid type', tupe)}
+    tmHide(this.e.info, this.e.yn, this.e.input, this.e.content);
+    tmShow(e);
+    tmShow(this.e.overlay)
   },
   // info
   info({accent, title, msg, actionClose}) {
@@ -78,7 +81,7 @@ const tmModal = {
     if (typeof actionClose !== 'function') {abort('tmModal.input: actionClose must be a function.')}
     if (typeof actionSubmit !== 'function') {abort('tmModal.input: actionSubmit must be a function.')}
     this.init('input', accent, title);
-    this.e.ynMsg.textContent = msg;
+    this.e.inputMsg.textContent = msg;
     this.handleClose(this.e.close, actionClose);
     this.handleClose(this.e.inputSubmit, actionSubmit);
     this.show();
