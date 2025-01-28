@@ -11,11 +11,12 @@
     '/_core/00_css.js',
     '/_core/00_html.js',
     '/_core/10_helpers.js',
-    '/_core/20_storage.js',
-    '/_core/30_ui.js',
-    '/_core/40_modals.js',
+    '/_core/20_tmStorage.js',
+    '/_core/30_tmMenu.js',
+    '/_core/40_tmModal.js',
     '/'+dir+'/createBarcodes/start.js',
     '/'+dir+'/createBarcodes/createFo.js',
+    '/'+dir+'/createBarcodes/checkExistingRooms.js',
     '/'+dir+'/createBarcodes/newProduct.js',
     '/'+dir+'/createBarcodes/sizeSetup.js',
     '/'+dir+'/createBarcodes/sectionsDetail.js',
@@ -28,5 +29,5 @@
     e.src=host+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
     document.body.appendChild(e);
   })}}
-  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(dir+'/dev: loaded')}catch(e){abort(e)}});
+  window.addEventListener('load',async()=>{try{await tmLoad(filesJs);console.log(dir+'/dev: loaded')}catch(e){throw new Error(e.message)}});
 })();

@@ -8,13 +8,13 @@ async function createBarcodesSectionsDetail() {
   await clickEl(getEl(materialHeaderSelector), 300);
   await clickEl(getEl(barcodesCheckboxSelector), 300);
   // === done ======================================
-  tmsReset();
-  tmUiRecalcHeader();
-  tmUiShowMain();
-  ModalManager.buildAlert({
+  tmModal.info({
     accent: 'success',
     title: 'Create Barcodes: Done',
     msg: 'please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok.',
-    actionClose: ()=>{},
+    actionClose: ()=>{
+      tmsReset();
+      tmMenu.showMain();
+    },
   });
 }

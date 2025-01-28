@@ -33,7 +33,7 @@ function deserialize(serialized) {
 function tmsSet(key, value) {
   key = ensurePrefix(key);
   localStorage.setItem(key, serialize(value));
-  console.log('tmsSet: '+key+' => '+value);
+  console.log('tmsSet:', key, value);
 }
 function tmsSetMulti(data) {
   Object.entries(data).forEach(([key, value]) => { tmsSet(key, value); });
@@ -45,7 +45,7 @@ function tmsGet(key, defaultValue) {
   const storedValue = localStorage.getItem(key);
   if (storedValue === null) { return defaultValue; }
   const value = deserialize(storedValue);
-  console.log('tmsGet: '+key+'='+value);
+  console.log('tmsGet:', key, value);
   return value;
 }
 function tmsGetMulti(keys) {
@@ -83,7 +83,7 @@ function tmsDeleteAll() {
 function tmsReset() {
   const keys = tmsGetAll();
   keys.forEach(key=>{if(!key.startsWith('tm_keep_')){tmsDelete(key);}});
-  console.log('tmsReset: done');
+  console.log('tmsReset: done.');
 };
 // operations
 function tmsSetOperation(operation) {
@@ -91,12 +91,11 @@ function tmsSetOperation(operation) {
     if (!operationFormat.test(operation)) {abort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
     const [action, step] = operation.split('/');
     tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
-    console.log('tmsSetOperation: "'+operation+'".');
+    console.log('tmsSetOperation:', operation);
 };
 function tmsGetOperation() { return tmsGet('tm_operation'); };
 function tmsGetAction() { return tmsGet('tm_action'); };
 function tmsGetStep() { return tmsGet('tm_step'); };
-function camelCase(input){return input.split('_').map((w, i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');}
 function tmsOperationsGetHandlers(config) {
   const fullHandlers = {};
   for (const [action, steps] of Object.entries(config)) {

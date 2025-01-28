@@ -1,36 +1,29 @@
 function redirectToJobStart() {
-  console.log('redirectToJobStart: start..');
-  
+  const operation = 'redirectToJob/start';
+  tmsSetOperation(operation);
+  console.log(operation);
   tmModal.input({
     accent: 'info',
     title: 'Redirect to Job by ID',
     msg: 'Please enter JobID:',
     actionClose: () => {
-      console.log('Modal closed.');
+      tmsReset();
+      tmMenu.showMain();
     },
     actionSubmit: () => {
-      const e = getEl('#tm-modal-input-input'); // Получаем элемент перед использованием
-      const data = e.value.trim(); // Убираем лишние пробелы
-      const jobId = Number(data);
-
-      if (data && Number.isInteger(jobId) && jobId >= 0) {
+      const e = getEl('#tm-modal-input-input');
+      const jobId = e.value;
+      console.log(e);
+      console.log(e.value);
+      console.log('JobId', jobId);
+      if (/^\d+$/.test(jobId)) {
         tmsReset();
         tmMenu.showMain();
         redirect('http://bravura-crm.com/jobs/' + jobId);
       } else {
-        tmsReset('Invalid JobID.');
+        tmMenu.reset('Invalid JobID.');
         tmMenu.showMain();
       }
     },
   });
-
-  tmsSetOperation('redirectToJob/start');
-  
-  setTimeout(() => {
-    const e = getEl('#tm-modal-input-input'); // Получаем элемент после рендера
-    if (e) {
-      e.focus(); // Устанавливаем фокус
-      e.value = ''; // Очищаем поле ввода
-    }
-  }, 100);
 }

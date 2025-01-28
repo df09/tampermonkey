@@ -19,5 +19,5 @@ tmMenu.init(tmMap);
 tmsOperationsHandle({
   redirectToJob: ['start'],
   searchActiveJob: ['start'],
-  createBarcodes: ['start', 'createFo', 'newProduct', 'sizeSetup', 'sectionsDetail'],
+  createBarcodes: ['start', 'createFo', 'checkExistingRooms', 'newProduct', 'sizeSetup', 'sectionsDetail'],
 });

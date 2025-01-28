@@ -1,3 +1,4 @@
+function camelCase(input){return input.split('_').map((w, i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');}
 function tmHide(...els){els.forEach(e=>e.classList.add('tm-dnone'))};
 function tmShow(...els){els.forEach(e=>e.classList.remove('tm-dnone'))};
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve, ms))}
@@ -25,17 +26,23 @@ async function fakeRedirect(newUrl, delay=2000) {
 // DOM-manipulations
 function addCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
 function remCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
-function getEl(selector) {
+function getEl(selector, pass=false) {
   const pfx = 'getEl "'+selector+'": ';
   // get by id
   if (/^#[a-zA-Z0-9\-_]+$/.test(selector)) {
     const e = document.getElementById(selector.slice(1));
-    if (!e) {abort(pfx+'not found.')}
+    if (!e) {
+      if (pass) {return false}
+      abort(pfx+'not found.');
+    }
     return e;
   }
   // get by any selector
   const els = document.querySelectorAll(selector);
-  if (els.length === 0) {abort(pfx+'not found.')}
+  if (els.length === 0) {
+    if (pass) {return false}
+    abort(pfx+'not found.')
+  }
   if (els.length > 1) {abort(pfx+'multiple els found.')}
   e = els[0];
   console.log(pfx, e);

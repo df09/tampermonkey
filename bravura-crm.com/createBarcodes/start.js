@@ -34,9 +34,9 @@ function getJobId() {
       console.log('getJobId:', jobId);
       return jobId;
     }
-    tmUiAbort('getJobId - Job ID not found in the URL');
+    tmMenu.abort('getJobId - Job ID not found in the URL');
   } catch (error) {
-    tmUiAbort('getJobId - Error extracting Job ID:', error.message);
+    tmMenu.abort('getJobId - Error extracting Job ID:', error.message);
   }
 }
 function getFosId() {
@@ -47,28 +47,30 @@ function getFosId() {
     console.log('getFosId:', fosId);
     return fosId;
   }
-  tmUiAbort('getFosId - fosId not found in "View FO" button href');
+  tmMenu.abort('getFosId - fosId not found in "View FO" button href');
 }
 function createBarcodesStart() {
   // check start url
   const regex = /^http:\/\/bravura-crm\.com\/jobs\/.*$/;
   if (!regex.test(window.location.href)) {
-    tmUiAbort('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
+    tmMenu.abort('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
   }
   // get data
-  tmsSet('tm_barcodesData', getBarcodesData(getEl('#tm-prep-textarea')));
+  const data = getBarcodesData(getEl('#tm-prep-textarea'));
+  tmsSet('tm_barcodesData', data);
   tmsSet('tm_jobId', getJobId());
+
   // check/create fo
   const createFoSelector = "a[data-method='post'][href^='/jobs/'][href$='/fabrication_orders']";
-  const createFoEl = document.querySelector(createFoSelector);
-  if (!createFoEl) {
+  const eCreateFo = getEl(createFoSelector, pass=true);
+  if (eCreateFo) {
     // redirect to create Fo
     tmsSetOperation('createBarcodes/createFo');
-    clickEl(createFoEl);
+    clickEl(eCreateFo);
   }
+  // checkExistingRooms
   const fosId = getFosId();
   tmsSet('tm_fosId', fosId);
-  // redirect
-  tmsSetOperation('createBarcodes/newProduct');
-  redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/new_product`);
+  tmsSetOperation('createBarcodes/checkExistingRooms');
+  redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/edit?show_finished=true`);
 }

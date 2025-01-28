@@ -68,7 +68,7 @@ const tmMenu = {
     this.handleStorageClean();
     this.handleCancel();
     // show
-    this.setActiveId(tmsGet('tm_keep_activeId') ?? 'tm-main');
+    this.setActiveId('tm-main');
     this.show();
     // done
     console.log('tmMenu.init(): done.');
@@ -98,13 +98,11 @@ const tmMenu = {
     // event
     const checkbox = getEl('#' + id + ' input[type="checkbox"]');
     const hotkeyHandler = (event) => {
-      console.log('hotkeyHandler: start..');
-      if (getKey(event, keys, 0) && getKey(event, keys, 1)) {
-        console.log('hotkeyHandler: get keys ok..');
-        action();
-      }
-      console.log('hotkeyHandler: done.');
+      const eActive = document.activeElement;
+      if (eActive.tagName==='INPUT'||eActive.tagName==='TEXTAREA'||eActive.isContentEditable) {return}
+      if (getKey(event, keys, 0) && getKey(event, keys, 1)) {action()}
     };
+
     checkbox.addEventListener('change', function () {
       if (checkbox.checked) {
         console.log('tmMenu.handleHotkey(): ' + id + ': ON');
@@ -133,18 +131,19 @@ const tmMenu = {
     this.e.prep.insertAdjacentHTML('beforeend',mustache(tmHTMLPrepExec,{id:prepId}));
     // event
     getEl('#'+mainId).addEventListener('click', () => {
-      // mainPrep
+      // prep title
       this.e.prepTitle.textContent = title;
+      // prep textarea
       this.e.prepTextarea.value = tmsGet('tm_keep_prepTextarea-'+idsfx, '');
-      // prepExec
+      this.e.prepTextarea.addEventListener('change', (event) => {
+        tmsSet('tm_keep_prepTextarea-'+idsfx, event.target.value);
+      });
+      // prep exec
       getEls('.tm-group-prep-exec').forEach(e=>tmHide(e));
       const prepExec = getEl('#'+prepId);
-      prepExec.addEventListener('click', () => {
-        tmsSet('tm_keep_prepTextarea-'+idsfx, this.e.prepTextarea.value);
-        this.showExec();
-        action();
-      });
+      prepExec.addEventListener('click',()=>{this.showExec();action()});
       tmShow(prepExec);
+      // show prep
       this.showPrep();
     });
     // show
@@ -218,11 +217,15 @@ const tmMenu = {
   },
   handleCancel: function(){ this.e.execCancel.addEventListener('click',()=>{
     this.reset('Exec canceled by user.')
+    this.showMain();
   })},
   makeResizable: function(e) {
     let isResizing = false;
     let yxStart, hwStart;
-    if (!this.isMnmz()) {e.style.cursor='pointer'} else {e.style.cursor=''}
+    // cursor
+    e.addEventListener('mouseover',()=>{if(!this.isMnmz()){e.style.cursor='pointer'}else{e.style.cursor=''}});
+    e.addEventListener('mouseout',()=>{e.style.cursor = ''});
+    // resize
     e.addEventListener('mousedown', (event) => {
       if (this.isMnmz()) return;
       if (event.target.matches('button, input, textarea, .tm-slider')) return;
@@ -259,9 +262,9 @@ const tmMenu = {
 
   // === show ==============================
   show: function() {
-    if (this.isExec()) {this.showExec();return} // exec
     if (this.isMain()) {this.showMain();return} // main
     if (this.isPrep()) {this.showPrep();return} // prep
+    if (this.isExec()) {this.showExec();return} // exec
     abort('tmMenu.show(): unknown menu-type.');
   },
   showExec: function() {
@@ -315,7 +318,7 @@ const tmMenu = {
   },
   // === upd ==============================
   updOperation: function(){
-    const txt = this.operation || 'None';
+    const txt = tmsGetOperation() || 'None';
     const span = this.e.operation.querySelector('span');
     span.textContent = txt;
     if (txt === 'None') {
@@ -379,8 +382,6 @@ const tmMenu = {
   },
   abort: function(...args) {
     console.log('tmMenu.reset(): start..');
-    tmsDeleteAll();
-    this.showMain();
     // modal
     const joinedArgs=args.map(
       arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
@@ -391,7 +392,10 @@ const tmMenu = {
       accent: 'error',
       title: 'tmMenu.abort',
       msg: msg,
-      actionClose:()=>{},
+      actionClose: ()=>{
+        tmsDeleteAll();
+        this.showMain();
+      },
     });
     throw new AbortExecution(joinedArgs);
   },

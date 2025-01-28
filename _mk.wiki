@@ -1,25 +1,13 @@
-tests:
-  resize:
-    clean/reload>resize>prep>resize>main>prep>main>reload>main>prep>main
-  minimize:
-    clean/reload>off>on
-    clean/reload>off>reload>on
-  resize+minimize:
-    clean/reload>resize>on>off>resize
-    clean/reload>resize>on>reload>off>resize
-    clean/reload>resize>prep>resize>main>off>on>resize
-    clean/reload>resize>prep>resize>main>off>reload>on>resize
 todo:
-  thiws: redirect2job
-  thiws: restore
   barcodes:
-    УБЕДИТЬСЯ ЧТО НЕТ N/A ПЕРЕД ЗАПУСКОМ
-    start action: add requred url - redirect or (modal-alert + abort)
-  twins:
+    перед запуском проверять есть ли уже такие комнаты
+    в конце выделять не все N/A а только созданные
+  thiws: restore
+  search active jobs - init
+  crl - закупка hw
+  thiws - upd: 
     скачать pdf
     out of corner
-  search active jobs
-  crl - закупка hw
-  resize + move
   auto operations (ex. login)
+  modal accent
   cross-domain for dev
