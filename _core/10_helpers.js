@@ -1,7 +1,8 @@
-function camelCase(input){return input.split('_').map((w, i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');}
+function camelCase(input){return input.split('/').map((w, i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');}
 function tmHide(...els){els.forEach(e=>e.classList.add('tm-dnone'))};
 function tmShow(...els){els.forEach(e=>e.classList.remove('tm-dnone'))};
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve, ms))}
+function pause(ms){const start=Date.now();while(Date.now()-start<ms){}}
 function mustache(template,vars){return template.replace(/{{(\w+)}}/g,(_,key)=>{return vars[key]||''})}
 function getKey(event, keys, n) {
   const k = keys.split('+')[n];

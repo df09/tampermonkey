@@ -68,7 +68,11 @@ const tmMenu = {
     this.handleStorageClean();
     this.handleCancel();
     // show
-    this.setActiveId('tm-main');
+    if (tmsGetOperation()) {
+      this.setActiveId('tm-exec');
+    } else {
+      this.setActiveId('tm-main');
+    }
     this.show();
     // done
     console.log('tmMenu.init(): done.');

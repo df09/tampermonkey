@@ -7,12 +7,12 @@ function getBarcodesData(textarea) {
     if (!line) return;
     const [locParams, locs] = line.split(':').map((part) => part.trim());
     if (!locParams || !locs) {
-      throw new Error(`Некорректная строка: "${line}"`);
+      tmMenu.abort('invalid data. line:', line);
     }
     const foParams = locParams.split('_').map((pair) => {
       const [fo, glass] = pair.split('-');
       if (!fo || !glass) {
-        throw new Error(`Некорректная пара: "${pair}"`);
+        tmMenu.abort('invalid data. pair:', pair);
       }
       return { fo, glass };
     });
