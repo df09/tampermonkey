@@ -1,13 +1,17 @@
 todo:
-  barcodes:
-    перед запуском проверять есть ли уже такие комнаты
-    в конце выделять не все N/A а только созданные
+  modal: preAction
   thiws: restore
   search active jobs - init
   crl - закупка hw
-  thiws - upd: 
+
+  core:
+    запретить запускать другие operations если уже чтото есть
+    style focused buttons/input/textarea
+    exec dont resize
+  thiws - upd:
     скачать pdf
     out of corner
+next:
   auto operations (ex. login)
   modal accent
   cross-domain for dev

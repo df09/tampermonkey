@@ -1,6 +1,33 @@
-function getBarcodesData(textarea) {
+function getUniqueLocations(data) {
+  const locations = new Set();
+  const lines = data.trim().split('\n');
+  lines.forEach((line) => {
+    line = line.trim().replace(/\s+/g, ' ');
+    if (!line) return;
+    const parts = line.split(':').map((part) => part.trim());
+    if (parts.length !== 2) {
+      tmMenu.abort('invalid data. line:', line);
+    }
+    const locParams = parts[0];
+    const locs = parts[1].split(' ');
+    locParams.split('_').forEach((pair) => {
+      if (!pair.includes('-')) {
+        tmMenu.abort('invalid data. pair:', pair);
+      }
+    });
+    locs.forEach((loc) => {
+      if (locations.has(loc)) {
+        tmMenu.abort('duplicate location found:', loc);
+      }
+      locations.add(loc);
+    });
+  });
+  console.log('Unique Locations:', Array.from(locations));
+  return Array.from(locations);
+}
+function getDataBarcodes(data) {
   const result = [];
-  const lines = textarea.value.trim().split('\n');
+  const lines = data.trim().split('\n');
   lines.forEach((line) => {
     line = line.trim();
     line = line.replace(/\s+/g, ' ');
@@ -56,8 +83,9 @@ function createBarcodesStart() {
     tmMenu.abort('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
   }
   // get data
-  const data = getBarcodesData(getEl('#tm-prep-textarea'));
-  tmsSet('tm_barcodesData', data);
+  const data = getEl('#tm-prep-textarea').value;
+  tmsSet('tm_data-barcodes', getDataBarcodes(data));
+  tmsSet('tm_data-locations', getUniqueLocations(data));
   tmsSet('tm_jobId', getJobId());
 
   // check/create fo

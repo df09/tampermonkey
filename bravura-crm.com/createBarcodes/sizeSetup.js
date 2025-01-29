@@ -1,7 +1,7 @@
 function createBarcodesSizeSetup() {
   const jobId = tmsGet('tm_jobId');
   const fosId = tmsGet('tm_fosId');
-  const barcodesData = tmsGet('tm_barcodesData');
+  const barcodesData = tmsGet('tm_data-barcodes');
   console.log('sizeSetupPage - barcodesData:', barcodesData);
   if (Array.isArray(barcodesData) && barcodesData.length > 0) {
     // new_product

@@ -41,9 +41,9 @@ function roomExists(loc) {
 
 async function createBarcodesNewProduct() {
     // get and upd storage data
-    const barcodesData = tmsGet('tm_barcodesData');
+    const barcodesData = tmsGet('tm_data-barcodes');
     const [loc, productType, productName] = barcodesData.shift();
-    tmsSet('tm_barcodesData', barcodesData);
+    tmsSet('tm_data-barcodes', barcodesData);
     if (roomExists(loc)) {
       await selectExistingRoom(loc);
     } else {

@@ -211,7 +211,7 @@ const tmMenu = {
   handleStorageClean: function(){
     this.e.storageClean.addEventListener('click',()=>{
       tmsDeleteAll();
-      this.updOperation();
+      this.showMain();
       tmModal.info({
         accent: 'error', title: 'Storage CLEAN',
         msg: 'ALL DATA has been deleted from storage.',
@@ -219,10 +219,18 @@ const tmMenu = {
       });
     });
   },
-  handleCancel: function(){ this.e.execCancel.addEventListener('click',()=>{
-    this.reset('Exec canceled by user.')
-    this.showMain();
-  })},
+  handleCancel: function(){
+    this.e.execCancel.addEventListener('click',()=>{
+      tmsReset();
+      this.showMain();
+      tmModal.info({
+        accent: 'warning',
+        title: 'tmMenu.reset',
+        msg: 'Exec canceled by user.',
+        actionClose: () => {},
+      });
+    })
+  },
   makeResizable: function(e) {
     let isResizing = false;
     let yxStart, hwStart;
@@ -271,17 +279,6 @@ const tmMenu = {
     if (this.isExec()) {this.showExec();return} // exec
     abort('tmMenu.show(): unknown menu-type.');
   },
-  showExec: function() {
-    const {container, back, mnmz, main, prep, exec} = this.e;
-    this.setActiveId('tm-exec');
-    // upd
-    this.updOperation();
-    this.updMnmz();
-    // show
-    tmShow(this.e.abort, exec);
-    tmHide(back, mnmz, main, prep);
-    return;
-  },
   showMain: function() {
     const {container, back, mnmz, main, prep, exec} = this.e;
     this.setActiveId('tm-main');
@@ -318,6 +315,18 @@ const tmMenu = {
     tmHide(this.e.abort, mnmz, main, exec);
     // resize
     this.makeResizable(this.e.header);
+    return;
+  },
+  showExec: function() {
+    const {container, back, mnmz, main, prep, exec} = this.e;
+    this.setActiveId('tm-exec');
+    // upd
+    this.updOperation();
+    this.updMnmz();
+    this.updContainer(false);
+    // show
+    tmShow(this.e.abort, exec);
+    tmHide(back, mnmz, main, prep);
     return;
   },
   // === upd ==============================
@@ -364,42 +373,36 @@ const tmMenu = {
   // === reset/cancel ==============================
   reset: function(...args) {
     console.log('tmMenu.reset(): start..');
+    // rollback
     tmsReset();
     this.showMain();
-    // Объединяем аргументы в строку
-    let joined = 'NONE';
-    if (args.length > 0) {
-      joined = args.map(arg =>
-        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-      ).join(' ');
-    }
-    // Показываем модальное окно
-    tmModal.info({
-      accent: 'warning',
-      title: 'tmMenu.reset',
-      msg: joined,
-      actionClose: () => {
-        console.log('tmModal closed.');
-      }, // Добавлен лог при закрытии модального окна
-    });
-    console.log('tmMenu.reset(): done.');
-  },
-  abort: function(...args) {
-    console.log('tmMenu.reset(): start..');
     // modal
     const joinedArgs=args.map(
       arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
     ).join('\n');
     const msg = joinedArgs?joinedArgs:'abort.';
-    console.log(msg);
+    tmModal.info({
+      accent: 'warning',
+      title: 'tmMenu.reset',
+      msg: msg,
+      actionClose: ()=>{},
+    });
+  },
+  abort: function(...args) {
+    console.log('tmMenu.abort(): start..');
+    // rollback
+    tmsDeleteAll();
+    this.showMain();
+    // modal
+    const joinedArgs=args.map(
+      arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
+    ).join('\n');
+    const msg = joinedArgs?joinedArgs:'abort.';
     tmModal.info({
       accent: 'error',
       title: 'tmMenu.abort',
       msg: msg,
-      actionClose: ()=>{
-        tmsDeleteAll();
-        this.showMain();
-      },
+      actionClose: ()=>{},
     });
     throw new AbortExecution(joinedArgs);
   },

@@ -50,6 +50,6 @@ function orderHw() {
 }
 
 async function orderHwLogin() {
-    await updValEl(getEl('#j_username'), tmsRequest('tm_keep_crlLogin'));
-    await updValEl(getEl('#jpassword'), tmsReset('tm_keep_crlPassword'));
+    await updValEl(getEl('#j_username'), tmsRequest('tm_crlLogin'));
+    await updValEl(getEl('#jpassword'), tmsReset('tm_crlPassword'));
 }
