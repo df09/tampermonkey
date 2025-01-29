@@ -52,17 +52,19 @@ function getKey(event, keys, n) {
   return event.key === k;
 }
 // redirect
-function redirect(newUrl, force=false) {
+async function redirect(newUrl, force=false) {
   console.log('redirect: "'+newUrl+'"');
   if (force||window.location.href!==newUrl) {
     window.location.href=newUrl;
     return true;
   }
+  tmUi.reset();
+  tmMenu.showMain();
+  await sleep(300)
   tmModal.info({
-    accent: 'warning',
+    accent: 'y',
     title: 'Redirect',
     msg: 'already on the target URL.',
-    actionClose: ()=>{}
   })
 }
 async function fakeRedirect(newUrl, delay=2000) {
@@ -73,6 +75,10 @@ async function fakeRedirect(newUrl, delay=2000) {
 // DOM-manipulations
 function addCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
 function remCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
+function remClsRegex(e, ...patterns) {e.classList.forEach(cls => {
+  if (patterns.some(pattern => new RegExp(pattern).test(cls))) {e.classList.remove(cls)}
+})}
+
 function getEl(selector, pass=false) {
   const pfx = 'getEl "'+selector+'": ';
   // get by id

@@ -1,8 +1,8 @@
 const tmUi = {
   formulateMsg(msg) {
     return msg.map(
-      msg=>typeof msg==='object'?JSON.stringify(arg,null,2):String(arg)
-    ).join('\n')
+      item => typeof item === 'object' ? JSON.stringify(item, null, 2) : String(item)
+    ).join('\n');
   },
 
   reset(msg) {
@@ -14,10 +14,10 @@ const tmUi = {
     tmsDeleteAll();
     tmMenu.showMain();
     tmModal.info({
-      accent: 'error',
+      accent: 'r',
       title: title,
       msg: fmsg,
-    };
+    });
     throw new Error(title+': '+fmsg);
   },
 };

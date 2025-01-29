@@ -1,16 +1,20 @@
 todo:
-  modal: preAction
-  thiws: restore
+  style:
+    modal accents
+  thiws:
+    restore
+    upd:
+      скачать pdf
+      out of corner
   search active jobs - init
   crl - закупка hw
-
-  core:
-    запретить запускать другие operations если уже чтото есть
-    style focused buttons/input/textarea
-  thiws - upd:
-    скачать pdf
-    out of corner
+  storage:
+    test clean
+    test reset
+    test view
+      copy row
+      copy all
+      close
 next:
   auto operations (ex. login)
-  modal accent
   cross-domain for dev

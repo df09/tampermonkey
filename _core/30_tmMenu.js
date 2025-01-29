@@ -40,7 +40,7 @@ const tmMenu = {
     if (pass) {return false}
     tmUi.abort({
       title: 'validateHw()',
-      msg: {'invalid hw', hw},
+      msg: ['invalid hw', hw],
     });
   },
   isMain() {return tmsGet('tm_keep_activeId') === 'tm-main'},
@@ -165,51 +165,65 @@ const tmMenu = {
     getEl('#'+id).addEventListener('click',()=>{this.e.showExec();action()});
     tmShow(this.e.mainExec);
   },
-  handleStorageView() {this.e.storageView.addEventListener('click', ()=>{
-    tmModal.content({
-      id: 'tm-modal-content-storageview',
-      accent:'info',
-      title:'Storage View',
-      action: ()=>{
-        // insert
-        const e = getEl('#tm-modal-storageview');
-        const data = tmsGetAll();
-        e.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
-        const content = e.lastElementChild;
-        const tbody = content.querySelector('tbody');
-        tbody.innerHTML = '';
-        data.forEach(k=>{tbody.insertAdjacentHTML('beforeend',mustache(
-          tmHTMLModalStorageviewRow, {key:k, value:tmsGet(k)}
-        ))});
-        // events
-        getEls('.tm-modal-storageview-row-copy').forEach(e=>{
-          e.addEventListener('click',()=>{
-            const value = e.getAttribute('data-value');
-            navigator.clipboard.writeText(value)
-              .then(() => {console.log('tmMenu.storageView(): copied', value)})
-              .catch(e => {tmUi.abort({
-                title: 'tmMenu.storageView()',
-                msg: {'failed to copy value', e},
-              })
+  handleStorageView() {
+    this.e.storageView.addEventListener('click', () => {
+      tmModal.content({
+        id: 'tm-modal-content-storageview',
+        accent: 'w',
+        title: 'Storage View',
+        action: () => {
+          // insert
+          const e = getEl('#tm-modal-storageview');
+          const data = tmsGetAll();
+          e.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
+          const content = e.lastElementChild;
+          const tbody = content.querySelector('tbody');
+          tbody.innerHTML = '';
+
+          data.forEach(k => {
+            tbody.insertAdjacentHTML('beforeend', mustache(
+              tmHTMLModalStorageviewRow, { key: k, value: tmsGet(k) }
+            ));
           });
-        });
-        getEl('#tm-modal-storageview-copyall').addEventListener('click',()=>{
-          const allData = data.map(k=>{const v=tmsGet(k);return k+': '+v}).join('\n');
-          navigator.clipboard.writeText(allData)
-            .then(() => {console.log('tmMenu.storageView(): copied all.')})
-            .catch(e => {tmUi.abort({
-              title: 'tmMenu.storageView()',
-              msg: {'failed to copy all', e},
-            })
-        });
-      }
-    })
-  })},
+
+          // events
+          getEls('.tm-modal-storageview-row-copy').forEach(el => {
+            el.addEventListener('click', () => {
+              const value = el.getAttribute('data-value');
+              navigator.clipboard.writeText(value)
+                .then(() => {
+                  console.log('tmMenu.storageView(): copied', value);
+                })
+                .catch(err => {
+                  tmUi.abort({
+                    title: 'tmMenu.storageView()',
+                    msg: ['failed to copy value', err],
+                  });
+                });
+            });
+          });
+          getEl('#tm-modal-storageview-copyall').addEventListener('click', () => {
+            const allData = data.map(k => `${k}: ${tmsGet(k)}`).join('\n');
+            navigator.clipboard.writeText(allData)
+              .then(() => {
+                console.log('tmMenu.storageView(): copied all.');
+              })
+              .catch(err => {
+                tmUi.abort({
+                  title: 'tmMenu.storageView()',
+                  msg: ['failed to copy all', err],
+                });
+              });
+          });
+        },
+      });
+    });
+  },
   handleStorageReset() {this.e.storageReset.addEventListener('click',()=>{
     tmUi.reset();
     tmModal.info({
-      accent:'warning',
-      title:'Storage Reset',
+      accent: 'y',
+      title: 'Storage Reset',
       msg: 'All non-premanent data has been removed from storage.',
     });
   })},
@@ -220,9 +234,9 @@ const tmMenu = {
     });
   })},
   handleExecCancel() {this.e.execCancel.addEventListener('click',()=>{
-    tmUi.Reset();
+    tmUi.reset();
     tmModal.info({
-      accent: 'warning',
+      accent: 'y',
       title: 'Cancel EXEC',
       msg: 'Exec canceled by user.',
     });
@@ -337,13 +351,13 @@ const tmMenu = {
     const span = this.e.operation.querySelector('span');
     span.textContent = txt;
     if (txt === 'None') {
-      addCls(this.e.operation, 'tm-border-w');
-      remCls(this.e.operation, 'tm-border-y', 'tm-border-r');
+      addCls(this.e.operation, 'tm-brd-w', 'tm-bg-w');
+      remCls(this.e.operation, 'tm-brd-y', 'tm-brd-r', 'tm-bg-y', 'tm-bg-r');
       addCls(span, 'tm-w');
       remCls(span, 'tm-y', 'tm-r');
     } else {
-      addCls(this.e.operation, 'tm-border-r');
-      remCls(this.e.operation, 'tm-border-y', 'tm-border-w');
+      addCls(this.e.operation, 'tm-brd-r', 'tm-bg-r');
+      remCls(this.e.operation, 'tm-brd-y', 'tm-brd-w', 'tm-bg-y', 'tm-bg-w');
       addCls(span, 'tm-r');
       remCls(span, 'tm-y', 'tm-w');
     }

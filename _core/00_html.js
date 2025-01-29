@@ -7,7 +7,7 @@ injectHTML(`
   <div id="tm-menu" class="tm-menu tm-col">
     <!-- header -->
     <div id="tm-header" class="tm-row">
-      <h3 id="tm-operation" class="tm-p5 tm-title tm-border-y tm-operation">Operation:<span class="tm-y">Unknown</span></h3>
+      <h3 id="tm-operation" class="tm-p5 tm-title tm-brd tm-brd-y tm-bg-y tm-operation">Operation:<span class="tm-y">Unknown</span></h3>
       <div id="tm-header-btns-wrap" class="tm-row">
         <button id="tm-abort" class="tm-dnone tm-btn-header tm-btn-r tm-header-btn-r">ABORT</button>
         <button id="tm-back" class="tm-dnone tm-btn-header tm-btn-b tm-header-btn-b">&lt;</button>
@@ -15,7 +15,7 @@ injectHTML(`
       </div>
     </div>
     <!-- main -->
-    <div id="tm-main" class="tm-dnone tm-body tm-col tm-border-w">
+    <div id="tm-main" class="tm-dnone tm-body tm-col tm-brd tm-brd-w">
       <div id="tm-readme"><a class="tm-link" href="[readme-url]" target="_blank">Readme</a></div>
       <div id="tm-hotkeys" class="tm-dnone tm-col tm-pt5">
         <!-- main-hotkeys.[hotkey] -->
@@ -26,8 +26,8 @@ injectHTML(`
       <div id="tm-main-exec" class="tm-dnone tm-col tm-pt5">
         <!-- main-exec.[exec] -->
       </div>
-      <div id="tm-storage" class="tm-col tm-mt5 tm-border-w">
-        <h3 id="tm-storage-title" class="tm-title">Storage</h3>
+      <div id="tm-storage" class="tm-col tm-mt5 tm-brd tm-brd-w">
+        <h3 id="tm-storage-title" class="tm-p5 tm-title">Storage</h3>
         <div id="tm-storage-body" class="tm-row">
           <button id="tm-storage-view" class="tm-btn-g tm-m5">View</button>
           <button id="tm-storage-reset" class="tm-btn-y tm-m5">Reset</button>
@@ -36,39 +36,41 @@ injectHTML(`
       </div>
     </div>
     <!-- prep -->
-    <div id="tm-prep" class="tm-dnone tm-body tm-col tm-border-w">
+    <div id="tm-prep" class="tm-dnone tm-body tm-col tm-brd tm-brd-w">
       <h3 id="tm-prep-title" class="tm-prep-title">[title]</h3>
       <textarea id="tm-prep-textarea" class="tm-mb5" spellcheck="false"></textarea>
       <!-- prep-exec.[exec] -->
     </div>
     <!-- exec -->
-    <div id="tm-exec" class="tm-dnone tm-body tm-col tm-border-w">
-      <button id="tm-exec-continue" class="tm-dnone tm-btn-y">Continue</button>
-      <button id="tm-exec-cancel" class="tm-btn-r">CANCEL</button>
+    <div id="tm-exec" class="tm-dnone tm-body tm-row tm-brd tm-brd-w">
+      <button id="tm-exec-continue" class="tm-dnone tm-btn-y tm-mt5">Continue</button>
+      <button id="tm-exec-cancel" class="tm-btn-r tm-mt5">CANCEL</button>
     </div>
   </div>
   <!-- modal -->
   <div id="tm-modal-overlay" class="tm-dnone tm-flex">
     <div id="tm-modal" class="tm-col">
-      <div id="tm-modal-header" class="tm-row">
-        <h3 id="tm-modal-title" class="tm-title">[title]</h3>
-        <button id="tm-modal-close" class="tm-btn-gray">X</button>
+      <div id="tm-modal-header" class="tm-row tm-brd tm-brd-w tm-bg-w">
+        <h3 id="tm-modal-title" class="tm-title tm-p5 tm-m0">[title]</h3>
+        <button id="tm-modal-close" class="tm-btn-r tm-ml5">X</button>
       </div>
-      <div id="tm-modal-body">
+      <div id="tm-modal-body" class="tm-ph5 tm-pb5">
         <!-- modal.info -->
         <div id="tm-modal-info" class="tm-dnone tm-col">
-          <div id="tm-modal-info-msg">[msg]</div>
-          <button id="tm-modal-info-btn" class="tm-btn-gray">[ok]</button>
+          <div id="tm-modal-info-msg" class="tm-pv5">[msg]</div>
+          <button id="tm-modal-info-btn" class="tm-btn-w">[ok]</button>
         </div>
         <!-- modal.yn -->
         <div id="tm-modal-yn" class="tm-dnone tm-col">
-          <div id="tm-modal-yn-msg">[msg]</div>
-          <button id="tm-modal-yn-btn-no" class="tm-btn-r">[no]</button>
-          <button id="tm-modal-yn-btn-yes" class="tm-btn-g">[yes]</button>
+          <div id="tm-modal-yn-msg" class="tm-pv5">[msg]</div>
+          <div id="tm-modal-yn-btns">
+            <button id="tm-modal-yn-btn-no" class="tm-btn-r">[no]</button>
+            <button id="tm-modal-yn-btn-yes" class="tm-btn-g">[yes]</button>
+          </div>
         </div>
         <!-- modal.input -->
         <div id="tm-modal-input" class="tm-dnone tm-col">
-          <div id="tm-modal-input-msg">[msg]</div>
+          <div id="tm-modal-input-msg" class="tm-pv5">[msg]</div>
           <input id="tm-modal-input-input" spellcheck="false"></input>
           <button id="tm-modal-input-submit" class="tm-btn-g">[submit]</button>
         </div>

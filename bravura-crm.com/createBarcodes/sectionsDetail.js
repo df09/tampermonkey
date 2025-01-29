@@ -29,7 +29,7 @@ async function createBarcodesSectionsDetail() {
 
   // === done ======================================
   tmModal.info({
-    accent: 'success',
+    accent: 'g',
     title: 'Create Barcodes: Done',
     msg: 'please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok.',
     actionClose: ()=>{

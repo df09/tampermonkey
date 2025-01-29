@@ -36,29 +36,36 @@ const tmModal = {
   },
 
   type: null,
-  accent: null,
+  eType: null,
   init(type, accent, title) {
-    tmMenu.showExec();
     this.type = type;
-    this.accent = accent;
-    this.e.title.textContent = title;
-  },
-  show(type) {
+    this.eType = type;
     let e;
     if (type === 'info') {e = this.e.info}
     if (type === 'yn') {e = this.e.yn}
     if (type === 'input') {e = this.e.input}
     if (type === 'content') {e = this.e.content}
     if (!e) {
-      tmUi.abort({
-        title: 'tmModal.show()',
-        msg: {'invalid type', type}
-      })
+      const e = 'invalid type: '+type;
+      alert(e);throw new Error(e);
     }
+    this.eType = e;
+
+    if (!["w","g","y","r","b"].includes(accent)) {
+      const e = 'invalid accent: '+accent;
+      alert(e);throw new Error(e);
+    }
+    this.accent = accent;
+    remClsRegex(this.e.header, '^tm-[wgyrb]$', '^tm-bg-[wgyrb]$');
+    addCls(this.e.header , 'tm-'+accent, 'tm-bg-'+accent);
+
+    this.e.title.textContent = title;
+  },
+  show(type) {
     tmHide(this.e.info, this.e.yn, this.e.input, this.e.content);
     tmShow(e);tmShow(this.e.overlay);
   },
-  hide() {tmHide(this.e.info, this.e.yn, this.e.input, this.e.content)},
+  hide() {tmHide(this.e.overlay, this.e.info, this.e.yn, this.e.input, this.e.content)},
   handleEl(e, action) {e.addEventListener('click',()=>{this.hide();action()})},
   handleKey(key, action) {
     const escHandler = (event) => { if (event.key === key || event.code === key) {
