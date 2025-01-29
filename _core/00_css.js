@@ -1,5 +1,5 @@
 function injectCSS(css){
-  if(!css||typeof css!=='string'){abort('injectCSS: Invalid css.')}
+  if(!css||typeof css!=='string'){throw new Error('injectCSS: Invalid css.')}
   const e=document.createElement('style');e.type='text/css';e.textContent=css;
   document.head.appendChild(e);
 };injectCSS(`

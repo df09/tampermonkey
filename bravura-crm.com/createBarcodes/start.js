@@ -6,18 +6,18 @@ function getUniqueLocations(data) {
     if (!line) return;
     const parts = line.split(':').map((part) => part.trim());
     if (parts.length !== 2) {
-      tmMenu.abort('invalid data. line:', line);
+      tmUi.rollback('invalid data. line:', line);
     }
     const locParams = parts[0];
     const locs = parts[1].split(' ');
     locParams.split('_').forEach((pair) => {
       if (!pair.includes('-')) {
-        tmMenu.abort('invalid data. pair:', pair);
+        tmUi.rollback('invalid data. pair:', pair);
       }
     });
     locs.forEach((loc) => {
       if (locations.has(loc)) {
-        tmMenu.abort('duplicate location found:', loc);
+        tmUi.rollback('duplicate location found:', loc);
       }
       locations.add(loc);
     });
@@ -34,12 +34,12 @@ function getDataBarcodes(data) {
     if (!line) return;
     const [locParams, locs] = line.split(':').map((part) => part.trim());
     if (!locParams || !locs) {
-      tmMenu.abort('invalid data. line:', line);
+      tmUi.rollback('invalid data. line:', line);
     }
     const foParams = locParams.split('_').map((pair) => {
       const [fo, glass] = pair.split('-');
       if (!fo || !glass) {
-        tmMenu.abort('invalid data. pair:', pair);
+        tmUi.rollback('invalid data. pair:', pair);
       }
       return { fo, glass };
     });
@@ -61,9 +61,9 @@ function getJobId() {
       console.log('getJobId:', jobId);
       return jobId;
     }
-    tmMenu.abort('getJobId - Job ID not found in the URL');
+    tmUi.rollback('getJobId - Job ID not found in the URL');
   } catch (error) {
-    tmMenu.abort('getJobId - Error extracting Job ID:', error.message);
+    tmUi.rollback('getJobId - Error extracting Job ID:', error.message);
   }
 }
 function getFosId() {
@@ -74,13 +74,13 @@ function getFosId() {
     console.log('getFosId:', fosId);
     return fosId;
   }
-  tmMenu.abort('getFosId - fosId not found in "View FO" button href');
+  tmUi.rollback('getFosId - fosId not found in "View FO" button href');
 }
 function createBarcodesStart() {
   // check start url
   const regex = /^http:\/\/bravura-crm\.com\/jobs\/.*$/;
   if (!regex.test(window.location.href)) {
-    tmMenu.abort('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
+    tmUi.rollback('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
   }
   // get data
   const data = getEl('#tm-prep-textarea').value;

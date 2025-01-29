@@ -1,22 +1,7 @@
-// abort
-class AbortExecution extends Error{constructor(m){super(m);this.name="AbortExecution"}}
-function abort(...args) {
-  const pfx = 'abort: ';
-  console.log(pfx+'init..');
-  tmsDeleteAll();
-  // Formulate message
-  const joinedArgs=args.map(
-    arg=>typeof arg==='object'?JSON.stringify(arg,null,2):String(arg)
-  ).join('\n');
-  const sfx = joinedArgs?joinedArgs:'done.';
-  console.log(pfx+sfx);
-  alert(pfx+sfx)
-  throw new AbortExecution(joinedArgs);
-}
 // prefix/serialize/deserialize
 const PREFIX = 'tm_';
 function ensurePrefix(key) {
-  if (!key.startsWith(PREFIX)){abort('Key must start with '+PREFIX+': '+key)}
+  if (!key.startsWith(PREFIX)){throw new Error('Key must start with '+PREFIX+': '+key)}
   return key;
 }
 function serialize(value){return JSON.stringify({type:typeof value, value})}
@@ -27,7 +12,7 @@ function deserialize(serialized) {
   if (type === 'object') return value;
   if (type === 'string') return String(value);
   if (type === 'undefined') return undefined;
-  abort('Unsupported data type: '+type);
+  throw new Error('Unsupported data type: '+type);
 }
 // set
 function tmsSet(key, value) {
@@ -88,7 +73,7 @@ function tmsReset() {
 // operations
 function tmsSetOperation(operation) {
     const operationFormat = /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/;
-    if (!operationFormat.test(operation)) {abort('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
+    if (!operationFormat.test(operation)) {throw new Error('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
     const [action, step] = operation.split('/');
     tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
     console.log('tmsSetOperation:', operation);
@@ -103,7 +88,7 @@ function tmsOperationsGetHandlers(config) {
     for (const step of steps) {
       const handlerName = camelCase(action + '/' + step);
       if (typeof window[handlerName] !== 'function') {
-        abort('tmsOperationsGetHandlers: Handler function "'+handlerName+'" not found.');
+        throw new Error('tmsOperationsGetHandlers: Handler function "'+handlerName+'" not found.');
       }
       fullHandlers[action][step] = window[handlerName];
     }
@@ -115,9 +100,9 @@ function tmsOperationsHandle(config) {
   if (!operation){console.log('tmsOperationsHandle: no active operations.');return}
   const handlers = tmsOperationsGetHandlers(config);
   const action = tmsGetAction();
-  if (!handlers[action]){abort(operation+': unknown action "'+action+'"')}
+  if (!handlers[action]){throw new Error(operation+': unknown action "'+action+'"')}
   const actionHandlers = handlers[action];
   const step = tmsGetStep();
-  if (!actionHandlers[step]){abort(operation+': unknown step "'+step+'"')}
+  if (!actionHandlers[step]){throw new Error(operation+': unknown step "'+step+'"')}
   actionHandlers[step]();
 }

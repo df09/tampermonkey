@@ -7,7 +7,6 @@ todo:
   core:
     запретить запускать другие operations если уже чтото есть
     style focused buttons/input/textarea
-    exec dont resize
   thiws - upd:
     скачать pdf
     out of corner

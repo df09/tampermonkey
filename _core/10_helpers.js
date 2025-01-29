@@ -80,7 +80,7 @@ function getEl(selector, pass=false) {
     const e = document.getElementById(selector.slice(1));
     if (!e) {
       if (pass) {return false}
-      tmMenu.abort(pfx+'not found.');
+      tmUi.rollback(pfx+'not found.');
     }
     return e;
   }
@@ -88,16 +88,16 @@ function getEl(selector, pass=false) {
   const els = document.querySelectorAll(selector);
   if (els.length === 0) {
     if (pass) {return false}
-    tmMenu.abort(pfx+'not found.')
+    tmUi.rollback(pfx+'not found.')
   }
-  if (els.length > 1) {tmMenu.abort(pfx+'multiple els found.')}
+  if (els.length > 1) {tmUi.rollback(pfx+'multiple els found.')}
   e = els[0];
   console.log(pfx, e);
   return e;
 }
 function getEls(selector) {
   const els = document.querySelectorAll(selector);
-  if (els.length === 0) {tmMenu.abort('getEl: "'+selector+'" not found.')}
+  if (els.length === 0) {tmUi.rollback('getEl: "'+selector+'" not found.')}
   console.log('getEls "'+selector+'":', els);
   return els;
 }

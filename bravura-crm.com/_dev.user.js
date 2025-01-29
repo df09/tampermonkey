@@ -14,6 +14,7 @@
     '/_core/20_tmStorage.js',
     '/_core/30_tmMenu.js',
     '/_core/40_tmModal.js',
+    '/_core/50_tmUi.js',
     '/'+dir+'/createBarcodes/start.js',
     '/'+dir+'/createBarcodes/createFo.js',
     '/'+dir+'/createBarcodes/checkExistingRooms.js',
