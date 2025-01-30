@@ -1,13 +1,12 @@
-style:
-  modal accents
 thiws:
   restore
   upd:
     скачать pdf
     out of corner
-    add double check feathcers
+    add double aheck feathcers
 search active jobs - init
 crl - закупка hw
+
 storage:
   test clean
   test reset

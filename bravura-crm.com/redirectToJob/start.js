@@ -5,7 +5,7 @@ function redirectToJobStart() {
   tmMenu.showExec();
 
   tmModal.input({
-    accent: 'info',
+    accent: 'w',
     title: 'Redirect to Job by ID',
     msg: 'Please enter JobID:',
     actionClose: ()=>{tmsReset();tmMenu.showMain()},

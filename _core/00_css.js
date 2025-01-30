@@ -199,14 +199,9 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
 #tm-modal-yn-btn-no {
   width: ;
 }
-
-
-
-/* ===== modal.accent ============================ */
-#tm-modal.tm-modal-info {}
-#tm-modal.tm-modal-success {}
-#tm-modal.tm-modal-warning {}
-#tm-modal.tm-modal-error {}
+#tm-modal-info { align-items: center; }
+#tm-modal-yn { align-items: center; }
+#tm-modal-input { align-items: center; }
 
 /* === modal.storage ======================================== */
 #tm-modal table {
