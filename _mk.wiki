@@ -1,19 +1,21 @@
-thiws:
-  restore
-  upd:
-    скачать pdf
-    out of corner
-    add double aheck feathcers
-search active jobs - init
-crl - закупка hw
+restore:
+  storage:
+    test clean
+    test reset
+    test view
+      copy row
+      copy all
+      close
 
-storage:
-  test clean
-  test reset
-  test view
-    copy row
-    copy all
-    close
+new:
+  thiws:
+    restore
+    upd:
+      скачать pdf
+      out of corner
+      add double aheck feathcers
+  search active jobs - init
+  crl - закупка hw
 
 todo:
   auto operations (ex. login)
