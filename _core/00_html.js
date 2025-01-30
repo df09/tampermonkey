@@ -50,15 +50,15 @@ injectHTML(`
   <!-- modal -->
   <div id="tm-modal-overlay" class="tm-dnone tm-flex">
     <div id="tm-modal" class="tm-col">
-      <div id="tm-modal-header" class="tm-row tm-brd tm-brd-w tm-bg-w">
+      <div id="tm-modal-header" class="tm-row tm-brd">
         <h3 id="tm-modal-title" class="tm-title tm-p5 tm-m0">[title]</h3>
-        <button id="tm-modal-close" class="tm-btn-r tm-ml5">X</button>
+        <button id="tm-modal-close" class="tm-btn tm-ml5">X</button>
       </div>
       <div id="tm-modal-body" class="tm-ph5 tm-pb5">
         <!-- modal.info -->
         <div id="tm-modal-info" class="tm-dnone tm-col">
           <div id="tm-modal-info-msg" class="tm-pv5">[msg]</div>
-          <button id="tm-modal-info-btn" class="tm-btn-w">[ok]</button>
+          <button id="tm-modal-info-btn" class="tm-btn">[ok]</button>
         </div>
         <!-- modal.yn -->
         <div id="tm-modal-yn" class="tm-dnone tm-col">
@@ -71,8 +71,8 @@ injectHTML(`
         <!-- modal.input -->
         <div id="tm-modal-input" class="tm-dnone tm-col">
           <div id="tm-modal-input-msg" class="tm-pv5">[msg]</div>
-          <input id="tm-modal-input-input" spellcheck="false"></input>
-          <button id="tm-modal-input-submit" class="tm-btn-g">[submit]</button>
+          <input id="tm-modal-input-input" class="tm-brd" spellcheck="false"></input>
+          <button id="tm-modal-input-submit" class="tm-btn tm-mt5">[submit]</button>
         </div>
         <!-- modal.content -->
         <div id="tm-modal-content" class="tm-dnone tm-col">

@@ -56,14 +56,32 @@ const tmModal = {
       alert(e);throw new Error(e);
     }
     this.accent = accent;
-    remClsRegex(this.e.header, '^tm-[wgyrb]$', '^tm-bg-[wgyrb]$');
-    addCls(this.e.header , 'tm-'+accent, 'tm-bg-'+accent);
+    remClsRegex(this.e.header, '^tm-[wgyrb]$', '^tm-bg-[wgyrb]$', '^tm-brd-[wgyrb]$');
+    remClsRegex(this.e.close, '^tm-btn-[wgyrb]$');
+    addCls(this.e.header , 'tm-'+accent, 'tm-bg-'+accent, 'tm-brd-'+accent);
+    addCls(this.e.close, 'tm-btn-'+accent);
+    if (type === 'info') {
+      remClsRegex(this.e.infoBtn, '^tm-btn-[wgyrb]$');
+      addCls(this.e.infoBtn, 'tm-btn-'+accent);
+    }
+    if (type === 'yn') {
+      remClsRegex(this.e.ynBtnYes, '^tm-btn-[wgyrb]$');
+      remClsRegex(this.e.ynBtnNo, '^tm-btn-[wgyrb]$');
+      addCls(this.e.ynBtnNo, 'tm-btn-w');
+      addCls(this.e.ynBtnYes, 'tm-btn-'+accent);
+    }
+    if (type === 'input') {
+      remClsRegex(this.e.inputInput, '^tm-brd-[wgyrb]$');
+      remClsRegex(this.e.inputSubmit, '^tm-btn-[wgyrb]$', '^tm-brd-[wgyrb]$');
+      addCls(this.e.inputInput, 'tm-brd-w');
+      addCls(this.e.inputSubmit, 'tm-btn-'+accent);
+    }
 
     this.e.title.textContent = title;
   },
   show(type) {
     tmHide(this.e.info, this.e.yn, this.e.input, this.e.content);
-    tmShow(e);tmShow(this.e.overlay);
+    tmShow(this.eType);tmShow(this.e.overlay);
   },
   hide() {tmHide(this.e.overlay, this.e.info, this.e.yn, this.e.input, this.e.content)},
   handleEl(e, action) {e.addEventListener('click',()=>{this.hide();action()})},

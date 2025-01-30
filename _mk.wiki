@@ -1,20 +1,21 @@
+style:
+  modal accents
+thiws:
+  restore
+  upd:
+    скачать pdf
+    out of corner
+    add double check feathcers
+search active jobs - init
+crl - закупка hw
+storage:
+  test clean
+  test reset
+  test view
+    copy row
+    copy all
+    close
+
 todo:
-  style:
-    modal accents
-  thiws:
-    restore
-    upd:
-      скачать pdf
-      out of corner
-  search active jobs - init
-  crl - закупка hw
-  storage:
-    test clean
-    test reset
-    test view
-      copy row
-      copy all
-      close
-next:
   auto operations (ex. login)
   cross-domain for dev

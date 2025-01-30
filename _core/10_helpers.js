@@ -75,9 +75,12 @@ async function fakeRedirect(newUrl, delay=2000) {
 // DOM-manipulations
 function addCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
 function remCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
-function remClsRegex(e, ...patterns) {e.classList.forEach(cls => {
-  if (patterns.some(pattern => new RegExp(pattern).test(cls))) {e.classList.remove(cls)}
-})}
+function remClsRegex(e, ...patterns) {
+  const classesToRemove = [...e.classList].filter(cls => 
+    patterns.some(pattern => new RegExp(pattern).test(cls))
+  );
+  classesToRemove.forEach(cls => e.classList.remove(cls));
+}
 
 function getEl(selector, pass=false) {
   const pfx = 'getEl "'+selector+'": ';

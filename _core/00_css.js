@@ -21,27 +21,27 @@ function injectCSS(css){
 .tm-mr10{margin-right:10px;} .tm-mr5{margin-right:5px;} .tm-mr0{margin-right:0;}
 .tm-mh10{margin-left:10px; margin-right:10px;} .tm-mh5{margin-left:5px; margin-right:5px;} .tm-mh0{margin-left:0px; margin-right:0px;}
 .tm-mv10{margin-top:10px; margin-bottom:10px;} .tm-mv5{margin-top:5px; margin-bottom:5px;} .tm-mv0{margin-top:0px; margin-bottom:0px;}
-.tm-w{color:#ffffff;}
-.tm-b{color:#007bff;}
+.tm-w{color:#6c757d;} /* Нейтральный серый */
 .tm-g{color:#3fa356;}
 .tm-y{color:#e6b114;}
 .tm-r{color:#dc3545;}
-.tm-bg-w{background-color:#dddddd;}
-.tm-bg-b{background-color:#e6f0ff;}
+.tm-b{color:#0056b3;} /* Более читаемый синий */
+.tm-bg-w{background-color:#f8f9fa;} /* Светло-серый фон */
 .tm-bg-g{background-color:#e6f4ea;}
 .tm-bg-y{background-color:#fff8e6;}
 .tm-bg-r{background-color:#ffeff1;}
+.tm-bg-b{background-color:#cce5ff;} /* Светло-синий фон */
 .tm-brd{border:1px solid;}
-.tm-brd-w{border-color:#cccccc;}
-.tm-brd-b{border-color:#007bff;}
+.tm-brd-w{border-color:#adb5bd;} /* Серый бордер */
 .tm-brd-g{border-color:#3fa356;}
 .tm-brd-y{border-color:#e6b114;}
 .tm-brd-r{border-color:#ff909b;}
+.tm-brd-b{border-color:#0056b3;} /* Синий бордер */
 
 /* ===== common.elements ============================ */
 .tm-col { display: flex; flex-direction: column; }
 .tm-row { display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
-.tm-btn-b, .tm-btn-g, .tm-btn-y, .tm-btn-r {
+.tm-btn-w, .tm-btn-g, .tm-btn-y, .tm-btn-r, .tm-btn-b {
   font-size: 12px;
   font-weight: bold;
   cursor: pointer;
@@ -49,19 +49,22 @@ function injectCSS(css){
   border: none;
   border-radius: 5px;
 }
-.tm-btn-b { background-color: #007bff; color: #fff; }
+.tm-btn-w { background-color: #adb5bd; color: #fff; } /* Серый фон, белый текст */
 .tm-btn-g { background-color: #3fa356; color: #fff; }
 .tm-btn-y { background-color: #e6b114; color: #fff; }
 .tm-btn-r { background-color: #dc3545; color: #fff; }
-.tm-btn-b:hover { background-color: #0056b3; }
+.tm-btn-b { background-color: #0056b3; color: #fff; } /* Темно-синий фон, белый текст */
+.tm-btn-w:hover { background-color: #868e96; } /* Чуть темнее при наведении */
 .tm-btn-g:hover { background-color: #42af5b; }
 .tm-btn-y:hover { background-color: #ffbf00; }
 .tm-btn-r:hover { background-color: #c82333; }
-.tm-btn-b:focus, .tm-btn-g:focus, .tm-btn-y:focus, .tm-btn-r:focus {
+.tm-btn-b:hover { background-color: #003d80; } /* Темнее при наведении */
+.tm-btn-w:focus, .tm-btn-g:focus, .tm-btn-y:focus, .tm-btn-r:focus, .tm-btn-b:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   filter: brightness(1.4);
 }
+
 .tm-link { color: blue; text-decoration: underline; }
 .tm-link:visited { color: purple; }
 .tm-link:hover { color: darkblue; text-decoration: none; }
@@ -183,6 +186,21 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
 #tm-modal-close {
   border-radius: 0;
 }
+
+#tm-modal-yn-btns {
+  display: flex;
+  justify-content: space-between;
+}
+#tm-modal-yn-btn-no { width: 48%; }
+#tm-modal-yn-btn-yes { width: 48%; }
+
+/* Element | http://bravura-crm.com/jobs/4777 */
+
+#tm-modal-yn-btn-no {
+  width: ;
+}
+
+
 
 /* ===== modal.accent ============================ */
 #tm-modal.tm-modal-info {}
