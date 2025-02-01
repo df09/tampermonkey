@@ -80,14 +80,16 @@ function createBarcodesStart() {
   // check start url
   const regex = /^http:\/\/bravura-crm\.com\/jobs\/.*$/;
   if (!regex.test(window.location.href)) {
-    tmUi.rollback('createBarcodes: URL mast be http://bravura-crm.com/jobs/*');
+    tmUi.abort({
+      title: 'createBarcodes',
+      msg: 'URL mast be http://bravura-crm.com/jobs/*',
+    });
   }
   // get data
-  const data = getEl('#tm-prep-textarea').value;
+  const data = tmMenu.e.prepTextarea.value;
   tmsSet('tm_data-barcodes', getDataBarcodes(data));
   tmsSet('tm_data-locations', getUniqueLocations(data));
   tmsSet('tm_jobId', getJobId());
-
   // check/create fo
   const createFoSelector = "a[data-method='post'][href^='/jobs/'][href$='/fabrication_orders']";
   const eCreateFo = getEl(createFoSelector, pass=true);

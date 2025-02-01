@@ -6,7 +6,6 @@
 // ==/UserScript==
 (function(){'use strict';
   const dir = 'bravura-crm.com';
-  const host = 'http://localhost:9876';
   const filesJs = [
     '/_core/00_css.js',
     '/_core/00_html.js',
@@ -25,6 +24,7 @@
     '/'+dir+'/searchActiveJob/start.js',
     '/'+dir+'/main.js',
   ];
+  const host = 'http://localhost:9876';
   async function tmLoad(fs){for(const f of fs){await new Promise((r,j)=>{
     const e=document.createElement('script');e.async=false; // Гарантирует последовательное выполнение
     e.src=host+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));

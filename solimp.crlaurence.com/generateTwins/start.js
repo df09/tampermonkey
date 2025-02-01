@@ -1,17 +1,17 @@
 // // ==== reports =============================================
 // async function waitForGeneratingReport(timeout = 20000) {
 //   return new Promise((resolve, reject) => {
-//     let selector = '.modal-dialog h3';
-//     let targetText = 'Generating Report';
-//     let checkModal = () => {
-//       let modal = getEl(selector);
+//     const selector = '.modal-dialog h3';
+//     const targetText = 'Generating Report';
+//     const checkModal = () => {
+//       const modal = getEl(selector);
 //       // Проверяем, есть ли модальное окно с нужным текстом
 //       if (!modal || modal.textContent.trim() !== targetText) {
 //         resolve(); // Модальное окно отсутствует или текст изменился
 //         return;
 //       }
 //     };
-//     let observer = new MutationObserver(() => {
+//     const observer = new MutationObserver(() => {
 //       checkModal();
 //     });
 //     // Проверяем изменения в DOM
@@ -28,7 +28,7 @@
 
 // ==== upd measurements ==========================================
 function getOutageDirection(edge) {
-  let outageDirection = '';
+  const outageDirection = '';
   if (edge[0] == "0" && edge[2] == "0") {
     outageDirection = "none";
   } else {
@@ -42,7 +42,7 @@ function getOutageDirection(edge) {
   return outageDirection;
 }
 function getClickCount(number, outageDirection) {
-  let clickCount = 0;
+  const clickCount = 0;
   if (outageDirection != 'none') {
     if (number == 1) {
       clickCount = outageDirection == 'right' ? 1 : 2; // 1 click - right, 2 click - left
@@ -57,8 +57,8 @@ function getClickCount(number, outageDirection) {
 }
 function addClickCounterHint(number, clickCount, outageDirectionEl) {
   // Добавляем подсказки
-  let clickCounterId = `click-counter-${number}`;
-  let counterContainer = document.createElement('div');
+  const clickCounterId = `click-counter-${number}`;
+  const counterContainer = document.createElement('div');
   counterContainer.id = clickCounterId;
   counterContainer.style.position = 'absolute';
   counterContainer.style.top = '-10px';
@@ -78,7 +78,7 @@ function addClickCounterHint(number, clickCount, outageDirectionEl) {
   outageDirectionEl.parentElement.appendChild(counterContainer);
   // Обработчик кликов
   outageDirectionEl.addEventListener('click', () => {
-    let counter = parseInt(counterContainer.innerText, 10);
+    const counter = parseInt(counterContainer.innerText, 10);
     counter--;
     counterContainer.innerText = counter;
     if (counter == 0) { counterContainer.style.background = 'green'; }
@@ -90,18 +90,18 @@ async function updMeasurementFields(number, edge, delay) {
   if (edge[0] !== "0" && edge[2] !== "0") {
     abort('Outage не может быть одновременно с двух сторон.');
   }
-  let length = edge[1];
-  let outageSize = edge[0] != "0" ? edge[0] : edge[2];
-  let outageDirection = getOutageDirection(edge);
-  let clickCount = getClickCount(number, outageDirection);
+  const length = edge[1];
+  const outageSize = edge[0] != "0" ? edge[0] : edge[2];
+  const outageDirection = getOutageDirection(edge);
+  const clickCount = getClickCount(number, outageDirection);
   // Селекторы для полей
-  let lengthSelector = `div[data-sb-field="content/measurements/${number}/length"] input`;
-  let outageSizeSelector = `div[data-sb-field="content/measurements/${number}/outagePastElbow"] input`;
-  let outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+  const lengthSelector = `div[data-sb-field="content/measurements/${number}/length"] input`;
+  const outageSizeSelector = `div[data-sb-field="content/measurements/${number}/outagePastElbow"] input`;
+  const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
   // Элементы
-  let lengthEl = getEl(lengthSelector);
-  let outageSizeEl = getEl(outageSizeSelector);
-  let outageDirectionEl = getEl(outageDirectionSelector);
+  const lengthEl = getEl(lengthSelector);
+  const outageSizeEl = getEl(outageSizeSelector);
+  const outageDirectionEl = getEl(outageDirectionSelector);
   // Обновляем значения
   await updValEl(lengthEl, length, delay);
   await updValEl(outageSizeEl, 0, delay);
@@ -112,7 +112,7 @@ async function updMeasurementFields(number, edge, delay) {
 
 // ==== save ==========================================
 async function checkModalWarnings() {
-  let modal = document.querySelector('.modal-content .warnings-dialog');
+  const modal = document.querySelector('.modal-content .warnings-dialog');
   // модального окна нет - все хорошо
   if (!modal) { return true; }
   // serious - tmUiPause
@@ -126,9 +126,9 @@ async function checkModalWarnings() {
   abort('save - unknown modal type.');
 }
 function findReactComponent(dom) {
-  let key = Object.keys(dom).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
+  const key = Object.keys(dom).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
   if (!key) return null;
-  let node = dom[key];
+  const node = dom[key];
   while (node) {
     if (node.memoizedProps && node.memoizedProps.doAction) { return node; }
     node = node.return; // Поднимаемся вверх по дереву
@@ -137,13 +137,13 @@ function findReactComponent(dom) {
 }
 async function save(delay) {
   console.log('save..');
-  let selector = '#save-resource';
-  let button = getEl(selector);
-  let reactComponent = findReactComponent(button);
+  const selector = '#save-resource';
+  const button = getEl(selector);
+  const reactComponent = findReactComponent(button);
   if (!reactComponent) {
     abort('React компонент с doAction не найден!');
   }
-  let props = reactComponent.memoizedProps;
+  const props = reactComponent.memoizedProps;
   if (!props || !props.doAction) {
     abort('doAction не найден в memoizedProps!');
   }
@@ -153,7 +153,7 @@ async function save(delay) {
   );
   await sleep(1000);
   // Добавляем проверку на модальное окно
-  let result = await checkModalWarnings();
+  const result = await checkModalWarnings();
   if (result == 'manually') { // если сохранение вручную, сохранять не нужно
     console.log('save: done.');
     return;
@@ -165,21 +165,21 @@ async function save(delay) {
 // ==== upd header ==========================================
 async function updProjectName(projectLocation, delay) {
   console.log('updProjectName..');
-  let projectNameDiv = getEl('div[data-sb-field="content/projectName"]');
+  const projectNameDiv = getEl('div[data-sb-field="content/projectName"]');
   if (!projectNameDiv) { abort('DIV для "Project Name" не найден.') }
-  let inputEl = projectNameDiv.querySelector('input');
+  const inputEl = projectNameDiv.querySelector('input');
   if (!inputEl) { abort('Поле ввода в "Project Name" не найдено.'); }
   // upd value
-  let currentValue = inputEl.value;
+  const currentValue = inputEl.value;
   if (currentValue.startsWith('Clone: ')) { currentValue = currentValue.replace('Clone: ', ''); }
-  let parts = currentValue.split(' - ');
+  const parts = currentValue.split(' - ');
   if (parts.length > 1) { currentValue = parts[0]+' - '+projectLocation; }
   await updValEl(inputEl, currentValue, delay);
   console.log('updProjectName: updated to"'+currentValue+'".');
 }
 async function updLocation(projectLocation, delay) {
   console.log('updLocation..');
-  let locationEl = getEl('div.inner-control-container[data-sb-field="content/location"] input.dx-texteditor-input')
+  const locationEl = getEl('div.inner-control-container[data-sb-field="content/location"] input.dx-texteditor-input')
   if (!locationEl) { abort('Поле для "Location" не найдено.') }
   await updValEl(locationEl, projectLocation, delay);
   console.log('updLocation: updated to "'+projectLocation+'".');
@@ -194,17 +194,17 @@ async function updOwner(delay) {
 // === data/fetch ===========================================================
 function interceptFetch(urlSubstring, timeout = 20000) {
   return new Promise((resolve, reject) => {
-    let originalFetch = window.fetch;
+    const originalFetch = window.fetch;
     // Переопределяем fetch
     window.fetch = async function (...args) {
       if (args[0].includes(urlSubstring)) {
         console.log('interceptFetch: url - '+args[0]);
         try {
           // Выполняем оригинальный запрос
-          let response = await originalFetch.apply(this, args);
+          const response = await originalFetch.apply(this, args);
           // Клонируем ответ, чтобы прочитать его тело
-          let clonedResponse = response.clone();
-          let data = await clonedResponse.json();
+          const clonedResponse = response.clone();
+          const data = await clonedResponse.json();
           resolve(data);
           return response;
         } catch (error) {
@@ -224,15 +224,15 @@ function interceptFetch(urlSubstring, timeout = 20000) {
 }
 function getInputData(textarea) {
   try {
-    let data = {}; // Инициализация объекта
-    let lines = textarea.value.split('\n');
+    const data = {}; // Инициализация объекта
+    const lines = textarea.value.split('\n');
     lines.forEach(line => {
       line = line.trim();
       // Удаляем лишние пробелы
       line = line.replace(/\s+/g, ' ');
       if (!line) return; // Пропускаем пустую строку
       // Разделяем ключ и значение
-      let [key, value] = line.split(':').map(part => part.trim());
+      const [key, value] = line.split(':').map(part => part.trim());
       if (!key || !value) {
         throw new Error('Некорректная строка: "' + line + '".');
       }
@@ -244,10 +244,10 @@ function getInputData(textarea) {
         throw new Error('Некорректный формат данных для "' + key + '": "' + value + '".');
       }
       // Разбираем данные
-      let groups = value.split(/[.;]/).map(group => group.trim());
+      const groups = value.split(/[.;]/).map(group => group.trim());
       data[key] = {};
       groups.forEach((group, index) => {
-        let parts = group.split(/[+ ]/).map(part => part.trim()); // Разделение на части по "+" или пробелу
+        const parts = group.split(/[+ ]/).map(part => part.trim()); // Разделение на части по "+" или пробелу
         data[key][index + 1] = parts;
       });
     });
@@ -258,37 +258,45 @@ function getInputData(textarea) {
 }
 async function generateTwinsStart() {
   // check start conditions
-  if (document.querySelector('#save-resource')) {
-    abort('cancel - please save project before starting.');
+  const regex = /^https:\/\/solimp\.crlaurence\.com\/SOL_API\/ShowerApp\/#projects\/\d+/;
+  if (!regex.test(window.location.href)) {
+    tmUi.abort({
+      title: 'Generate Twinns',
+      msg: 'URL must be https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/<number>',
+    });
   }
-  // action
-  console.log('run..');
+  if (getEl('#save-resource', pass=true)) {
+    tmUi.abort({
+      title: 'Generate Twins',
+      msg: 'Cancel - You should be on the saved project page.'
+    });
+  }
   // main logic
-  let data = getInputData(getEl('#tm-prep-textarea'));
-  for (let projectLocation in data) {
+  const data = tmMenu.e.prepTextarea.value;
+  tmsSet('tm_data-generateTwins', data);
+  for (const projectLocation in data) {
     // clone project
     console.log('clone project..');
     await clickEl(getEl('div[aria-label="Clone"]'), 300);
     await clickEl(getEl('div#dropdown-item-clone-all-details'), 0);
-    let fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
-    let projectId = fetchData.result.projectId;
-    let chargeableId = fetchData.result.chargeable.chargeableId;
+    const fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
+    const projectId = fetchData.result.projectId;
+    const chargeableId = fetchData.result.chargeable.chargeableId;
     await sleep(3000);
     // upd header
     await updProjectName(projectLocation, 3000);
     await updLocation(projectLocation, 300);
     await updOwner(4000);
     await save(5000);
-
     // measurement grid page
     await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
-    let projectData = data[projectLocation];
-    for (let [number, edge] of Object.entries(projectData)) {
+    const projectData = data[projectLocation];
+    for (const [number, edge] of Object.entries(projectData)) {
       await updMeasurementFields(number, edge, 1000);
     }
     // TODO
-    // let outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
-    // let outageDirectionEl = getEl(outageDirectionSelector);
+    // const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+    // const outageDirectionEl = getEl(outageDirectionSelector);
     // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
     await tmUiPause('please set outageDirections manually.');
     await save(5000);
@@ -302,10 +310,10 @@ async function generateTwinsStart() {
     //   .then(() => console.log('waitForGeneratingReport: ok.'))
     //   .catch(error => console.error(error));
     // await sleep(100);
-    // let viewReportSelector = '#view-report [role="button"]';
-    // let multipleReportsSelector = '#dropdown-item-multipleReports';
-    // let viewSelectedSelector = '#sb-slider .multi-report-slider .multi-report-slider-actions button';
-    // let dissmissSelector = '#sb-slider .slider-controls button';
+    // const viewReportSelector = '#view-report [role="button"]';
+    // const multipleReportsSelector = '#dropdown-item-multipleReports';
+    // const viewSelectedSelector = '#sb-slider .multi-report-slider .multi-report-slider-actions button';
+    // const dissmissSelector = '#sb-slider .slider-controls button';
     // await clickEl(getEl(viewReportSelector), 500);
     // await clickEl(getEl(multipleReportsSelector), 500);
     // await clickEl(getEl(dissmissSelector), 500);
@@ -319,13 +327,13 @@ async function generateTwinsStart() {
 }
 
 // async function updInputValue(el, newValue, delay) {
-//   let lastValue = el.value;
+//   const lastValue = el.value;
 //   el.focus();
 //   el.value = newValue;
 //   // Обновляем значение с учётом React, если _valueTracker существует
-//   let event = new Event('input', { bubbles: true });
-//   let changeEvent = new Event('change', { bubbles: true });
-//   let tracker = el._valueTracker;
+//   const event = new Event('input', { bubbles: true });
+//   const changeEvent = new Event('change', { bubbles: true });
+//   const tracker = el._valueTracker;
 //   if (tracker) {
 //     tracker.setValue(lastValue);
 //   }

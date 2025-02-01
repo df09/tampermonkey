@@ -9,7 +9,7 @@ const map = {
   ],
   btnsExec: [],
 }
-tmUiInit(map);
+tmMenu.init(tmMap);
 // === handle active operations ========================
 tmsOperationsHandle({
   generateTwins: ['start'],

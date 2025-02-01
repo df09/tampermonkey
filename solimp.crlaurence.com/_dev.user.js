@@ -6,17 +6,18 @@
 // ==/UserScript==
 (function(){'use strict';
   const dir = 'solimp.crlaurence.com';
-  const host = 'http://localhost:9876';
   const filesJs = [
     '/_core/00_css.js',
     '/_core/00_html.js',
     '/_core/10_helpers.js',
-    '/_core/20_storage.js',
-    '/_core/30_ui.js',
-    '/_core/40_modals.js',
+    '/_core/20_tmStorage.js',
+    '/_core/30_tmMenu.js',
+    '/_core/40_tmModal.js',
+    '/_core/50_tmUi.js',
     '/'+dir+'/generateTwins/start.js',
     '/'+dir+'/main.js',
   ];
+  const host = 'http://localhost:9876';
   async function tmLoad(fs){for(const f of fs){await new Promise((r,j)=>{
     const e=document.createElement('script');e.async=false; // Гарантирует последовательное выполнение
     e.src=host+f;e.onload=()=>{console.log('tmLoad: '+e.src);r();};e.onerror=()=>j(new Error('tmLoad: '+e.src));
