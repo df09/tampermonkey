@@ -1,22 +1,11 @@
-restore:
-  storage:
-    test clean
-    test reset
-    test view
-      copy row
-      copy all
-      close
-
-new:
-  thiws:
-    restore
-    upd:
-      скачать pdf
-      out of corner
-      add double aheck feathcers
+thiws:
+  restore
+  upd:
+    скачать pdf
+    out of corner
+    add double aheck feathcers
+later:
   search active jobs - init
   crl - закупка hw
-
-todo:
-  auto operations (ex. login)
+    auto operations (ex. login)
   cross-domain for dev

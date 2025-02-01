@@ -30,6 +30,7 @@ const tmMenu = {
     execCancel: getEl('#tm-exec-cancel'),
   },
   // === storage ==============================
+  map: null,
   validateHw(hw, pass=false) {
     if (Array.isArray(hw)
         && hw.length === 2
@@ -58,6 +59,7 @@ const tmMenu = {
   // === init ==============================
   init(map) {
     console.log('tmMenu.init(): start..');
+    this.map = map;
     // listners
     this.handleAbort();
     this.handleBack();
@@ -166,55 +168,82 @@ const tmMenu = {
     tmShow(this.e.mainExec);
   },
   handleStorageView() {
-    this.e.storageView.addEventListener('click', () => {
+    const idsfx = 'storageview';
+    this.e.storageView.addEventListener('click', ()=>{
       tmModal.content({
-        id: 'tm-modal-content-storageview',
+        idsfx: idsfx,
         accent: 'w',
         title: 'Storage View',
-        action: () => {
-          // insert
-          const e = getEl('#tm-modal-storageview');
+        actionContent: ()=>{
           const data = tmsGetAll();
-          e.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
-          const content = e.lastElementChild;
-          const tbody = content.querySelector('tbody');
+          // insert content
+          const content = getEl('#tm-modal-content-'+idsfx);
+          content.insertAdjacentHTML('beforeend', tmHTMLModalStorageview);
+          // modify
+          const tbody = content.querySelector('table tbody');
+          console.log('tbody', tbody);
           tbody.innerHTML = '';
-
-          data.forEach(k => {
-            tbody.insertAdjacentHTML('beforeend', mustache(
-              tmHTMLModalStorageviewRow, { key: k, value: tmsGet(k) }
-            ));
-          });
-
-          // events
-          getEls('.tm-modal-storageview-row-copy').forEach(el => {
-            el.addEventListener('click', () => {
-              const value = el.getAttribute('data-value');
-              navigator.clipboard.writeText(value)
-                .then(() => {
-                  console.log('tmMenu.storageView(): copied', value);
-                })
-                .catch(err => {
-                  tmUi.abort({
-                    title: 'tmMenu.storageView()',
-                    msg: ['failed to copy value', err],
-                  });
-                });
+          if (data.length === 0) {
+            // rows
+            tbody.insertAdjacentHTML('beforeend', `
+              <tr class="tm-modal-storageview-row">
+                <td>NONE</td><td>NONE</td><td>NONE</td>
+              </tr>`);
+            // copyAll
+            getEl('#tm-modal-storageview-copyall').disabled = true;
+            tmHide(getEl('#tm-modal-storageview-copyall'));
+          } else {
+            // rows
+            data.forEach(k => {
+              tbody.insertAdjacentHTML('beforeend', mustache(
+                tmHTMLModalStorageviewRow, { key: k, value: tmsGet(k) }
+              ));
             });
-          });
-          getEl('#tm-modal-storageview-copyall').addEventListener('click', () => {
-            const allData = data.map(k => `${k}: ${tmsGet(k)}`).join('\n');
-            navigator.clipboard.writeText(allData)
-              .then(() => {
-                console.log('tmMenu.storageView(): copied all.');
-              })
-              .catch(err => {
-                tmUi.abort({
-                  title: 'tmMenu.storageView()',
-                  msg: ['failed to copy all', err],
+            getEls('.tm-modal-storageview-row').forEach(row => {
+              const btnCopy = row.querySelector('.tm-modal-storageview-row-copy');
+              const btnDelete = row.querySelector('.tm-modal-storageview-row-delete');
+              const key = row.querySelector('.tm-modal-storageview-row-tdkey').getAttribute('data-key');
+              const value = row.querySelector('.tm-modal-storageview-row-tdval').getAttribute('data-value');
+              const data = key+': '+value;
+              btnCopy.addEventListener('click', ()=>{
+                tmCopy(data)
+                  .then(()=>{tmModal.info({
+                    accent: 'g',
+                    title: 'StorageView.copy',
+                    msg: ['Data was copied:', data],
+                  })})
+                  .catch(err => tmUi.abort({
+                    title: 'StorageView.copy',
+                    msg: ['Failed to copy:', err],
+                  }));
+              });
+              btnDelete.addEventListener('click', ()=>{
+                tmsDelete(key);
+                this.showMain();
+                tmModal.info({
+                  accent: 'g',
+                  title: 'StorageView.delete',
+                  msg: ['Data was deleted: ', key],
                 });
               });
-          });
+            });
+            // copyAll
+            getEl('#tm-modal-storageview-copyall').addEventListener('click', ()=>{
+              const allData = data.map(k => k+': '+tmsGet(k)).join('\n');
+              tmCopy(allData)
+                .then(() => {
+                  tmModal.info({
+                    accent: 'g',
+                    title: 'StorageView.copyAll',
+                    msg: ['All data was copied.', allData],
+                  });
+                })
+                .catch(err => tmUi.abort({
+                  title: 'StorageView.copyAll',
+                  msg: ['Failed to copyAll:', err],
+                }));
+            });
+          }
         },
       });
     });
@@ -228,9 +257,12 @@ const tmMenu = {
     });
   })},
   handleStorageClean() {this.e.storageClean.addEventListener('click',()=>{
-    tmUi.abort({
+    tmsDeleteAll();
+    this.showMain();
+    tmModal.info({
+      accent: 'r',
       title: 'Storage CLEAN',
-      msg: 'ALL DATA has been deleted from storage.',
+      msg: 'ALL DATA has been removed from storage.',
     });
   })},
   handleExecCancel() {this.e.execCancel.addEventListener('click',()=>{
@@ -311,6 +343,7 @@ const tmMenu = {
     // upd
     this.updOperation();
     this.updMnmz();
+    this.updHotkeys();
     this.updContainer(this.getHwMain());
     // show
     tmShow(mnmz, main);
@@ -373,6 +406,25 @@ const tmMenu = {
       addCls(this.e.mnmz, 'tm-btn-r', 'tm-btn-header-r');
       remCls(this.e.mnmz, 'tm-btn-b', 'tm-btn-header-b');
     }
+  },
+  updHotkeys() {
+    const containers = this.e.hotkeys.querySelectorAll('.tm-group-main-hotkeys');
+    containers.forEach(container => {
+      const fullId = container.getAttribute('id'); // "tm-main-hotkeys-<idsfx>"
+      const idsfx = fullId.replace('tm-main-hotkeys-', '');
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      if (tmsGet('tm_keep_hotkey-' + idsfx) === '1') {
+        if (!checkbox.checked) {
+          checkbox.checked = true;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      } else {
+        if (checkbox.checked) {
+          checkbox.checked = false;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      }
+    });
   },
   updContainer(hw) {
     const c = this.e.container;

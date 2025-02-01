@@ -200,6 +200,9 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
   width: ;
 }
 #tm-modal-info { align-items: center; }
+#tm-modal-info-msg {
+  white-space: pre-line;
+}
 #tm-modal-yn { align-items: center; }
 #tm-modal-input { align-items: center; }
 
@@ -207,7 +210,6 @@ input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
 #tm-modal table {
   border-collapse: collapse;
   width: 100%;
-  margin-bottom: 20px;
 }
 #tm-modal th, .modal td {
   padding: 10px;

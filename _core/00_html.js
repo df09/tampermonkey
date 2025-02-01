@@ -105,21 +105,21 @@ const tmHTMLPrepExec = `
   <button id="{{id}}" class="tm-group-prep-exec tm-btn-r">EXEC</button>`;
 // modal.content.storageview
 const tmHTMLModalStorageview = `
-  <table>
-    <thead><tr><th>Copy</th><th>Key</th><th>Value</th></tr></thead>
+  <table class="tm-mb5">
+    <thead><tr><th>Key</th><th>Value</th><th>Actions</th></tr></thead>
     <tbody>
       <!-- modal.content.storageview.[row] -->
     </tbody>
   </table>
-  <button id="tm-modal-storageview-copyall" class="tm-btn-g">Copy All</button>
+  <button id="tm-modal-storageview-copyall" class="tm-btn tm-btn-b">Copy All</button>
 `;
 // modal.content.storageview.row
 const tmHTMLModalStorageviewRow = `
   <tr class="tm-modal-storageview-row">
-    <td class="tm-modal-storageview-row-tdkey">{{key}}</td>
-    <td class="tm-modal-storageview-row-tdval">
-      <span class="tm-modal-storageview-row-value" data-value="{{value}}">{{value}}</span>
-      <button class="tm-modal-storageview-row-copy tm-btn-g">Copy</button>
-      <button class="tm-modal-storageview-row-delete tm-btn-g">Delete</button>
+    <td class="tm-modal-storageview-row-tdkey tm-p5" data-key="{{key}}">{{key}}</td>
+    <td class="tm-modal-storageview-row-tdval tm-p5" data-value="{{value}}">{{value}}</td>
+    <td class="tm-modal-storageview-row-tdactions tm-p5">
+      <button class="tm-modal-storageview-row-copy tm-btn tm-btn-b">Copy</button>
+      <button class="tm-modal-storageview-row-delete tm-btn tm-btn-r">Delete</button>
     </td>
   </tr>`;

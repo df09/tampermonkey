@@ -1,3 +1,22 @@
+function tmCopy(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  } else {
+    // fallback с document.execCommand
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      console.log('Fallback copy success');
+    } catch (err) {
+      return Promise.reject(err);
+    }
+    document.body.removeChild(textarea);
+    return Promise.resolve();
+  }
+}
 function camelCase(input){return input.split('/').map((w, i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');}
 function tmHide(...els){els.forEach(e=>e.classList.add('tm-dnone'))};
 function tmShow(...els){els.forEach(e=>e.classList.remove('tm-dnone'))};
@@ -76,20 +95,22 @@ async function fakeRedirect(newUrl, delay=2000) {
 function addCls(e, ...cls){cls.forEach(c=>{if(!e.classList.contains(c)){e.classList.add(c)}})}
 function remCls(e, ...cls){cls.forEach(c=>{if(e.classList.contains(c)){e.classList.remove(c)}})}
 function remClsRegex(e, ...patterns) {
-  const classesToRemove = [...e.classList].filter(cls => 
+  const classesToRemove = [...e.classList].filter(cls =>
     patterns.some(pattern => new RegExp(pattern).test(cls))
   );
   classesToRemove.forEach(cls => e.classList.remove(cls));
 }
 
 function getEl(selector, pass=false) {
-  const pfx = 'getEl "'+selector+'": ';
   // get by id
   if (/^#[a-zA-Z0-9\-_]+$/.test(selector)) {
     const e = document.getElementById(selector.slice(1));
     if (!e) {
       if (pass) {return false}
-      tmUi.rollback(pfx+'not found.');
+      tmUi.abort({
+        title: 'helpers.getEl:',
+        msg: '"'+selector+'" not found.'
+      })
     }
     return e;
   }
@@ -97,16 +118,29 @@ function getEl(selector, pass=false) {
   const els = document.querySelectorAll(selector);
   if (els.length === 0) {
     if (pass) {return false}
-    tmUi.rollback(pfx+'not found.')
+    tmUi.abort({
+      title: 'helpers.getEl:',
+      msg: '"'+selector+'" not found.'
+    })
   }
-  if (els.length > 1) {tmUi.rollback(pfx+'multiple els found.')}
+  if (els.length > 1) {
+    tmUi.abort({
+      title: 'helpers.getEl:',
+      msg: '"'+selector+'" multiple found.'
+    })
+  }
   e = els[0];
-  console.log(pfx, e);
+  console.log(selector, e);
   return e;
 }
 function getEls(selector) {
   const els = document.querySelectorAll(selector);
-  if (els.length === 0) {tmUi.rollback('getEl: "'+selector+'" not found.')}
+  if (els.length === 0) {
+    tmUi.abort({
+      title: 'helpers.getEl:',
+      msg: '"'+selector+'" not found.'
+    })
+  }
   console.log('getEls "'+selector+'":', els);
   return els;
 }

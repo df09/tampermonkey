@@ -3,11 +3,11 @@ const tmModal = {
   e: {
     overlay: getEl("#tm-modal-overlay"),
     container: getEl("#tm-modal"),
-    // header
     header: getEl("#tm-modal-header"),
+    body: getEl("#tm-modal-body"),
+    // header
     title: getEl("#tm-modal-title"),
     close: getEl("#tm-modal-close"),
-    body: getEl("#tm-modal-body"),
     // info
     info: getEl("#tm-modal-info"),
     infoMsg: getEl("#tm-modal-info-msg"),
@@ -26,12 +26,14 @@ const tmModal = {
     content: getEl("#tm-modal-content")
   },
   validateIsFunctions(...args) {
-    if (!args.every(arg => typeof arg === 'function')) {
-      tmUi.abort({
-        title: 'validateIsFunctions',
-        msg: 'false'
-      })
-    }
+    args.forEach((arg, index) => {
+      if (typeof arg !== 'function') {
+        tmUi.abort({
+          title: 'tmModal.validateIsFunctions',
+          msg: 'The argument-'+(index+1)+' is of type "'+(typeof arg)+'", a function is expected.',
+        });
+      }
+    });
     return true;
   },
 
@@ -76,7 +78,6 @@ const tmModal = {
       addCls(this.e.inputInput, 'tm-brd-w');
       addCls(this.e.inputSubmit, 'tm-btn-'+accent);
     }
-
     this.e.title.textContent = title;
   },
   show(type) {
@@ -84,6 +85,7 @@ const tmModal = {
     tmShow(this.eType);tmShow(this.e.overlay);
   },
   hide() {tmHide(this.e.overlay, this.e.info, this.e.yn, this.e.input, this.e.content)},
+  // handlers
   handleEl(e, action) {e.addEventListener('click',()=>{this.hide();action()})},
   handleKey(key, action) {
     const escHandler = (event) => { if (event.key === key || event.code === key) {
@@ -93,42 +95,64 @@ const tmModal = {
     }};
     document.addEventListener('keydown', escHandler);
   },
+  handleOverlayClick(closeAction, event) {
+    if (!this.e.container.contains(event.target)) {
+      this.hide();
+      closeAction();
+      this.e.overlay.removeEventListener("click", this.boundOverlayClick);
+    }
+  },
 
   // info
   info({accent, title, msg, actionClose=()=>{}}) {
     this.validateIsFunctions(actionClose);
     const type = 'info';
     this.init(type, accent, title);
-    this.e.infoMsg.textContent = msg;
+    this.e.infoMsg.textContent = tmUi.formulateMsg(msg);
     this.handleEl(this.e.close, actionClose);
     this.handleEl(this.e.infoBtn, actionClose);
     this.handleKey('Escape', actionClose);
     this.handleKey('Enter', actionClose);
+    // Используем bind, чтобы сохранить контекст this
+    this.boundOverlayClick = this.handleOverlayClick.bind(this, actionClose);
+    this.e.overlay.addEventListener("click", this.boundOverlayClick);
     this.show(type);
+    setTimeout(() => {
+      this.e.infoBtn.focus();
+    }, 100);
   },
   // yn
   yn({accent, title, msg, actionNo=()=>{}, actionYes=()=>{}}) {
     this.validateIsFunctions(actionNo, actionYes);
     const type = 'yn';
     this.init(type, accent, title);
-    this.e.ynMsg.textContent = msg;
+    this.e.ynMsg.textContent = tmUi.formulateMsg(msg);
     this.handleEl(this.e.close, actionNo);
     this.handleEl(this.e.ynBtnNo, actionNo);
     this.handleEl(this.e.ynBtnYes, actionYes);
     this.handleKey('Escape', actionNo);
     this.handleKey('Enter', actionYes);
+    // Используем bind, чтобы сохранить контекст this
+    this.boundOverlayClick = this.handleOverlayClick.bind(this, actionNo);
+    this.e.overlay.addEventListener("click", this.boundOverlayClick);
     this.show(type);
+    setTimeout(() => {
+      this.e.ynBtnYes.focus();
+    }, 100);
   },
   // input
   input({accent, title, msg, actionClose=()=>{}, actionSubmit=()=>{}}) {
     this.validateIsFunctions(actionClose, actionSubmit);
     const type = 'input';
     this.init(type, accent, title);
-    this.e.inputMsg.textContent = msg;
+    this.e.inputMsg.textContent = tmUi.formulateMsg(msg);
     this.handleEl(this.e.close, actionClose);
     this.handleEl(this.e.inputSubmit, actionSubmit);
     this.handleKey('Escape', actionClose);
     this.handleKey('Enter', actionSubmit);
+    // Используем bind, чтобы сохранить контекст this
+    this.boundOverlayClick = this.handleOverlayClick.bind(this, actionClose);
+    this.e.overlay.addEventListener("click", this.boundOverlayClick);
     this.show(type);
     setTimeout(() => {
       this.e.inputInput.focus();
@@ -136,14 +160,21 @@ const tmModal = {
     }, 100);
   },
   // content
-  content({id, accent, title, actionClose=()=>{}, actionContent}) {
+  content({idsfx, accent, title, actionClose=()=>{}, actionContent}) {
     this.validateIsFunctions(actionClose, actionContent);
     const type = 'content';
     this.init(type, accent, title);
-    this.e.body.insertAdjacentHTML('beforeend', '<div id="'+id+'"></div>');
+    this.e.content.innerHTML = '';
+    this.e.content.insertAdjacentHTML('beforeend', '<div id="tm-modal-content-'+idsfx+'"></div>');
     this.handleEl(this.e.close, actionClose);
     this.handleKey('Escape', actionClose);
-    actionContent();
+    // Используем bind, чтобы сохранить контекст this
+    this.boundOverlayClick = this.handleOverlayClick.bind(this, actionClose);
+    this.e.overlay.addEventListener("click", this.boundOverlayClick);
     this.show(type);
+    setTimeout(() => {
+      this.e.container.focus();
+    }, 100);
+    actionContent();
   },
 };
