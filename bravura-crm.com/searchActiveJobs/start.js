@@ -51,7 +51,8 @@ async function searchActiveJobsStart() {
     activeJobs = parseActiveJobs(html);
     tmsSet('tm_searchActiveJob-jobs', activeJobs);
   }
-  tmUi.abort({
+  tmModal.info({
+    accent: 'g',
     title: 'TODO',
     msg: ['TODO', activeJobs]
   });
