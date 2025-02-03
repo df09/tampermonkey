@@ -21,7 +21,7 @@
     '/'+dir+'/createBarcodes/sizeSetup.js',
     '/'+dir+'/createBarcodes/sectionsDetail.js',
     '/'+dir+'/redirectToJob/start.js',
-    '/'+dir+'/searchActiveJob/start.js',
+    '/'+dir+'/searchActiveJobs/start.js',
     '/'+dir+'/main.js',
   ];
   const host = 'http://localhost:9876';

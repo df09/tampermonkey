@@ -1,7 +1,6 @@
-39A ->
-test_A1: 1/4+94-3/8+0.0+59-9/16+0.0+94-9/16+1/8
+css: reset styles for each site
+twins: doublicated empty twins
 
-thiws restore
 search active jobs - init
 crl - закупка hw
 

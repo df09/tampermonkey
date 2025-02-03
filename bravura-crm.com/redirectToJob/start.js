@@ -1,7 +1,6 @@
 function redirectToJobStart() {
-  const operation = 'redirectToJob/start';
-  tmsSetOperation(operation);
-  console.log(operation);
+  // start
+  tmsSetOperation('redirectToJob/start');
   tmMenu.showExec();
 
   tmModal.input({

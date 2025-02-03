@@ -292,6 +292,9 @@ function getInputData(textareaValue) {
   }
 }
 async function generateTwinsStart() {
+  // start
+  tmsSetOperation('generateTwins/start');
+  tmMenu.showExec();
   // check start conditions
   const regex = /^https:\/\/solimp\.crlaurence\.com\/SOL_API\/ShowerApp\/#projects\/\d+/;
   if (!regex.test(window.location.href)) {
@@ -359,7 +362,15 @@ async function generateTwinsStart() {
   }
   // done
   tmMenu.showMain();
-  tmModal.info({accent: 'g', title: tmsGetOperation(), msg: 'Done!'})
+  tmModal.info({
+    accent: 'g',
+    title: 'Generate Twins',
+    msg: 'Done!',
+    actionClose: ()=>{
+      tmsReset();
+      tmMenu.showMain();
+    },
+  })
 }
 
 // async function updInputValue(el, newValue, delay) {

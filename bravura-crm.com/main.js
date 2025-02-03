@@ -1,16 +1,12 @@
-// === entrypoints =====================================
-function redirectToJob(hotkey){tmsSetOperation('redirectToJob/start');redirectToJobStart(hotkey)}
-function searchActiveJob(){tmsSetOperation('searchActiveJob/start');searchActiveJobStart()}
-function createBarcodes(){tmsSetOperation('createBarcodes/start');createBarcodesStart()}
 // === ui =====================================
 const tmMap = {
   readme: 'https://github.com/df09/tampermonkey/blob/main/bravura-crm.com/readme.md',
   hotkeys: [
-    ['redirect-to-job', 'Redirect to job', 'Shift+J', redirectToJob],
-    ['search-active-job', 'Search Active Job', 'Shift+S', searchActiveJob],
+    ['redirect-to-job', 'Redirect to job', 'Shift+J', redirectToJobStart],
+    ['search-active-job', 'Search Active Job', 'Shift+S', searchActiveJobsStart],
   ],
   btnsPrep: [
-    ['create-bcodes', 'Create Barcodes', createBarcodes],
+    ['create-bcodes', 'Create Barcodes', createBarcodesStart],
   ],
   btnsExec: [],
 }
@@ -18,6 +14,6 @@ tmMenu.init(tmMap);
 // === handle active operations =====================================
 tmsOperationsHandle({
   redirectToJob: ['start'],
-  searchActiveJob: ['start'],
+  searchActiveJobs: ['start'],
   createBarcodes: ['start', 'createFo', 'checkExistingRooms', 'newProduct', 'sizeSetup', 'sectionsDetail'],
 });

@@ -77,6 +77,9 @@ function getFosId() {
   tmUi.rollback('getFosId - fosId not found in "View FO" button href');
 }
 function createBarcodesStart() {
+  // start
+  tmsSetOperation('createBarcodes/start');
+  tmMenu.showExec();
   // check start url
   const regex = /^http:\/\/bravura-crm\.com\/jobs\/.*$/;
   if (!regex.test(window.location.href)) {
