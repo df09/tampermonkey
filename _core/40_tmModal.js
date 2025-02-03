@@ -105,8 +105,8 @@ const tmModal = {
 
   // info
   info({accent, title, msg, actionClose=()=>{}}) {
-    this.validateIsFunctions(actionClose);
     const type = 'info';
+    this.validateIsFunctions(actionClose);
     this.init(type, accent, title);
     this.e.infoMsg.textContent = tmUi.formulateMsg(msg);
     this.handleEl(this.e.close, actionClose);

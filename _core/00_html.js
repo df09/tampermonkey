@@ -43,7 +43,7 @@ injectHTML(`
     </div>
     <!-- exec -->
     <div id="tm-exec" class="tm-dnone tm-body tm-row tm-brd tm-brd-w">
-      <button id="tm-exec-continue" class="tm-dnone tm-btn-y tm-mt5">Continue</button>
+      <button id="tm-exec-continue" class="tm-dnone tm-btn-y tm-mt5 tm-mr5">Continue</button>
       <button id="tm-exec-cancel" class="tm-btn-r tm-mt5">CANCEL</button>
     </div>
   </div>

@@ -84,6 +84,7 @@ const tmMenu = {
   },
 
   // === listners ==============================
+  // === listners.header ==============================
   handleAbort() {this.e.abort.addEventListener('click',()=>{
     tmUi.abort({
       title: 'Abort operation.',
@@ -99,6 +100,7 @@ const tmMenu = {
     }
     this.showMain();
   })},
+  // === listners.main ==============================
   handleReadme(link) {this.e.readme.querySelector('a').href=link},
   handleHotkey(hotkey) {
     const [idsfx, name, keys, action] = hotkey;
@@ -265,14 +267,6 @@ const tmMenu = {
       msg: 'ALL DATA has been removed from storage.',
     });
   })},
-  handleExecCancel() {this.e.execCancel.addEventListener('click',()=>{
-    tmUi.reset();
-    tmModal.info({
-      accent: 'y',
-      title: 'Cancel EXEC',
-      msg: 'Exec canceled by user.',
-    });
-  })},
   makeResizable(e) {
     let isResizing = false;
     let yxStart, hwStart;
@@ -316,6 +310,27 @@ const tmMenu = {
       }
     });
   },
+  // === listners.exec ==============================
+  pause({accent, title, msg}) {
+    return new Promise(resolve => {
+      const handler = ()=>{
+        tmHide(this.e.execContinue);
+        this.e.execContinue.removeEventListener('click', handler);
+        resolve();
+      };
+      this.e.execContinue.addEventListener('click', handler);
+      this.showExecContinue();
+      tmModal.info({accent:accent, title:title, msg:msg, actionClose:()=>{}});
+    });
+  },
+  handleExecCancel() {this.e.execCancel.addEventListener('click',()=>{
+    tmUi.reset();
+    tmModal.info({
+      accent: 'y',
+      title: 'Cancel EXEC',
+      msg: 'Exec canceled by user.',
+    });
+  })},
 
   // === show ==============================
   show() {
@@ -377,6 +392,9 @@ const tmMenu = {
     tmShow(this.e.abort, exec);
     tmHide(back, mnmz, main, prep);
     return;
+  },
+  showExecContinue() {
+    tmShow(this.e.execContinue);
   },
   // === upd ==============================
   updOperation(){

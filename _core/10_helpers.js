@@ -86,7 +86,7 @@ async function redirect(newUrl, force=false) {
     msg: 'already on the target URL.',
   })
 }
-async function fakeRedirect(newUrl, delay=2000) {
+async function fakeRedirect(newUrl, delay=4000) {
   console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');
   window.location.href = newUrl;
   await sleep(delay);

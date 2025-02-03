@@ -1,11 +1,16 @@
-thiws:
-  restore
-  upd:
+39A ->
+test_A1: 1/4+94-3/8+0.0+59-9/16+0.0+94-9/16+1/8
+
+thiws restore
+search active jobs - init
+crl - закупка hw
+
+later:
+  abort не работает
+  thiws upd:
+    переписать на mutationObeservers
     скачать pdf
     out of corner
-    add double aheck feathcers
-later:
-  search active jobs - init
-  crl - закупка hw
-    auto operations (ex. login)
+    add double check feathcers
+  auto operations (ex. login)
   cross-domain for dev

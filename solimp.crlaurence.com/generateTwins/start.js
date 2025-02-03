@@ -28,7 +28,7 @@
 
 // ==== upd measurements ==========================================
 function getOutageDirection(edge) {
-  const outageDirection = '';
+  let outageDirection = '';
   if (edge[0] == "0" && edge[2] == "0") {
     outageDirection = "none";
   } else {
@@ -42,7 +42,7 @@ function getOutageDirection(edge) {
   return outageDirection;
 }
 function getClickCount(number, outageDirection) {
-  const clickCount = 0;
+  let clickCount = 0;
   if (outageDirection != 'none') {
     if (number == 1) {
       clickCount = outageDirection == 'right' ? 1 : 2; // 1 click - right, 2 click - left
@@ -78,7 +78,7 @@ function addClickCounterHint(number, clickCount, outageDirectionEl) {
   outageDirectionEl.parentElement.appendChild(counterContainer);
   // Обработчик кликов
   outageDirectionEl.addEventListener('click', () => {
-    const counter = parseInt(counterContainer.innerText, 10);
+    let counter = parseInt(counterContainer.innerText, 10);
     counter--;
     counterContainer.innerText = counter;
     if (counter == 0) { counterContainer.style.background = 'green'; }
@@ -87,8 +87,11 @@ function addClickCounterHint(number, clickCount, outageDirectionEl) {
 }
 async function updMeasurementFields(number, edge, delay) {
   console.log(`updMeasurementFields: number=${number}, edge=${edge}, delay=${delay}`);
-  if (edge[0] !== "0" && edge[2] !== "0") {
-    abort('Outage не может быть одновременно с двух сторон.');
+  if (edge[0].trim() !== "0" && edge[2].trim() !== "0") {
+    tmUi.abort({
+      title: 'Upd Measurement - fail',
+      msg: 'Outage не может быть одновременно с двух сторон.'
+    });
   }
   const length = edge[1];
   const outageSize = edge[0] != "0" ? edge[0] : edge[2];
@@ -117,18 +120,30 @@ async function checkModalWarnings() {
   if (!modal) { return true; }
   // serious - tmUiPause
   if (modal.classList.contains('serious')) {
-    await tmUiPause('serious warnings - save manually and continue.');
-    return 'manually';
+    await tmMenu.pause({
+      accent: 'y',
+      title: 'Save Project - serious warnings',
+      msg: 'Please double check, save manually and continue.',
+    });
+    return false;
   }
   // если невозможно сохранить - abort
-  if (modal.classList.contains('fatal')) { abort('save - fatal errors.'); }
+  if (modal.classList.contains('fatal')) {
+    tmUi.abort({
+      title: 'Check Modal - failed to save.',
+      msg: 'Fatal error. abort.',
+    });
+  }
   // если индетифицировать не удалось - abort
-  abort('save - unknown modal type.');
+  tmUi.abort({
+    title: 'Check Modal - failed to save.',
+    msg: 'Unknown modal type. abort.',
+  });
 }
 function findReactComponent(dom) {
   const key = Object.keys(dom).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
   if (!key) return null;
-  const node = dom[key];
+  let node = dom[key];
   while (node) {
     if (node.memoizedProps && node.memoizedProps.doAction) { return node; }
     node = node.return; // Поднимаемся вверх по дереву
@@ -141,11 +156,17 @@ async function save(delay) {
   const button = getEl(selector);
   const reactComponent = findReactComponent(button);
   if (!reactComponent) {
-    abort('React компонент с doAction не найден!');
+    tmUi.abort({
+      title: 'Save Project - fail',
+      msg: 'React компонент с doAction не найден',
+    });
   }
   const props = reactComponent.memoizedProps;
   if (!props || !props.doAction) {
-    abort('doAction не найден в memoizedProps!');
+    tmUi.abort({
+      title: 'Save Project - fail',
+      msg: 'doAction не найден в memoizedProps',
+    });
   }
   props.doAction(
     () => { console.log('reactComponent: doAction...'); },
@@ -154,7 +175,7 @@ async function save(delay) {
   await sleep(1000);
   // Добавляем проверку на модальное окно
   const result = await checkModalWarnings();
-  if (result == 'manually') { // если сохранение вручную, сохранять не нужно
+  if (!result) {
     console.log('save: done.');
     return;
   }
@@ -166,12 +187,24 @@ async function save(delay) {
 async function updProjectName(projectLocation, delay) {
   console.log('updProjectName..');
   const projectNameDiv = getEl('div[data-sb-field="content/projectName"]');
-  if (!projectNameDiv) { abort('DIV для "Project Name" не найден.') }
+  if (!projectNameDiv) {
+    tmUi.abort({
+      title: 'Udp Project - fail',
+      msg: 'DIV для "Project Name" не найден.',
+    });
+  }
   const inputEl = projectNameDiv.querySelector('input');
-  if (!inputEl) { abort('Поле ввода в "Project Name" не найдено.'); }
+  if (!inputEl) {
+    tmUi.abort({
+      title: 'Udp Project - fail',
+      msg: 'Поле ввода в "Project Name" не найдено.',
+    });
+  }
   // upd value
-  const currentValue = inputEl.value;
-  if (currentValue.startsWith('Clone: ')) { currentValue = currentValue.replace('Clone: ', ''); }
+  let currentValue = inputEl.value;
+  if (currentValue.startsWith('Clone: ')) {
+    currentValue = currentValue.replace('Clone: ', '');
+  }
   const parts = currentValue.split(' - ');
   if (parts.length > 1) { currentValue = parts[0]+' - '+projectLocation; }
   await updValEl(inputEl, currentValue, delay);
@@ -180,7 +213,6 @@ async function updProjectName(projectLocation, delay) {
 async function updLocation(projectLocation, delay) {
   console.log('updLocation..');
   const locationEl = getEl('div.inner-control-container[data-sb-field="content/location"] input.dx-texteditor-input')
-  if (!locationEl) { abort('Поле для "Location" не найдено.') }
   await updValEl(locationEl, projectLocation, delay);
   console.log('updLocation: updated to "'+projectLocation+'".');
 }
@@ -222,10 +254,10 @@ function interceptFetch(urlSubstring, timeout = 20000) {
     }, timeout);
   });
 }
-function getInputData(textarea) {
+function getInputData(textareaValue) {
   try {
     const data = {}; // Инициализация объекта
-    const lines = textarea.value.split('\n');
+    const lines = textareaValue.split('\n');
     lines.forEach(line => {
       line = line.trim();
       // Удаляем лишние пробелы
@@ -253,7 +285,10 @@ function getInputData(textarea) {
     });
     return data;
   } catch (error) {
-    abort('Ошибка в данных: ' + error.message);
+    tmUi.abort({
+      title: 'Parse Input Data',
+      msg: ['Ошибка в данных: ', error.message],
+    });
   }
 }
 async function generateTwinsStart() {
@@ -265,14 +300,14 @@ async function generateTwinsStart() {
       msg: 'URL must be https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/<number>',
     });
   }
-  if (getEl('#save-resource', pass=true)) {
+  if (getEl('#save-resource', true)) {
     tmUi.abort({
       title: 'Generate Twins',
       msg: 'Cancel - You should be on the saved project page.'
     });
   }
   // main logic
-  const data = tmMenu.e.prepTextarea.value;
+  const data = getInputData(tmMenu.e.prepTextarea.value);
   tmsSet('tm_data-generateTwins', data);
   for (const projectLocation in data) {
     // clone project
@@ -298,9 +333,12 @@ async function generateTwinsStart() {
     // const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
     // const outageDirectionEl = getEl(outageDirectionSelector);
     // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
-    await tmUiPause('please set outageDirections manually.');
+    await tmMenu.pause({
+      accent: 'y',
+      title: 'Outage Directions',
+      msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
+    });
     await save(5000);
-
     // project page
     await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
 
@@ -320,10 +358,8 @@ async function generateTwinsStart() {
     // await tmUiPause('please download reports manually.');
   }
   // done
-  tmsReset();
-  tmUiInitOperation();
-  tmUiShowMain();
-  alert('Done!');
+  tmMenu.showMain();
+  tmModal.info({accent: 'g', title: tmsGetOperation(), msg: 'Done!'})
 }
 
 // async function updInputValue(el, newValue, delay) {

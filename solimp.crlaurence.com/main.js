@@ -1,7 +1,7 @@
 // === entrypoints =====================================
 function generateTwins(){tmsSetOperation('generateTwins/start');generateTwinsStart()}
 // === ui =====================================
-const map = {
+const tmMap = {
   readme: 'https://github.com/df09/tampermonkey/blob/main/solimp.crlaurence.com/readme.md',
   hotkeys: [],
   btnsPrep: [
