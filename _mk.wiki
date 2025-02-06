@@ -1,3 +1,6 @@
+create-barcodes:
+  create fo - fix
+  check existed - if not exist
 css: reset styles for each site
 twins: doublicated empty twins
 
