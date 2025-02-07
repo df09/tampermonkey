@@ -28,13 +28,8 @@ async function createBarcodesSectionsDetail() {
   });
 
   // === done ======================================
-  tmModal.info({
-    accent: 'g',
+  tmUi.done({
     title: 'Create Barcodes: Done',
-    msg: 'please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok.',
-    actionClose: ()=>{
-      tmsReset();
-      tmMenu.showMain();
-    },
+    msg: 'please PRINT BARCODES and click "UPDATE STATUSES" if everything is ok.'
   });
 }

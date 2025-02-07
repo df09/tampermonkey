@@ -158,6 +158,7 @@ const tmMenu = {
       tmShow(prepExec);
       // show prep
       this.showPrep();
+      setTimeout(()=>{this.e.prepTextarea.focus()},100);
     });
     // show
     tmShow(this.e.mainPrep);

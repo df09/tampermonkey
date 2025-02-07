@@ -77,9 +77,7 @@ function getFosId() {
   tmUi.rollback('getFosId - fosId not found in "View FO" button href');
 }
 function createBarcodesStart() {
-  // start
-  tmsSetOperation('createBarcodes/start');
-  tmMenu.showExec();
+  tmUi.startOperation('createBarcodes/start')
   // check start url
   const regex = /^http:\/\/bravura-crm\.com\/jobs\/.*$/;
   if (!regex.test(window.location.href)) {
@@ -95,7 +93,7 @@ function createBarcodesStart() {
   tmsSet('tm_jobId', getJobId());
   // check/create fo
   const createFoSelector = "a[data-method='post'][href^='/jobs/'][href$='/fabrication_orders']";
-  const eCreateFo = getEl(createFoSelector, pass=true);
+  const eCreateFo = getEl(createFoSelector, true);
   if (eCreateFo) {
     // redirect to create Fo
     tmsSetOperation('createBarcodes/createFo');

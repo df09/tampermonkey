@@ -174,12 +174,7 @@ async function save(delay) {
   );
   await sleep(1000);
   // Добавляем проверку на модальное окно
-  const result = await checkModalWarnings();
-  if (!result) {
-    console.log('save: done.');
-    return;
-  }
-  await sleep(delay);
+  if (await checkModalWarnings()) { await sleep(delay); }
   console.log('save: done.');
 }
 
@@ -293,28 +288,20 @@ function getInputData(textareaValue) {
 }
 async function generateTwinsStart() {
   // start
-  tmsSetOperation('generateTwins/start');
-  tmMenu.showExec();
+  tmUi.startOperation('generateTwins/start');
   // check start conditions
   const regex = /^https:\/\/solimp\.crlaurence\.com\/SOL_API\/ShowerApp\/#projects\/\d+/;
   if (!regex.test(window.location.href)) {
-    tmUi.abort({
-      title: 'Generate Twinns',
-      msg: 'URL must be https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/<number>',
-    });
+    tmUi.abort({msg: 'URL must be https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/<number>'});
   }
   if (getEl('#save-resource', true)) {
-    tmUi.abort({
-      title: 'Generate Twins',
-      msg: 'Cancel - You should be on the saved project page.'
-    });
+    tmUi.abort({msg: 'Cancel - You should be on the saved project page.'});
   }
   // main logic
   const data = getInputData(tmMenu.e.prepTextarea.value);
   tmsSet('tm_data-generateTwins', data);
   for (const projectLocation in data) {
     // clone project
-    console.log('clone project..');
     await clickEl(getEl('div[aria-label="Clone"]'), 300);
     await clickEl(getEl('div#dropdown-item-clone-all-details'), 0);
     const fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
@@ -360,17 +347,7 @@ async function generateTwinsStart() {
     // await clickEl(getEl(dissmissSelector), 500);
     // await tmUiPause('please download reports manually.');
   }
-  // done
-  tmMenu.showMain();
-  tmModal.info({
-    accent: 'g',
-    title: 'Generate Twins',
-    msg: 'Done!',
-    actionClose: ()=>{
-      tmsReset();
-      tmMenu.showMain();
-    },
-  })
+  tmUi.done({title: 'Generate Twins', msg: 'Done!'})
 }
 
 // async function updInputValue(el, newValue, delay) {

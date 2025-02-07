@@ -133,15 +133,16 @@ function getEl(selector, pass=false) {
   console.log(selector, e);
   return e;
 }
-function getEls(selector) {
+function getEls(selector, pass=false) {
   const els = document.querySelectorAll(selector);
   if (els.length === 0) {
+    if (pass) { return false; }
     tmUi.abort({
-      title: 'helpers.getEl:',
-      msg: '"'+selector+'" not found.'
-    })
+      title: 'helpers.getEls:',
+      msg: '"' + selector + '" not found.'
+    });
   }
-  console.log('getEls "'+selector+'":', els);
+  console.log('getEls "' + selector + '":', els);
   return els;
 }
 async function clickEl(e, delay=300) {

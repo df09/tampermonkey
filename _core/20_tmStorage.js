@@ -74,19 +74,19 @@ function tmsReset() {
 function tmsSetOperation(operation) {
     const operationFormat = /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/;
     if (!operationFormat.test(operation)) {throw new Error('Invalid operation ('+operation+'). must be "<action>/<step>" in camelCase.')}
-    const [action, step] = operation.split('/');
-    tmsSet('tm_operation', operation); tmsSet('tm_action', action); tmsSet('tm_step', step);
+    tmsSet('tm_operation', operation);
     console.log('tmsSetOperation:', operation);
 };
 function tmsGetOperation() { return tmsGet('tm_operation'); };
-function tmsGetAction() { return tmsGet('tm_action'); };
-function tmsGetStep() { return tmsGet('tm_step'); };
+function tmsGetAction() { return tmsGet('tm_operation').split('/')[0]; };
+function tmsGetStep() { return tmsGet('tm_operation').split('/')[1]; };
 function tmsOperationsGetHandlers(config) {
   const fullHandlers = {};
   for (const [action, steps] of Object.entries(config)) {
     fullHandlers[action] = {};
     for (const step of steps) {
       const handlerName = camelCase(action + '/' + step);
+      console.log('handlerName:', handlerName)
       if (typeof window[handlerName] !== 'function') {
         throw new Error('tmsOperationsGetHandlers: Handler function "'+handlerName+'" not found.');
       }
@@ -97,7 +97,10 @@ function tmsOperationsGetHandlers(config) {
 }
 function tmsOperationsHandle(config) {
   const operation = tmsGetOperation();
-  if (!operation){console.log('tmsOperationsHandle: no active operations.');return}
+  if (!operation) {
+    console.log('tmsOperationsHandle: no active operations.');
+    return;
+  }
   const handlers = tmsOperationsGetHandlers(config);
   const action = tmsGetAction();
   if (!handlers[action]){throw new Error(operation+': unknown action "'+action+'"')}

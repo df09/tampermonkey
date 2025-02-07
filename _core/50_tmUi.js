@@ -12,7 +12,7 @@ const tmUi = {
     tmsReset();
     tmMenu.showMain();
   },
-  abort({title='tmUi.abort', msg}) {
+  abort({title=tmsGetAction(), msg='Abort'}) {
     const fmsg = this.formulateMsg(msg);
     tmsDeleteAll();
     tmMenu.showMain();
@@ -21,6 +21,16 @@ const tmUi = {
       title: title,
       msg: fmsg,
     });
+    console.error(title + ': ' + fmsg);
     throw new Error(title + ': ' + fmsg);
+  },
+
+  startOperation(operation) {
+    tmsSetOperation(operation);
+    tmMenu.showExec();
+  },
+  done({title=tmsGetAction(), msg='The operation has been completed successfully.'}) {
+    tmsReset(); tmMenu.showMain();
+    tmModal.info({accent:'g', title:title, msg:this.formulateMsg(msg)});
   },
 };
