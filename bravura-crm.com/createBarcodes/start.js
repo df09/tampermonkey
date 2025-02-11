@@ -6,18 +6,18 @@ function getUniqueLocations(data) {
     if (!line) return;
     const parts = line.split(':').map((part) => part.trim());
     if (parts.length !== 2) {
-      tmUi.rollback('invalid data. line:', line);
+      tmUi.abort({msg: ['invalid data. line:', line]});
     }
     const locParams = parts[0];
     const locs = parts[1].split(' ');
     locParams.split('_').forEach((pair) => {
       if (!pair.includes('-')) {
-        tmUi.rollback('invalid data. pair:', pair);
+        tmUi.abort({msg: ['invalid data. pair:', pair]});
       }
     });
     locs.forEach((loc) => {
       if (locations.has(loc)) {
-        tmUi.rollback('duplicate location found:', loc);
+        tmUi.abort({msg: ['duplicate location found:', loc]});
       }
       locations.add(loc);
     });
@@ -34,12 +34,12 @@ function getDataBarcodes(data) {
     if (!line) return;
     const [locParams, locs] = line.split(':').map((part) => part.trim());
     if (!locParams || !locs) {
-      tmUi.rollback('invalid data. line:', line);
+      tmUi.abort({msg: ['invalid data. line:', line]});
     }
     const foParams = locParams.split('_').map((pair) => {
       const [fo, glass] = pair.split('-');
       if (!fo || !glass) {
-        tmUi.rollback('invalid data. pair:', pair);
+        tmUi.abort({msg: ['invalid data. pair:', pair]});
       }
       return { fo, glass };
     });
@@ -61,9 +61,9 @@ function getJobId() {
       console.log('getJobId:', jobId);
       return jobId;
     }
-    tmUi.rollback('getJobId - Job ID not found in the URL');
+    tmUi.abort({msg: 'getJobId - Job ID not found in the URL'});
   } catch (error) {
-    tmUi.rollback('getJobId - Error extracting Job ID:', error.message);
+    tmUi.abort({msg: ['getJobId - Error extracting Job ID:', error.message]});
   }
 }
 function getFosId() {
@@ -75,6 +75,7 @@ function getFosId() {
     return fosId;
   }
   tmUi.rollback('getFosId - fosId not found in "View FO" button href');
+        tmUi.abort({msg: ['invalid data. pair:', pair]});
 }
 function createBarcodesStart() {
   tmUi.startOperation('createBarcodes/start')
@@ -98,10 +99,11 @@ function createBarcodesStart() {
     // redirect to create Fo
     tmsSetOperation('createBarcodes/createFo');
     clickEl(eCreateFo);
+  } else {
+    // checkExistingRooms
+    const fosId = getFosId();
+    tmsSet('tm_fosId', fosId);
+    tmsSetOperation('createBarcodes/checkExistingRooms');
+    redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/edit?show_finished=true`);
   }
-  // checkExistingRooms
-  const fosId = getFosId();
-  tmsSet('tm_fosId', fosId);
-  tmsSetOperation('createBarcodes/checkExistingRooms');
-  redirect(`http://bravura-crm.com/fabrication_orders/${fosId}/edit?show_finished=true`);
 }

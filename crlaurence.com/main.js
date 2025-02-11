@@ -1,15 +1,14 @@
-(function(){'use strict';
-    tmMenuInit();
-    const operation = tmsGetOperation();
-    const action = tmsGetAction();
-    const step = tmsGetStep();
-    // === orderHw =====================================
-    tmMenuAdd('button', '#oder_hw', 'Order hw', ()=>orderHw());
-    if (action === 'orderHw') {
-        if (step === 'login') { orderHwLogin();
-        } else if (step === 'addProducts') { orderHwAddProducts();
-        } else if (step === 'checkout') { orderHwCheckout();
-        } else {abort(operation+': unknown step "'+step+'"');}
-    }
-    // === ... =====================================
-})();
+try {
+  // ui
+  tmMenu.init({
+    readme: 'https://github.com/df09/tampermonkey/blob/main/crlaurence.com/readme.md',
+    features: [['autoLogin', 'Auto Login']],
+    hotkeys:  [],
+    btnsPrep: [['orderHw', 'Order HW', orderHwStart]],
+    btnsExec: [],
+  });
+  // auto operations
+  fAutoLogin('autoLogin');
+  // active operations
+  handleOperations({orderHw: ['start', 'checkIsCartEmpty', 'addToCart', 'checkout']});
+} catch (err) {tmUi.abort({msg:['Error(main):',err.message]})}

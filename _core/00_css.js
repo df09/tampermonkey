@@ -102,24 +102,22 @@ function injectCSS(css){
 .tm-btn-header-b { border: 1px solid #384489; background-color: #5d6ec7; }
 
 /* ===== main ============================ */
-
-/* ===== main.hotkeys ============================ */
-.tm-group-hotkey {}
-.tm-hotkey-title {
+/* ===== main.fhks ============================ */
+.tm-fhk-title {
   font-size: 16px;
   font-weight: normal;
   width: 100%;
   padding: 5px 5px 5px 0;
   margin: 0;
 }
-.tm-hotkey-keys { color: #f14354; }
-.tm-hotkey-switch {
+.tm-fhk-keys { color: #f14354; }
+.tm-fhk-switch {
   display: inline-block;
   position: relative;
   width: 42px; height: 24px;
 }
-.tm-hotkey-switch input { opacity: 0; width: 0; height: 0; }
-.tm-hotkey-slider {
+.tm-fhk-switch input { opacity: 0; width: 0; height: 0; }
+.tm-fhk-slider {
   cursor: pointer;
   transition: 0.1s;
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -127,7 +125,7 @@ function injectCSS(css){
   background-color: #ccc;
   border-radius: 24px;
 }
-.tm-hotkey-slider:before {
+.tm-fhk-slider:before {
   content: "";
   transition: 0.1s;
   position: absolute; left: 3px; bottom: 3px;
@@ -135,8 +133,8 @@ function injectCSS(css){
   background-color: white;
   border-radius: 50%;
 }
-input:checked + .tm-hotkey-slider { background-color: #4caf50; }
-input:checked + .tm-hotkey-slider:before { transform: translateX(17px); }
+input:checked + .tm-fhk-slider { background-color: #4caf50; }
+input:checked + .tm-fhk-slider:before { transform: translateX(17px); }
 
 /* ===== main.prep ============================ */
 #tm-prep-textarea {

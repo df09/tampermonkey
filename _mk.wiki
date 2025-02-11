@@ -1,17 +1,9 @@
-create-barcodes:
-  create fo - fix
-  check existed - if not exist
-twins: doublicated empty twins
-
-search active jobs - init
 crl - закупка hw
-
+  +auto login
+search active jobs - init
 later:
-  abort не работает
   thiws upd:
     переписать на mutationObeservers
     скачать pdf
     out of corner
-    add double check feathcers
-  auto operations (ex. login)
   cross-domain for dev

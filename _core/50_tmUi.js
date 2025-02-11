@@ -12,16 +12,11 @@ const tmUi = {
     tmsReset();
     tmMenu.showMain();
   },
-  abort({title=tmsGetAction(), msg='Abort'}) {
+  abort({title=tmsGetAction(), msg='Abort'}={}) {
     const fmsg = this.formulateMsg(msg);
     tmsDeleteAll();
     tmMenu.showMain();
-    tmModal.info({
-      accent: 'r',
-      title: title,
-      msg: fmsg,
-    });
-    console.error(title + ': ' + fmsg);
+    tmModal.info({ accent: 'r', title: title, msg: fmsg, });
     throw new Error(title + ': ' + fmsg);
   },
 
@@ -29,7 +24,7 @@ const tmUi = {
     tmsSetOperation(operation);
     tmMenu.showExec();
   },
-  done({title=tmsGetAction(), msg='The operation has been completed successfully.'}) {
+  done({title=tmsGetAction(), msg='Done!'}) {
     tmsReset(); tmMenu.showMain();
     tmModal.info({accent:'g', title:title, msg:this.formulateMsg(msg)});
   },

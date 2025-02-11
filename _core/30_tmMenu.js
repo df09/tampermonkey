@@ -11,6 +11,7 @@ const tmMenu = {
     // main
     main: getEl('#tm-main'),
     readme: getEl('#tm-readme'),
+    features: getEl('#tm-features'),
     hotkeys: getEl('#tm-hotkeys'),
     mainPrep: getEl('#tm-main-prep'),
     mainExec: getEl('#tm-main-exec'),
@@ -65,6 +66,7 @@ const tmMenu = {
     this.handleBack();
     this.handleMnmz();
     this.handleReadme(map.readme);
+    for (let data of map.features) {this.handleFeature(data)}
     for (let data of map.hotkeys) {this.handleHotkey(data)}
     for (let data of map.btnsPrep) {this.handlePrep(data)}
     for (let data of map.btnsExec) {this.handleMainExec(data)}
@@ -102,6 +104,30 @@ const tmMenu = {
   })},
   // === listners.main ==============================
   handleReadme(link) {this.e.readme.querySelector('a').href=link},
+  handleFeature(feature) {
+    const [idsfx, name] = feature;
+    const id = 'tm-main-features-' + idsfx;
+    // insert
+    this.e.features.insertAdjacentHTML('beforeend',mustache(tmHTMLMainFeature,{id:id, name:name}));
+    // event
+    const checkbox = getEl('#' + id + ' input[type="checkbox"]');
+    checkbox.addEventListener('change', function() {
+      if (checkbox.checked) {
+        console.log('tmMenu.handleFeature(): ' + id + ': ON');
+        tmsSet('tm_keep_feature-' + idsfx, '1');
+      } else {
+        console.log('tmMenu.handleFeature(): ' + id + ': OFF');
+        tmsDelete('tm_keep_feature-' + idsfx);
+      }
+    });
+    // user settings
+    if (tmsGet('tm_keep_feature-' + idsfx) === '1') {
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event('change'));
+    }
+    // show
+    tmShow(this.e.features);
+  },
   handleHotkey(hotkey) {
     const [idsfx, name, keys, action] = hotkey;
     const id = 'tm-main-hotkeys-' + idsfx;
@@ -359,6 +385,7 @@ const tmMenu = {
     // upd
     this.updOperation();
     this.updMnmz();
+    this.updFeatures();
     this.updHotkeys();
     this.updContainer(this.getHwMain());
     // show
@@ -426,8 +453,27 @@ const tmMenu = {
       remCls(this.e.mnmz, 'tm-btn-b', 'tm-btn-header-b');
     }
   },
+  updFeatures() {
+    const containers = this.e.features.querySelectorAll('.tm-group-main-fhks');
+    containers.forEach(container => {
+      const fullId = container.getAttribute('id'); // "tm-main-features-<idsfx>"
+      const idsfx = fullId.replace('tm-main-features-', '');
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      if (tmsGet('tm_keep_feature-' + idsfx) === '1') {
+        if (!checkbox.checked) {
+          checkbox.checked = true;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      } else {
+        if (checkbox.checked) {
+          checkbox.checked = false;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      }
+    });
+  },
   updHotkeys() {
-    const containers = this.e.hotkeys.querySelectorAll('.tm-group-main-hotkeys');
+    const containers = this.e.hotkeys.querySelectorAll('.tm-group-main-fhks');
     containers.forEach(container => {
       const fullId = container.getAttribute('id'); // "tm-main-hotkeys-<idsfx>"
       const idsfx = fullId.replace('tm-main-hotkeys-', '');

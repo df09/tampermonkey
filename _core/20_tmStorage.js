@@ -77,9 +77,15 @@ function tmsSetOperation(operation) {
     tmsSet('tm_operation', operation);
     console.log('tmsSetOperation:', operation);
 };
-function tmsGetOperation() { return tmsGet('tm_operation'); };
-function tmsGetAction() { return tmsGet('tm_operation').split('/')[0]; };
-function tmsGetStep() { return tmsGet('tm_operation').split('/')[1]; };
+function tmsGetOperation() {
+  const operation = tmsGet('tm_operation', '');
+  if (typeof operation !== 'string' || operation.trim() === '' || !operation.includes('/')) {
+    return false;
+  }
+  return operation;
+}
+function tmsGetAction() {const op = tmsGetOperation(); return op ? op.split('/')[0] : false}
+function tmsGetStep() {const op = tmsGetOperation(); return op ? op.split('/')[1] : false}
 function tmsOperationsGetHandlers(config) {
   const fullHandlers = {};
   for (const [action, steps] of Object.entries(config)) {
@@ -95,17 +101,16 @@ function tmsOperationsGetHandlers(config) {
   }
   return fullHandlers;
 }
-function tmsOperationsHandle(config) {
+function handleOperations(config) {
   const operation = tmsGetOperation();
   if (!operation) {
-    console.log('tmsOperationsHandle: no active operations.');
+    console.log('handleOperations: no active operations.');
     return;
   }
   const handlers = tmsOperationsGetHandlers(config);
   const action = tmsGetAction();
-  if (!handlers[action]){throw new Error(operation+': unknown action "'+action+'"')}
-  const actionHandlers = handlers[action];
   const step = tmsGetStep();
-  if (!actionHandlers[step]){throw new Error(operation+': unknown step "'+step+'"')}
-  actionHandlers[step]();
+  if (!handlers[action]) { throw new Error(operation + ': unknown action "' + action + '"'); }
+  if (!handlers[action][step]) { throw new Error(operation + ': unknown step "' + step + '"'); }
+  handlers[action][step](); // вызов соответствующего обработчика
 }

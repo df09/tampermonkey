@@ -1,6 +1,9 @@
 async function createBarcodesCheckExistingRooms() {
-  // Ждем, пока не исчезнет индикатор "Processing..."
-  await waitFor('.dataTables_processing', e => e.style.display === 'none');
+  await sleep(1000);
+  // Ждем, пока не исчезнет индикатор "Processing...", если он существует
+  if (getEl('.dataTables_processing', true)) {
+    await waitFor('.dataTables_processing', e => e.style.display === 'none');
+  }
   const rooms = getEls('tr[id^="room_"]', true);
   if (rooms) {
     // Проверяем, какие комнаты из dataLocations уже существуют

@@ -1,16 +1,14 @@
 try {
   // === ui =====================================
-  const tmMap = {
+  tmMenu.init({
     readme: 'https://github.com/df09/tampermonkey/blob/main/solimp.crlaurence.com/readme.md',
+    features: [],
     hotkeys: [],
     btnsPrep: [
       ['generateTwins', 'Generate Twins', generateTwinsStart],
     ],
     btnsExec: [],
-  }
-  tmMenu.init(tmMap);
-  // === handle active operations ========================
-  tmsOperationsHandle({
-    generateTwins: ['start'],
   });
-} catch (e) {tmUi.abort({msg:['Error:',e]})}
+  // === handle active operations ========================
+  handleOperations({generateTwins: ['start']});
+} catch (err) {tmUi.abort({msg:['Error(main):',err.message]})}

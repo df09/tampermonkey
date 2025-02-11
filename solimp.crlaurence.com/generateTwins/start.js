@@ -1,31 +1,3 @@
-// // ==== reports =============================================
-// async function waitForGeneratingReport(timeout = 20000) {
-//   return new Promise((resolve, reject) => {
-//     const selector = '.modal-dialog h3';
-//     const targetText = 'Generating Report';
-//     const checkModal = () => {
-//       const modal = getEl(selector);
-//       // Проверяем, есть ли модальное окно с нужным текстом
-//       if (!modal || modal.textContent.trim() !== targetText) {
-//         resolve(); // Модальное окно отсутствует или текст изменился
-//         return;
-//       }
-//     };
-//     const observer = new MutationObserver(() => {
-//       checkModal();
-//     });
-//     // Проверяем изменения в DOM
-//     observer.observe(document.body, { childList: true, subtree: true });
-//     // Тайм-аут для предотвращения бесконечного ожидания
-//     setTimeout(() => {
-//       observer.disconnect();
-//       reject(abort('waitForGeneratingReport: timeout.'));
-//     }, timeout);
-//     // Начальная проверка
-//     checkModal();
-//   });
-// }
-
 // ==== upd measurements ==========================================
 function getOutageDirection(edge) {
   let outageDirection = '';
@@ -287,84 +259,53 @@ function getInputData(textareaValue) {
   }
 }
 async function generateTwinsStart() {
-  // start
-  tmUi.startOperation('generateTwins/start');
-  // check start conditions
-  const regex = /^https:\/\/solimp\.crlaurence\.com\/SOL_API\/ShowerApp\/#projects\/\d+/;
-  if (!regex.test(window.location.href)) {
-    tmUi.abort({msg: 'URL must be https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/<number>'});
-  }
-  if (getEl('#save-resource', true)) {
-    tmUi.abort({msg: 'Cancel - You should be on the saved project page.'});
-  }
-  // main logic
-  const data = getInputData(tmMenu.e.prepTextarea.value);
-  tmsSet('tm_data-generateTwins', data);
-  for (const projectLocation in data) {
-    // clone project
-    await clickEl(getEl('div[aria-label="Clone"]'), 300);
-    await clickEl(getEl('div#dropdown-item-clone-all-details'), 0);
-    const fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
-    const projectId = fetchData.result.projectId;
-    const chargeableId = fetchData.result.chargeable.chargeableId;
-    await sleep(3000);
-    // upd header
-    await updProjectName(projectLocation, 3000);
-    await updLocation(projectLocation, 300);
-    await updOwner(4000);
-    await save(5000);
-    // measurement grid page
-    await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
-    const projectData = data[projectLocation];
-    for (const [number, edge] of Object.entries(projectData)) {
-      await updMeasurementFields(number, edge, 1000);
+  try {
+    // start
+    tmUi.startOperation('generateTwins/start');
+    // check start conditions
+    const regex = /^https:\/\/solimp\.crlaurence\.com\/SOL_API\/ShowerApp\/#projects\/\d+/;
+    if (!regex.test(window.location.href)) {
+      tmUi.abort({msg: 'URL must be https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/<number>'});
     }
-    // TODO
-    // const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
-    // const outageDirectionEl = getEl(outageDirectionSelector);
-    // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
-    await tmMenu.pause({
-      accent: 'y',
-      title: 'Outage Directions',
-      msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
-    });
-    await save(5000);
-    // project page
-    await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
-
-    // TODO: view multiple reports
-    // await clickEl(getEl(viewSelectedSelector), 0);
-    // waitForGeneratingReport()
-    //   .then(() => console.log('waitForGeneratingReport: ok.'))
-    //   .catch(error => console.error(error));
-    // await sleep(100);
-    // const viewReportSelector = '#view-report [role="button"]';
-    // const multipleReportsSelector = '#dropdown-item-multipleReports';
-    // const viewSelectedSelector = '#sb-slider .multi-report-slider .multi-report-slider-actions button';
-    // const dissmissSelector = '#sb-slider .slider-controls button';
-    // await clickEl(getEl(viewReportSelector), 500);
-    // await clickEl(getEl(multipleReportsSelector), 500);
-    // await clickEl(getEl(dissmissSelector), 500);
-    // await tmUiPause('please download reports manually.');
-  }
-  tmUi.done({title: 'Generate Twins', msg: 'Done!'})
+    if (getEl('#save-resource', true)) {
+      tmUi.abort({msg: 'Cancel - You should be on the saved project page.'});
+    }
+    // main logic
+    const data = getInputData(tmMenu.e.prepTextarea.value);
+    tmsSet('tm_data-generateTwins', data);
+    for (const projectLocation in data) {
+      // clone project
+      await clickEl(getEl('div[aria-label="Clone"]'), 300);
+      await clickEl(getEl('div#dropdown-item-clone-all-details'), 0);
+      const fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
+      const projectId = fetchData.result.projectId;
+      const chargeableId = fetchData.result.chargeable.chargeableId;
+      await sleep(3000);
+      // upd header
+      await updProjectName(projectLocation, 3000);
+      await updLocation(projectLocation, 300);
+      await updOwner(4000);
+      await save(5000);
+      // measurement grid page
+      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
+      const projectData = data[projectLocation];
+      for (const [number, edge] of Object.entries(projectData)) {
+        await updMeasurementFields(number, edge, 1000);
+      }
+      // TODO
+      // const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+      // const outageDirectionEl = getEl(outageDirectionSelector);
+      // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
+      await tmMenu.pause({
+        accent: 'y',
+        title: 'Outage Directions',
+        msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
+      });
+      await save(5000);
+      // project page
+      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
+      // TODO: view multiple reports
+    }
+    tmUi.done()
+  } catch (err) {tmUi.abort({msg:['Error('+tmsGetOperation()+'):',err.message]})}
 }
-
-// async function updInputValue(el, newValue, delay) {
-//   const lastValue = el.value;
-//   el.focus();
-//   el.value = newValue;
-//   // Обновляем значение с учётом React, если _valueTracker существует
-//   const event = new Event('input', { bubbles: true });
-//   const changeEvent = new Event('change', { bubbles: true });
-//   const tracker = el._valueTracker;
-//   if (tracker) {
-//     tracker.setValue(lastValue);
-//   }
-//   el.dispatchEvent(event);
-//   el.dispatchEvent(changeEvent);
-//   // done
-//   el.blur();
-//   console.log('updInputValue: done.');
-//   await sleep(delay);
-// }

@@ -17,6 +17,9 @@ injectHTML(`
     <!-- main -->
     <div id="tm-main" class="tm-dnone tm-body tm-col tm-brd tm-brd-w">
       <div id="tm-readme"><a class="tm-link" href="[readme-url]" target="_blank">Readme</a></div>
+      <div id="tm-features" class="tm-dnone tm-col tm-pt5">
+        <!-- main-features.[feature] -->
+      </div>
       <div id="tm-hotkeys" class="tm-dnone tm-col tm-pt5">
         <!-- main-hotkeys.[hotkey] -->
       </div>
@@ -82,16 +85,25 @@ injectHTML(`
     </div>
   </div>
 `);
+// main.features.[feature]
+const tmHTMLMainFeature = `
+  <div id="{{id}}" class="tm-row tm-group-main-fhks">
+    <h3 class="tm-fhk-title tm-row">{{name}}</h3>
+    <label class="tm-fhk-switch tm-ml0 tm-mb0">
+      <input type="checkbox">
+      <span class="tm-fhk-slider"></span>
+    </label>
+  </div>`;
 // main.hotkeys.[hotkey]
 const tmHTMLMainHotkey = `
-  <div id="{{id}}" class="tm-row tm-group-main-hotkeys">
-    <h3 class="tm-hotkey-title tm-row">
-      <span class="tm-hotkey-title-name">{{name}}</span>
-      <span class="tm-hotkey-title-keys tm-r">({{keys}})</span>
+  <div id="{{id}}" class="tm-row tm-group-main-fhks">
+    <h3 class="tm-fhk-title tm-row">
+      <span class="tm-fhk-title-name">{{name}}</span>
+      <span class="tm-fhk-title-keys tm-r">({{keys}})</span>
     </h3>
-    <label class="tm-hotkey-switch tm-ml0 tm-mb0">
+    <label class="tm-fhk-switch tm-ml0 tm-mb0">
       <input type="checkbox">
-      <span class="tm-hotkey-slider"></span>
+      <span class="tm-fhk-slider"></span>
     </label>
   </div>`;
 // main.prep.[prep]
