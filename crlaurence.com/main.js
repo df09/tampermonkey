@@ -11,4 +11,4 @@ try {
   fAutoLogin('autoLogin');
   // active operations
   handleOperations({orderHw: ['start', 'checkIsCartEmpty', 'addToCart', 'checkout']});
-} catch (err) {tmUi.abort({msg:['Error(main):',err.message]})}
+} catch (err) {tmUi.abort({msg:['Error(main):',err.message, err.stack]})}

@@ -3,25 +3,22 @@ function parseHwData(data) {
   const lines = data.trim().split('\n');
   let po = null;
   lines.forEach((line) => {
-    line = line.trim();
-    if (!line) return; // Пропускаем пустые строки
-    if (/^[\w\s.]+:$/.test(line)) {
-      // Это название локации
+    if (!line.trim()) return; // Пропускаем пустые строки
+    if (!line.startsWith(' ')) {
+      // Это название po (начинается не с пробела)
       po = line.slice(0, -1).trim();
       result[po] = {};
-    } else if (po) {
-      // Это данные внутри локации
-      const [sku, qty] = line.split(':').map((part) => part.trim());
+    } else {
+      // Данные внутри po (начинаются с пробела)
+      const [sku, qty] = line.trim().split(':').map((part) => part.trim());
       if (!sku || !qty) {
-        tmUi.abort({msg: ['Некорректная строка:', line]})
+        tmUi.abort({msg: ['Incorrect line:', line]});
       }
       const quantity = parseInt(qty, 10);
       if (isNaN(quantity) || quantity <= 0) {
-        tmUi.abort({msg: ['Некорректное количество для продукта:', line]})
+        tmUi.abort({ msg: ['Incorrect quantity:', line] });
       }
       result[po][sku] = quantity;
-    } else {
-      tmUi.abort({msg: ['Неожиданный формат строки:', line]})
     }
   });
   console.log('parseHwData:', result);
@@ -30,23 +27,8 @@ function parseHwData(data) {
 
 function orderHwStart() {
   tmUi.startOperation('orderHw/start');
-  tmsSet('tm_data-orderHw', parseHwData(tmMenu.e.prepTextarea.value));
+  tmsSet('tm_orderHw-data', parseHwData(tmMenu.e.prepTextarea.value));
   // checkIsCartEmpty
   tmsSetOperation('orderHw/checkIsCartEmpty');
   redirect('https://www.crlaurence.com/cart');
-
-  // for product in products:
-    // check if product exist
-    // redirect to product page
-    // check availability
-    // add to cart
-  // redirect to checkout
-  // make order
-  // done, please confirm
-  // or
-  // done, these is not available
-    // info about another stocks
-    // text to copy for crm
-
-  tmUi.done();
 }

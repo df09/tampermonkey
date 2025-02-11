@@ -71,20 +71,8 @@ function getKey(event, keys, n) {
   return event.key === k;
 }
 // redirect
-async function redirect(newUrl, force=false) {
-  console.log('redirect: "'+newUrl+'"');
-  if (force||window.location.href!==newUrl) {
-    window.location.href=newUrl;
-    return true;
-  }
-  tmUi.reset();
-  tmMenu.showMain();
-  await sleep(300)
-  tmModal.info({
-    accent: 'y',
-    title: 'Redirect',
-    msg: 'already on the target URL.',
-  })
+async function redirect(newUrl) {
+  window.location.href=newUrl;
 }
 async function fakeRedirect(newUrl, delay=4000) {
   console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');

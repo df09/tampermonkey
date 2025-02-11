@@ -24,7 +24,7 @@ const tmUi = {
     tmsSetOperation(operation);
     tmMenu.showExec();
   },
-  done({title=tmsGetAction(), msg='Done!'}) {
+  done({title=tmsGetAction(), msg='Done!'}={}) {
     tmsReset(); tmMenu.showMain();
     tmModal.info({accent:'g', title:title, msg:this.formulateMsg(msg)});
   },

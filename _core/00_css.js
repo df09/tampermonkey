@@ -192,11 +192,6 @@ input:checked + .tm-fhk-slider:before { transform: translateX(17px); }
 #tm-modal-yn-btn-no { width: 48%; }
 #tm-modal-yn-btn-yes { width: 48%; }
 
-/* Element | http://bravura-crm.com/jobs/4777 */
-
-#tm-modal-yn-btn-no {
-  width: ;
-}
 #tm-modal-info { align-items: center; }
 #tm-modal-info-msg {
   white-space: pre-line;

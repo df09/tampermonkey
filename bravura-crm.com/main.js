@@ -18,4 +18,4 @@ try {
     searchActiveJobs: ['start'],
     createBarcodes: ['start', 'createFo', 'checkExistingRooms', 'newProduct', 'sizeSetup', 'sectionsDetail'],
   });
-} catch (err) {tmUi.abort({msg:['Error(main):',err.message]})}
+} catch (err) {tmUi.abort({msg:['Error(main):',err.message, err.stack]})}
