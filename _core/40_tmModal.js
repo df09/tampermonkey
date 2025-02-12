@@ -104,7 +104,7 @@ const tmModal = {
   },
 
   // info
-  info({accent, title, msg, actionClose=()=>{}}) {
+  info({accent='w', title=tmsGetAction(), msg, actionClose=()=>{}}) {
     const type = 'info';
     this.validateIsFunctions(actionClose);
     this.init(type, accent, title);
@@ -122,7 +122,7 @@ const tmModal = {
     }, 100);
   },
   // yn
-  yn({accent, title, msg, actionNo=()=>{}, actionYes=()=>{}}) {
+  yn({accent='w', title=tmsGetAction(), msg, actionNo=()=>{}, actionYes=()=>{}}) {
     this.validateIsFunctions(actionNo, actionYes);
     const type = 'yn';
     this.init(type, accent, title);
@@ -141,7 +141,7 @@ const tmModal = {
     }, 100);
   },
   // input
-  input({accent, title, msg, actionClose=()=>{}, actionSubmit=()=>{}}) {
+  input({accent='w', title=tmsGetAction(), msg, actionClose=()=>{}, actionSubmit=()=>{}}) {
     this.validateIsFunctions(actionClose, actionSubmit);
     const type = 'input';
     this.init(type, accent, title);
@@ -160,7 +160,7 @@ const tmModal = {
     }, 100);
   },
   // content
-  content({idsfx, accent, title, actionClose=()=>{}, actionContent}) {
+  content({idsfx, accent='w', title=tmsGetAction(), actionClose=()=>{}, actionContent}) {
     this.validateIsFunctions(actionClose, actionContent);
     const type = 'content';
     this.init(type, accent, title);

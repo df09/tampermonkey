@@ -1,9 +1,8 @@
-crl - закупка hw
-  +auto login
 search active jobs - init
-later:
-  thiws upd:
-    переписать на mutationObeservers
-    скачать pdf
-    out of corner
+thiws upd:
+  скачать pdf
+  out of corner
+  переписать на mutationObeservers
+
+nice-todo:
   cross-domain for dev

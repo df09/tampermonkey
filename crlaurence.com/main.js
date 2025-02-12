@@ -10,5 +10,8 @@ try {
   // auto operations
   fAutoLogin('autoLogin');
   // active operations
-  handleOperations({orderHw: ['start', 'checkIsCartEmpty', 'addToCart', 'checkout']});
+  handleOperations({orderHw: [
+    'start', 'checkIsCartEmpty', 'addToCart',
+    'checkoutShipping', 'checkoutPayment', 'checkoutFinal'
+  ]});
 } catch (err) {tmUi.abort({msg:['Error(main):',err.message, err.stack]})}

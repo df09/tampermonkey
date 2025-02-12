@@ -8,14 +8,14 @@ const tmUi = {
     ).join('\n');
   },
 
-  reset(msg) {
+  reset() {
     tmsReset();
     tmMenu.showMain();
   },
   abort({title=tmsGetAction(), msg='Abort'}={}) {
-    const fmsg = this.formulateMsg(msg);
-    tmsDeleteAll();
+    tmsReset();
     tmMenu.showMain();
+    const fmsg = this.formulateMsg(msg);
     tmModal.info({ accent: 'r', title: title, msg: fmsg, });
     throw new Error(title + ': ' + fmsg);
   },
@@ -24,8 +24,8 @@ const tmUi = {
     tmsSetOperation(operation);
     tmMenu.showExec();
   },
-  done({title=tmsGetAction(), msg='Done!'}={}) {
+  done({accent='g', title=tmsGetAction(), msg='Done!'}={}) {
     tmsReset(); tmMenu.showMain();
-    tmModal.info({accent:'g', title:title, msg:this.formulateMsg(msg)});
+    tmModal.info({accent:accent, title:title, msg:this.formulateMsg(msg)});
   },
 };

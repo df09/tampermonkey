@@ -1,33 +1,27 @@
 function parseHwData(data) {
-  const result = {};
   const lines = data.trim().split('\n');
-  let po = null;
-  lines.forEach((line) => {
-    if (!line.trim()) return; // Пропускаем пустые строки
-    if (!line.startsWith(' ')) {
-      // Это название po (начинается не с пробела)
-      po = line.slice(0, -1).trim();
-      result[po] = {};
-    } else {
-      // Данные внутри po (начинаются с пробела)
-      const [sku, qty] = line.trim().split(':').map((part) => part.trim());
-      if (!sku || !qty) {
-        tmUi.abort({msg: ['Incorrect line:', line]});
-      }
-      const quantity = parseInt(qty, 10);
-      if (isNaN(quantity) || quantity <= 0) {
-        tmUi.abort({ msg: ['Incorrect quantity:', line] });
-      }
-      result[po][sku] = quantity;
-    }
+  if (lines.length === 0) {tmUi.abort({msg:['Empty data']})}
+  const po = lines[0].trim();
+  const items = {};
+  lines.slice(1).forEach((line) => {
+    const trimmedLine = line.trim();
+    if (!trimmedLine) return; // Пропускаем пустые строки
+    const parts = trimmedLine.split(/\s+/);
+    if (parts.length !== 2) { tmUi.abort({ msg: ['Incorrect line format:', line] })}
+    const [sku, qty] = parts;
+    const quantity = parseInt(qty, 10);
+    if (isNaN(quantity) || quantity <= 0) { tmUi.abort({ msg: ['Incorrect quantity:', line] })}
+    items[sku] = quantity;
   });
-  console.log('parseHwData:', result);
-  return result;
+  console.log('parseHwData:', { po, items });
+  return { po, items };
 }
 
 function orderHwStart() {
   tmUi.startOperation('orderHw/start');
-  tmsSet('tm_orderHw-data', parseHwData(tmMenu.e.prepTextarea.value));
+  const data = parseHwData(tmMenu.e.prepTextarea.value);
+  tmsSet('tm_orderHw-dataPo', data.po);
+  tmsSet('tm_orderHw-dataItems', data.items);
   // checkIsCartEmpty
   tmsSetOperation('orderHw/checkIsCartEmpty');
   redirect('https://www.crlaurence.com/cart');

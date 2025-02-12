@@ -91,7 +91,7 @@ function remClsRegex(e, ...patterns) {
 
 function getEl(selector, pass=false) {
   // get by id
-  if (/^#[a-zA-Z0-9\-_]+$/.test(selector)) {
+  if (/^#[a-zA-Z0-9\-_\.]+$/.test(selector)) {
     const e = document.getElementById(selector.slice(1));
     if (!e) {
       if (pass) {return false}

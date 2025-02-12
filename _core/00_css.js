@@ -140,6 +140,7 @@ input:checked + .tm-fhk-slider:before { transform: translateX(17px); }
 #tm-prep-textarea {
   width: 100%;
   height: 100%;
+  min-height: auto;
 }
 /* ===== main.exec ============================ */
 
