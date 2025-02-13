@@ -8,7 +8,7 @@ function parseHwData(data) {
     if (!trimmedLine) return; // Пропускаем пустые строки
     const parts = trimmedLine.split(/\s+/);
     if (parts.length !== 2) { tmUi.abort({ msg: ['Incorrect line format:', line] })}
-    const [sku, qty] = parts;
+    const [qty, sku] = parts;
     const quantity = parseInt(qty, 10);
     if (isNaN(quantity) || quantity <= 0) { tmUi.abort({ msg: ['Incorrect quantity:', line] })}
     items[sku] = quantity;

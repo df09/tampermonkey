@@ -87,9 +87,9 @@ async function updMeasurementFields(number, edge, delay) {
 
 // ==== save ==========================================
 async function checkModalWarnings() {
-  const modal = document.querySelector('.modal-content .warnings-dialog');
+  const modal = getEl('.modal-content .warnings-dialog', true);
   // модального окна нет - все хорошо
-  if (!modal) { return true; }
+  if (!modal) return true;
   // serious - tmUiPause
   if (modal.classList.contains('serious')) {
     await tmMenu.pause({
@@ -112,42 +112,36 @@ async function checkModalWarnings() {
     msg: 'Unknown modal type. abort.',
   });
 }
-function findReactComponent(dom) {
-  const key = Object.keys(dom).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
-  if (!key) return null;
-  let node = dom[key];
+function getReactPropsTree(e) {
+  const key = Object.keys(e).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
+  if (!key) { tmUi.abort({ msg: 'getReactProps - fail' }) }
+  let node = e[key];
   while (node) {
-    if (node.memoizedProps && node.memoizedProps.doAction) { return node; }
+    // console.log('findReactComponent, go up:', node);
+    console.log('findReactComponent, go up:', node.memoizedProps);
     node = node.return; // Поднимаемся вверх по дереву
   }
-  return null;
 }
-async function save(delay) {
-  console.log('save..');
-  const selector = '#save-resource';
-  const button = getEl(selector);
-  const reactComponent = findReactComponent(button);
-  if (!reactComponent) {
-    tmUi.abort({
-      title: 'Save Project - fail',
-      msg: 'React компонент с doAction не найден',
-    });
+function triggerReactProp(e, prop, ...args) {
+  const key = Object.keys(e).find(key => key.startsWith("__reactFiber") || key.startsWith("__reactInternalInstance"));
+  if (!key) { tmUi.abort({ msg: 'getReactProps - fail' }) }
+  let node = e[key];
+  while (node) {
+    if (!node.memoizedProps || typeof node.memoizedProps[prop] !== 'function') {
+      node = node.return; // Поднимаемся вверх по дереву
+      continue;
+    }
+    // Вызываем найденный метод с переданными аргументами
+    node.memoizedProps[prop](...args);
+    return;
   }
-  const props = reactComponent.memoizedProps;
-  if (!props || !props.doAction) {
-    tmUi.abort({
-      title: 'Save Project - fail',
-      msg: 'doAction не найден в memoizedProps',
-    });
-  }
-  props.doAction(
-    () => { console.log('reactComponent: doAction...'); },
-    (status) => { console.log('Intermittent status updated:', status); }
-  );
-  await sleep(1000);
-  // Добавляем проверку на модальное окно
-  if (await checkModalWarnings()) { await sleep(delay); }
-  console.log('save: done.');
+  tmUi.abort({ msg: 'getReactProps - fail' });
+}
+async function saveResource(delay=3000) {
+  triggerReactProp(getEl('#save-resource'), 'doAction', ()=>{},()=>{});
+  await sleep(delay);
+  await checkModalWarnings();
+  await sleep(delay);
 }
 
 // ==== upd header ==========================================
@@ -285,7 +279,7 @@ async function generateTwinsStart() {
       await updProjectName(projectLocation, 3000);
       await updLocation(projectLocation, 300);
       await updOwner(4000);
-      await save(5000);
+      await saveResource(5000);
       // measurement grid page
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
       const projectData = data[projectLocation];
@@ -301,7 +295,7 @@ async function generateTwinsStart() {
         title: 'Outage Directions',
         msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
       });
-      await save(5000);
+      await saveResource(5000);
       // project page
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
       // TODO: view multiple reports
