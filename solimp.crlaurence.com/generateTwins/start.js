@@ -117,8 +117,12 @@ function getReactPropsTree(e) {
   if (!key) { tmUi.abort({ msg: 'getReactProps - fail' }) }
   let node = e[key];
   while (node) {
-    // console.log('findReactComponent, go up:', node);
-    console.log('findReactComponent, go up:', node.memoizedProps);
+    const obj = node.memoizedProps;
+    if (obj !== null && typeof obj === 'object' && Object.keys(obj).length === 0) {
+      console.log('node.type:', node.type);
+      console.log('node.memoizedProps:', node.memoizedProps);
+      console.log(' ');
+    }
     node = node.return; // Поднимаемся вверх по дереву
   }
 }
