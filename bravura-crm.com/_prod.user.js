@@ -20,4 +20,4 @@
 // @require  https://raw.githubusercontent.com/df09/tampermonkey/refs/heads/main/bravura-crm.com/main.js
 // @run-at   document-end
 // ==/UserScript==
-(()=>{'use strict';window.addEventListener('load',async ()=>console.log('/_prod.user.js: loaded'))})();
+(()=>{'use strict';window.addEventListener('load',()=>{console.log('/_prod.user.js: loaded')})})();

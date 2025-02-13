@@ -93,9 +93,6 @@ function tmsOperationsGetHandlers(config) {
     for (const step of steps) {
       const handlerName = camelCase(action + '/' + step);
       console.log('handlerName:', handlerName)
-      if (typeof window[handlerName] !== 'function') {
-        throw new Error('tmsOperationsGetHandlers: Handler function "'+handlerName+'" not found.');
-      }
       fullHandlers[action][step] = window[handlerName];
     }
   }
