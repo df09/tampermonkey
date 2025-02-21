@@ -81,7 +81,6 @@ async function updMeasurementFields(number, edge, delay) {
   await updValEl(lengthEl, length, delay);
   await updValEl(outageSizeEl, 0, delay);
   await updValEl(outageSizeEl, outageSize, delay);
-  // TODO: await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
   addClickCounterHint(number, clickCount, outageDirectionEl);
 }
 
@@ -141,11 +140,12 @@ function triggerReactProp(e, prop, ...args) {
   }
   tmUi.abort({ msg: 'getReactProps - fail' });
 }
-async function saveResource(delay=3000) {
-  triggerReactProp(getEl('#save-resource'), 'doAction', ()=>{},()=>{});
+async function saveResource(delay = 3000) {
+  await new Promise(resolve => {
+    triggerReactProp(getEl('#save-resource'), 'doAction', resolve, resolve);
+  });
   await sleep(delay);
   await checkModalWarnings();
-  await sleep(delay);
 }
 
 // ==== upd header ==========================================
@@ -290,19 +290,14 @@ async function generateTwinsStart() {
       for (const [number, edge] of Object.entries(projectData)) {
         await updMeasurementFields(number, edge, 1000);
       }
-      // TODO
-      // const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
-      // const outageDirectionEl = getEl(outageDirectionSelector);
-      // await updOutageDirection(number, outageDirection, outageDirectionEl, delay);
       await tmMenu.pause({
         accent: 'y',
         title: 'Outage Directions',
         msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
       });
       await saveResource(5000);
-      // project page
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
-      // TODO: view multiple reports
+      await sleep(3000);
     }
     tmUi.done()
   } catch (err) {tmUi.abort({msg:['Error('+tmsGetOperation()+'):',err.message]})}

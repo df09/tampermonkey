@@ -1,19 +1,19 @@
 async function createBarcodesCheckExistingRooms() {
-  await sleep(1000);
-  // Ждем, пока не исчезнет индикатор "Processing...", если он существует
-  if (getEl('.dataTables_processing', true)) {
-    await waitFor('.dataTables_processing', e => e.style.display === 'none');
-  }
-  const rooms = getEls('tr[id^="room_"]', true);
-  if (rooms) {
-    // Проверяем, какие комнаты из dataLocations уже существуют
-    const dataLocations = tmsGet('tm_data-locations') || [];
-    const existingRooms = Array.from(rooms).map(row => row.querySelectorAll('td')[2].textContent.trim());
-    const duplicateRooms = dataLocations.filter(room => existingRooms.includes(room));
-    if (duplicateRooms.length > 0) {
-      tmUi.abort({msg: ['The following rooms already exist:', duplicateRooms.join(', ')]})
-    }
-  }
+  // await sleep(1000);
+  // // Ждем, пока не исчезнет индикатор "Processing...", если он существует
+  // if (getEl('.dataTables_processing', true)) {
+  //   await waitFor('.dataTables_processing', e => e.style.display === 'none');
+  // }
+  // const rooms = getEls('tr[id^="room_"]', true);
+  // if (rooms) {
+  //   // Проверяем, какие комнаты из dataLocations уже существуют
+  //   const dataLocations = tmsGet('tm_data-locations') || [];
+  //   const existingRooms = Array.from(rooms).map(row => row.querySelectorAll('td')[2].textContent.trim());
+  //   const duplicateRooms = dataLocations.filter(room => existingRooms.includes(room));
+  //   if (duplicateRooms.length > 0) {
+  //     tmUi.abort({msg: ['The following rooms already exist:', duplicateRooms.join(', ')]})
+  //   }
+  // }
   // newProduct
   const fosId = tmsGet('tm_fosId');
   tmsSetOperation('createBarcodes/newProduct');
