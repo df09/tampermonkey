@@ -288,12 +288,16 @@ async function generateTwinsStart() {
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
       const projectData = data[projectLocation];
       for (const [number, edge] of Object.entries(projectData)) {
-        await updMeasurementFields(number, edge, 1000);
+        if (number === "4") {
+          const rake_dementions = edge;
+        } else if (["1", "2", "3"].includes(number)) {
+          await updMeasurementFields(number, edge, 1000);
+        }
       }
       await tmMenu.pause({
         accent: 'y',
         title: 'Outage Directions',
-        msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
+        msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.\n'+rake_dementions,
       });
       await saveResource(5000);
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
