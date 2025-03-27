@@ -59,6 +59,7 @@ function addClickCounterHint(number, clickCount, outageDirectionEl) {
 }
 async function updMeasurementFields(number, edge, delay) {
   console.log(`updMeasurementFields: number=${number}, edge=${edge}, delay=${delay}`);
+  console.log(edge);
   if (edge[0].trim() !== "0" && edge[2].trim() !== "0") {
     tmUi.abort({
       title: 'Upd Measurement - fail',
@@ -72,7 +73,13 @@ async function updMeasurementFields(number, edge, delay) {
   // Селекторы для полей
   const lengthSelector = `div[data-sb-field="content/measurements/${number}/length"] input`;
   const outageSizeSelector = `div[data-sb-field="content/measurements/${number}/outagePastElbow"] input`;
-  const outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+  console.log(number);
+  let outageDirectionSelector;
+  if (number === '1') {
+    outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/measurementMethod"] button`;
+  } else {
+    outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+  }
   // Элементы
   const lengthEl = getEl(lengthSelector);
   const outageSizeEl = getEl(outageSizeSelector);
@@ -81,7 +88,7 @@ async function updMeasurementFields(number, edge, delay) {
   await updValEl(lengthEl, length, delay);
   await updValEl(outageSizeEl, 0, delay);
   await updValEl(outageSizeEl, outageSize, delay);
-  addClickCounterHint(number, clickCount, outageDirectionEl);
+  // addClickCounterHint(number, clickCount, outageDirectionEl);
 }
 
 // ==== save ==========================================
@@ -288,17 +295,13 @@ async function generateTwinsStart() {
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
       const projectData = data[projectLocation];
       for (const [number, edge] of Object.entries(projectData)) {
-        if (number === "4") {
-          const rake_dementions = edge;
-        } else if (["1", "2", "3"].includes(number)) {
-          await updMeasurementFields(number, edge, 1000);
-        }
+        await updMeasurementFields(number, edge, 1000);
       }
-      await tmMenu.pause({
-        accent: 'y',
-        title: 'Outage Directions',
-        msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.\n'+rake_dementions,
-      });
+      // await tmMenu.pause({
+      //   accent: 'y',
+      //   title: 'Outage Directions',
+      //   msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
+      // });
       await saveResource(5000);
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
       await sleep(3000);
