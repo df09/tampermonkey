@@ -285,12 +285,12 @@ async function generateTwinsStart() {
       const fetchData = await interceptFetch('WebPlusDesignAllCRL.dll/rest/projects/');
       const projectId = fetchData.result.projectId;
       const chargeableId = fetchData.result.chargeable.chargeableId;
-      await sleep(3000);
+      await sleep(2000);
       // upd header
       await updProjectName(projectLocation, 3000);
       await updLocation(projectLocation, 300);
-      await updOwner(4000);
-      await saveResource(5000);
+      await updOwner(2000);
+      await saveResource(4000);
       // measurement grid page
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
       const projectData = data[projectLocation];
@@ -302,9 +302,9 @@ async function generateTwinsStart() {
       //   title: 'Outage Directions',
       //   msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
       // });
-      await saveResource(5000);
+      await saveResource(4000);
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
-      await sleep(3000);
+      await sleep(2000);
     }
     tmUi.done()
   } catch (err) {tmUi.abort({msg:['Error('+tmsGetOperation()+'):',err.message]})}
