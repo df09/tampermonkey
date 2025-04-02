@@ -74,12 +74,12 @@ async function updMeasurementFields(number, edge, delay) {
   const lengthSelector = `div[data-sb-field="content/measurements/${number}/length"] input`;
   const outageSizeSelector = `div[data-sb-field="content/measurements/${number}/outagePastElbow"] input`;
   console.log(number);
-  let outageDirectionSelector;
-  if (number === '1') {
-    outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/measurementMethod"] button`;
-  } else {
-    outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
-  }
+  // let outageDirectionSelector;
+  // if (number === '1') {
+  //   outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/measurementMethod"] button`;
+  // } else {
+  outageDirectionSelector = `div[data-sb-field="content/measurements/${number}/outageDirection"] button`;
+  // }
   // Элементы
   const lengthEl = getEl(lengthSelector);
   const outageSizeEl = getEl(outageSizeSelector);
@@ -88,7 +88,7 @@ async function updMeasurementFields(number, edge, delay) {
   await updValEl(lengthEl, length, delay);
   await updValEl(outageSizeEl, 0, delay);
   await updValEl(outageSizeEl, outageSize, delay);
-  // addClickCounterHint(number, clickCount, outageDirectionEl);
+  addClickCounterHint(number, clickCount, outageDirectionEl);
 }
 
 // ==== save ==========================================
@@ -297,11 +297,11 @@ async function generateTwinsStart() {
       for (const [number, edge] of Object.entries(projectData)) {
         await updMeasurementFields(number, edge, 1000);
       }
-      // await tmMenu.pause({
-      //   accent: 'y',
-      //   title: 'Outage Directions',
-      //   msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
-      // });
+      await tmMenu.pause({
+        accent: 'y',
+        title: 'Outage Directions',
+        msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
+      });
       await saveResource(4000);
       await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
       await sleep(2000);
