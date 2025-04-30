@@ -147,7 +147,7 @@ function triggerReactProp(e, prop, ...args) {
   }
   tmUi.abort({ msg: 'getReactProps - fail' });
 }
-async function saveResource(delay = 3000) {
+async function saveResource(delay) {
   await new Promise(resolve => {
     triggerReactProp(getEl('#save-resource'), 'doAction', resolve, resolve);
   });
@@ -190,9 +190,8 @@ async function updLocation(projectLocation, delay) {
 }
 async function updOwner(delay) {
   console.log('updOwner..');
-  await clickEl(getEl('div.inner-control-container[data-sb-field="content/userOwnerId"] input.dx-texteditor-input'), 3000);
-  await clickEl(getEls('[data-sb-option-title="0100200854 User"]')[0], 1000);
-  await sleep(delay);
+  await clickEl(getEl('div.inner-control-container[data-sb-field="content/userOwnerId"] input.dx-texteditor-input'), delay);
+  await clickEl(getEls('[data-sb-option-title="0100200854 User"]')[0], delay);
 }
 
 // === data/fetch ===========================================================
@@ -228,33 +227,41 @@ function interceptFetch(urlSubstring, timeout = 20000) {
 }
 function getInputData(textareaValue) {
   try {
-    const data = {}; // Инициализация объекта
+    const data = new Map(); // Используем Map вместо объекта
     const lines = textareaValue.split('\n');
     lines.forEach(line => {
       line = line.trim();
-      // Удаляем лишние пробелы
-      line = line.replace(/\s+/g, ' ');
-      if (!line) return; // Пропускаем пустую строку
+      if (!line) return;
+      // Проверка: должно быть ровно одно ":"
+      const colonCount = (line.match(/:/g) || []).length;
+      if (colonCount !== 1) {
+        throw new Error('В строке должно быть ровно одно ":" — "' + line + '".');
+      }
       // Разделяем ключ и значение
       const [key, value] = line.split(':').map(part => part.trim());
       if (!key || !value) {
-        throw new Error('Некорректная строка: "' + line + '".');
+        throw new Error('Пустой ключ или значение: "' + line + '".');
       }
-      // Проверяем корректность формата данных
-      if (!/^([0-9+\s\-/]+(\.[0-9+\s\-/]+|;[0-9+\s\-/]+)*)$/.test(value)) {
-        // Регулярное выражение проверяет формат данных:
-        // - [0-9+\s\-/]+: Разрешает группы, содержащие: [0-9],"-","/"; "+"," ".
-        // - (\.[0-9+\s\-/]+|;[0-9+\s\-/]+)*: Позволяет добавлять группы, разделенные символом "." или ";".
-        throw new Error('Некорректный формат данных для "' + key + '": "' + value + '".');
+      // Проверка: ровно две точки
+      const dotCount = (value.match(/\./g) || []).length;
+      if (dotCount !== 2) {
+        throw new Error('После ":" должно быть ровно 2 точки — "' + value + '".');
       }
-      // Разбираем данные
-      const groups = value.split(/[.;]/).map(group => group.trim());
-      data[key] = {};
+      // Проверка допустимых символов: цифры, пробелы, /, -, +, .
+      if (!/^[0-9\s\/\-+.]+$/.test(value)) {
+        throw new Error('Недопустимые символы в значении: "' + value + '".');
+      }
+      // Разбор на группы по точкам
+      const groups = value.split('.').map(group => group.trim());
+      const groupObj = {};
       groups.forEach((group, index) => {
-        const parts = group.split(/[+ ]/).map(part => part.trim()); // Разделение на части по "+" или пробелу
-        data[key][index + 1] = parts;
+        const parts = group.split(/[+ ]/).map(part => part.trim()).filter(Boolean);
+        groupObj[index + 1] = parts;
       });
+      data.set(key, groupObj); // сохраняем в Map
     });
+    console.log('>>> parsed textarea data:');
+    console.log(data);
     return data;
   } catch (error) {
     tmUi.abort({
@@ -278,7 +285,7 @@ async function generateTwinsStart() {
     // main logic
     const data = getInputData(tmMenu.e.prepTextarea.value);
     tmsSet('tm_data-generateTwins', data);
-    for (const projectLocation in data) {
+    for (const [projectLocation, projectData] of data.entries()) {
       // clone project
       await clickEl(getEl('div[aria-label="Clone"]'), 300);
       await clickEl(getEl('div#dropdown-item-clone-all-details'), 0);
@@ -289,22 +296,20 @@ async function generateTwinsStart() {
       // upd header
       await updProjectName(projectLocation, 3000);
       await updLocation(projectLocation, 300);
-      await updOwner(2000);
-      await saveResource(4000);
+      await updOwner(1000);
+      await saveResource(3000);
       // measurement grid page
-      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid');
-      const projectData = data[projectLocation];
+      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#shower/'+chargeableId+'/measurements/grid', 3000);
       for (const [number, edge] of Object.entries(projectData)) {
-        await updMeasurementFields(number, edge, 1000);
+        await updMeasurementFields(number, edge, 300);
       }
       await tmMenu.pause({
         accent: 'y',
         title: 'Outage Directions',
         msg: 'Please SET OUTAGE DIRECTIONS manually and PRESS CONTINUE.',
       });
-      await saveResource(4000);
-      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId);
-      await sleep(2000);
+      await saveResource(3000);
+      await fakeRedirect('https://solimp.crlaurence.com/SOL_API/ShowerApp/#projects/'+projectId, 3000);
     }
     tmUi.done()
   } catch (err) {tmUi.abort({msg:['Error('+tmsGetOperation()+'):',err.message]})}

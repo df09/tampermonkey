@@ -74,7 +74,7 @@ function getKey(event, keys, n) {
 async function redirect(newUrl) {
   window.location.href=newUrl;
 }
-async function fakeRedirect(newUrl, delay=4000) {
+async function fakeRedirect(newUrl, delay) {
   console.log('fakeRedirect(delay='+delay+'): "'+newUrl+'"');
   window.location.href = newUrl;
   await sleep(delay);
